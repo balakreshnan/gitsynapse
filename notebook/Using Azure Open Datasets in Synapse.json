@@ -349,11 +349,14 @@
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
 				"source": [
 					"// Run the describe() function on the new dataframe to see summary statistics for each field.\n",
 					"display(nyc_taxi_holiday_weather_df.describe())"
 				],
-				"execution_count": 20
+				"execution_count": 19
 			},
 			{
 				"cell_type": "markdown",
@@ -373,7 +376,7 @@
 					"            filter(nyc_taxi_holiday_weather_df(\"totalAmount\") > 0)\n",
 					"            )"
 				],
-				"execution_count": 21
+				"execution_count": 20
 			},
 			{
 				"cell_type": "markdown",
@@ -390,7 +393,7 @@
 				"source": [
 					"spark.sql(\"DROP TABLE IF EXISTS NYCTaxi.nyc_taxi_holiday_weather\"); "
 				],
-				"execution_count": 22
+				"execution_count": 21
 			},
 			{
 				"cell_type": "code",
@@ -399,7 +402,7 @@
 					"spark.sql(\"CREATE DATABASE NYCTaxi\"); \n",
 					"spark.sql(\"USE NYCTaxi\");"
 				],
-				"execution_count": 23
+				"execution_count": 22
 			},
 			{
 				"cell_type": "markdown",
@@ -416,7 +419,7 @@
 					"val final_results = spark.sql(\"SELECT COUNT(*) FROM nyc_taxi_holiday_weather\");\n",
 					"final_results.show(5, truncate = false)"
 				],
-				"execution_count": 24
+				"execution_count": 23
 			}
 		]
 	}
