@@ -1,0 +1,2 @@
+# gitsynapse
+Git Synapse workspace
