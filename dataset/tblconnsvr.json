@@ -1,0 +1,33 @@
+{
+	"name": "tblconnsvr",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "accsqlsvr",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "connstr",
+				"type": "varchar"
+			},
+			{
+				"name": "inserttime",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tblconnstr"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

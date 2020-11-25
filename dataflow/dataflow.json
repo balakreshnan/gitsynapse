@@ -1,0 +1,32 @@
+{
+	"name": "dataflow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "input",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "output",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Select1"
+				}
+			],
+			"script": "source(output(\n\t\t{Order Key|City Key|Customer Key|Stock Item Key|Order Date Key|Picked Date Key|Salesperson Key|Picker Key|WWI Order ID|WWI Backorder ID|Description|Package|Quantity|Unit Price|Tax Rate|Total Excluding Tax|Tax Amount|Total Including Tax|Lineage Key} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 select(mapColumn(\n\t\t{Order Key|City Key|Customer Key|Stock Item Key|Order Date Key|Picked Date Key|Salesperson Key|Picker Key|WWI Order ID|WWI Backorder ID|Description|Package|Quantity|Unit Price|Tax Rate|Total Excluding Tax|Tax Amount|Total Including Tax|Lineage Key}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

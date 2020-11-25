@@ -1,0 +1,713 @@
+{
+	"name": "nycyellow",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "accsparkpools",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2
+		},
+		"metadata": {
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+				"name": "accsparkpools",
+				"type": "Spark",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 16,
+				"memory": 112
+			}
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"vendorID"
+							],
+							"values": [
+								"tpepPickupDateTime"
+							],
+							"yLabel": "tpepPickupDateTime",
+							"xLabel": "vendorID",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"tpepPickupDateTime\":{\"1\":0,\"2\":0}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"from azureml.opendatasets import NycTlcYellow\n",
+					"\n",
+					"data = NycTlcYellow()\n",
+					"data_df = data.to_spark_dataframe()\n",
+					"# Display 10 rows\n",
+					"display(data_df.limit(10))"
+				],
+				"attachments": null,
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"sc.version"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"vendorID"
+							],
+							"values": [
+								"tpepPickupDateTime"
+							],
+							"yLabel": "tpepPickupDateTime",
+							"xLabel": "vendorID",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"tpepPickupDateTime\":{\"1\":0,\"2\":0}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(data_df)"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"#import org.apache.spark.sql.SaveMode\n",
+					"#from pyspark.sql._ import *\n",
+					"from pyspark.sql.functions import *\n",
+					"from pyspark.sql import *\n",
+					"#import org.apache.spark.sql._ \n",
+					"#import org.apache.spark.sql.functions._"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"vendorID"
+							],
+							"values": [
+								"tpepPickupDateTime"
+							],
+							"yLabel": "tpepPickupDateTime",
+							"xLabel": "vendorID",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"tpepPickupDateTime\":{\"1\":0,\"2\":0}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"df1 = data_df.withColumn(\"Date\", (col(\"tpepPickupDateTime\").cast(\"date\"))) \n",
+					"display(df1)"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"vendorID"
+							],
+							"values": [
+								"tpepPickupDateTime"
+							],
+							"yLabel": "tpepPickupDateTime",
+							"xLabel": "vendorID",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"tpepPickupDateTime\":{\"1\":0,\"2\":0}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(df1)"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df1.createOrReplaceTempView(\"nycyellow\")"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df1.count()"
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df1.dropDuplicates(\"key\",\"pickup_datetime\",\"pickup_longitude\",\"pickup_latitude\",\"dropoff_longitude\",\"dropoff_latitude\")"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df1.printSchema"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df2 = df1.withColumn(\"year\", year(col(\"date\"))) .withColumn(\"month\", month(col(\"date\"))) .withColumn(\"day\", dayofmonth(col(\"date\"))) .withColumn(\"hour\", hour(col(\"date\")))"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"vendorID"
+							],
+							"values": [
+								"tpepPickupDateTime"
+							],
+							"yLabel": "tpepPickupDateTime",
+							"xLabel": "vendorID",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"tpepPickupDateTime\":{\"1\":0,\"2\":0}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(df2)"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df2.groupBy(\"year\",\"month\").agg(sum(\"fareAmount\").alias(\"Total\"),count(\"vendorID\").alias(\"Count\")).sort(asc(\"year\"), asc(\"month\")).show()"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"dfgrouped = df2.groupBy(\"year\",\"month\").agg(sum(\"fareAmount\").alias(\"Total\"),count(\"vendorID\").alias(\"Count\")).sort(asc(\"year\"), asc(\"month\"))"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"month"
+							],
+							"values": [
+								"year"
+							],
+							"yLabel": "year",
+							"xLabel": "month",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"year\":{\"1\":12105,\"2\":10085,\"3\":12105,\"4\":10085,\"5\":10085,\"6\":10085,\"7\":10085,\"8\":12105,\"9\":10085,\"10\":10085,\"11\":10085,\"12\":10085}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(dfgrouped)"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"dfgrouped.repartition(1).write.parquet(\"/dailyaggr/parquet/dailyaggr.parquet\")"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"dfgrouped.repartition(1).write.option(\"header\",\"true\").csv(\"/dailyaggrcsv/csv/dailyaggr.csv\")"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df2.createOrReplaceTempView(\"nycyellow\")"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"vendorID"
+							],
+							"values": [
+								"passengerCount"
+							],
+							"yLabel": "passengerCount",
+							"xLabel": "vendorID",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"passengerCount\":{\"1\":73,\"2\":125}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"select * from nycyellow limit 100"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"tsHour"
+							],
+							"values": [
+								"tsDay"
+							],
+							"yLabel": "tsDay",
+							"xLabel": "tsHour",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"tsDay\":{\"0\":562,\"1\":562,\"2\":562,\"3\":562,\"4\":562,\"5\":562,\"6\":562,\"7\":562,\"8\":562,\"9\":562,\"10\":562,\"11\":562,\"12\":562,\"13\":562,\"14\":562,\"15\":562,\"16\":551,\"17\":551,\"18\":551,\"19\":551,\"20\":551,\"21\":551,\"22\":551,\"23\":551}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"select  year(cast(tpepPickupDateTime  as timestamp)) as tsYear,\n",
+					"        month(cast(tpepPickupDateTime  as timestamp)) as tsmonth,\n",
+					"        day(cast(tpepPickupDateTime  as timestamp)) as tsDay, \n",
+					"        hour(cast(tpepPickupDateTime  as timestamp)) as tsHour,\n",
+					"        avg(totalAmount) as avgTotal, avg(fareAmount) as avgFare\n",
+					"from nycyellow\n",
+					"group by  tsYear, tsmonth,tsDay, tsHour\n",
+					"order by  tsYear, tsmonth,tsDay, tsHour"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"DROP TABLE dailyaggr"
+				],
+				"execution_count": 27
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"CREATE TABLE dailyaggr\n",
+					"  COMMENT 'This table is created with existing data'\n",
+					"  AS select  year(cast(tpepPickupDateTime  as timestamp)) as tsYear,\n",
+					"        month(cast(tpepPickupDateTime  as timestamp)) as tsmonth,\n",
+					"        day(cast(tpepPickupDateTime  as timestamp)) as tsDay, \n",
+					"        hour(cast(tpepPickupDateTime  as timestamp)) as tsHour,\n",
+					"        avg(totalAmount) as avgTotal, avg(fareAmount) as avgFare\n",
+					"from nycyellow\n",
+					"group by  tsYear, tsmonth,tsDay, tsHour\n",
+					"order by  tsYear, tsmonth,tsDay, tsHour"
+				],
+				"execution_count": 33
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"tsDay"
+							],
+							"values": [
+								"tsYear"
+							],
+							"yLabel": "tsYear",
+							"xLabel": "tsDay",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"tsYear\":{\"1\":96720,\"2\":96720,\"3\":96720,\"4\":96720,\"5\":96720,\"6\":96720,\"7\":96720,\"8\":96720,\"9\":96720,\"10\":96720,\"11\":80600,\"12\":48360,\"13\":48360,\"14\":48360,\"15\":48360,\"16\":48360,\"17\":48360,\"18\":48360,\"19\":48360,\"20\":48360,\"21\":48360,\"22\":48360,\"23\":48360,\"24\":48360,\"25\":48360,\"26\":48360,\"27\":48360,\"28\":48360,\"29\":48360,\"30\":48360,\"31\":48360}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"select * from dailyaggr"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"dailyaggr = spark.sql(\"SELECT tsYear, tsMonth, tsDay, tsHour, avgTotal FROM dailyaggr\")"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"tsDay"
+							],
+							"values": [
+								"tsYear"
+							],
+							"yLabel": "tsYear",
+							"xLabel": "tsDay",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"tsYear\":{\"1\":96720,\"2\":96720,\"3\":96720,\"4\":96720,\"5\":96720,\"6\":96720,\"7\":96720,\"8\":96720,\"9\":96720,\"10\":96720,\"11\":82615,\"12\":48360,\"13\":48360,\"14\":48360,\"15\":48360,\"16\":48360,\"17\":48360,\"18\":48360,\"19\":48360,\"20\":48360,\"21\":48360,\"22\":48360,\"23\":48360,\"24\":48360,\"25\":48360,\"26\":48360,\"27\":48360,\"28\":48360,\"29\":48360,\"30\":48360,\"31\":48360}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(dailyaggr)"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"dailyaggr.write.sqlanalytics(\"accsynapsepools.wwi.dailyaggr\", Constants.INTERNAL)"
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from pyspark.ml.regression import LinearRegression"
+				],
+				"execution_count": 37
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%pyspark \n",
+					"import pyspark \n",
+					"print(print(pyspark.__version__))"
+				],
+				"execution_count": 38
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%spark\n",
+					"import org.apache.spark.ml.feature.VectorAssembler \n",
+					"import org.apache.spark.ml.linalg.Vectors \n",
+					"val dailyaggr = spark.sql(\"SELECT tsYear, tsMonth, tsDay, tsHour, avgTotal FROM dailyaggr\")\n",
+					"val featureCols=Array(\"tsYear\",\"tsMonth\",\"tsDay\",\"tsHour\") \n",
+					"val assembler: org.apache.spark.ml.feature.VectorAssembler= new VectorAssembler().setInputCols(featureCols).setOutputCol(\"features\") \n",
+					"val assembledDF = assembler.setHandleInvalid(\"skip\").transform(dailyaggr) \n",
+					"val assembledFinalDF = assembledDF.select(\"avgTotal\",\"features\")"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%spark\n",
+					"import com.microsoft.spark.sqlanalytics.utils.Constants\n",
+					"import org.apache.spark.sql.SqlAnalyticsConnector._"
+				],
+				"execution_count": 20
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%spark\n",
+					"dailyaggr.repartition(2).write.sqlanalytics(\"accsynapsepools.wwi.dailyaggr\", Constants.INTERNAL)"
+				],
+				"execution_count": 23
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%spark\n",
+					"import org.apache.spark.ml.feature.Normalizer \n",
+					"val normalizedDF = new Normalizer().setInputCol(\"features\").setOutputCol(\"normalizedFeatures\").transform(assembledFinalDF)"
+				],
+				"execution_count": 43
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%spark\n",
+					"val normalizedDF1 = normalizedDF.na.drop()"
+				],
+				"execution_count": 44
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%spark\n",
+					"val Array(trainingDS, testDS) = normalizedDF1.randomSplit(Array(0.7, 0.3))"
+				],
+				"execution_count": 45
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%spark\n",
+					"import org.apache.spark.ml.regression.LinearRegression\n",
+					"// Create a LinearRegression instance. This instance is an Estimator. \n",
+					"val lr = new LinearRegression().setLabelCol(\"avgTotal\").setMaxIter(100)\n",
+					"// Print out the parameters, documentation, and any default values. println(s\"Linear Regression parameters:\\n ${lr.explainParams()}\\n\") \n",
+					"// Learn a Linear Regression model. This uses the parameters stored in lr.\n",
+					"val lrModel = lr.fit(trainingDS)\n",
+					"// Make predictions on test data using the Transformer.transform() method.\n",
+					"// LinearRegression.transform will only use the 'features' column. \n",
+					"val lrPredictions = lrModel.transform(testDS)"
+				],
+				"execution_count": 49
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%spark\n",
+					"import org.apache.spark.sql.functions._ \n",
+					"import org.apache.spark.sql.types._ \n",
+					"println(\"\\nPredictions : \" ) \n",
+					"lrPredictions.select($\"avgTotal\".cast(IntegerType),$\"prediction\".cast(IntegerType)).orderBy(abs($\"prediction\"-$\"avgTotal\")).distinct.show(15)"
+				],
+				"execution_count": 51
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%spark\n",
+					"import org.apache.spark.ml.evaluation.RegressionEvaluator \n",
+					"\n",
+					"val evaluator_r2 = new RegressionEvaluator().setPredictionCol(\"prediction\").setLabelCol(\"avgTotal\").setMetricName(\"r2\") \n",
+					"//As the name implies, isLargerBetter returns if a larger value is better or smaller for evaluation. \n",
+					"val isLargerBetter : Boolean = evaluator_r2.isLargerBetter \n",
+					"println(\"Coefficient of determination = \" + evaluator_r2.evaluate(lrPredictions))"
+				],
+				"execution_count": 54
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%spark\n",
+					"//Evaluate the results. Calculate Root Mean Square Error \n",
+					"val evaluator_rmse = new RegressionEvaluator().setPredictionCol(\"prediction\").setLabelCol(\"avgTotal\").setMetricName(\"rmse\") \n",
+					"//As the name implies, isLargerBetter returns if a larger value is better for evaluation. \n",
+					"val isLargerBetter1 : Boolean = evaluator_rmse.isLargerBetter \n",
+					"println(\"Root Mean Square Error = \" + evaluator_rmse.evaluate(lrPredictions))"
+				],
+				"execution_count": 55
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%spark\n",
+					"val dailyaggrdf = spark.read.sqlanalytics(\"accsynapsepools.wwi.dailyaggr\")"
+				],
+				"execution_count": 26
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"tsMonth"
+							],
+							"values": [
+								"tsYear"
+							],
+							"yLabel": "tsYear",
+							"xLabel": "tsMonth",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"tsYear\":{\"8\":474230,\"9\":726480,\"10\":548896,\"11\":199782,\"12\":70630}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"%%spark\n",
+					"display(dailyaggrdf)"
+				],
+				"execution_count": 27
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%spark\n",
+					"dailyaggrdf.count()"
+				],
+				"execution_count": 28
+			}
+		]
+	}
+}

@@ -1,0 +1,398 @@
+{
+	"name": "03 Training NYC Taxi ONNX model",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "accsparkpools",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2
+		},
+		"metadata": {
+			"kernelspec": {
+				"name": "SQL",
+				"display_name": "SQL"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+				"name": "accsparkpools",
+				"type": "Spark",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 16,
+				"memory": 112
+			}
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"source": [
+					"## Predict-New-York-Taxi-Trip-Amount\n",
+					""
+				]
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Read data from open dataset"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from azureml.opendatasets import NycTlcGreen\r\n",
+					"import pandas as pd\r\n",
+					"from datetime import datetime\r\n",
+					"from dateutil.relativedelta import relativedelta\r\n",
+					"\r\n",
+					"green_taxi_df = pd.DataFrame([])\r\n",
+					"\r\n",
+					"start = datetime.strptime(\"1/1/2015\",\"%m/%d/%Y\")\r\n",
+					"end = datetime.strptime(\"1/31/2015\",\"%m/%d/%Y\")\r\n",
+					"\r\n",
+					"for sample_month in range(12):\r\n",
+					"    temp_df_green = NycTlcGreen(start + relativedelta(months=sample_month), end + relativedelta(months=sample_month)) \\\r\n",
+					"        .to_pandas_dataframe()\r\n",
+					"    green_taxi_df = green_taxi_df.append(temp_df_green.sample(2000))"
+				],
+				"attachments": null,
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"green_taxi_df.head(10)"
+				],
+				"attachments": null,
+				"execution_count": 2
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Data exploration and feature engineering\n",
+					""
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"def build_time_features(vector):\n",
+					"    pickup_datetime = vector[0]\n",
+					"    month_num = pickup_datetime.month\n",
+					"    day_of_month = pickup_datetime.day\n",
+					"    day_of_week = pickup_datetime.weekday()\n",
+					"    day_of_hour = pickup_datetime.hour\n",
+					"    return pd.Series((month_num, day_of_month, day_of_week, day_of_hour))\n",
+					"\n",
+					"green_taxi_df[[\"month_num\", \"day_of_month\",\"day_of_week\", \"day_of_hour\"]] = green_taxi_df[[\"lpepPickupDatetime\"]].apply(build_time_features, axis=1)\n",
+					"\n",
+					"green_taxi_df.head(10)"
+				],
+				"attachments": null,
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"green_taxi_df.columns"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"columns_to_remove = [\"lpepPickupDatetime\", \"lpepDropoffDatetime\", \"puLocationId\", \"doLocationId\", \"extra\", \"mtaTax\",\n",
+					"                     \"improvementSurcharge\", \"tollsAmount\", \"ehailFee\", \"tripType\", \"rateCodeID\", \n",
+					"                     \"storeAndFwdFlag\", \"paymentType\", \"fareAmount\", \"tipAmount\",\"puYear\", \"puMonth\"\n",
+					"                    ]\n",
+					"for col in columns_to_remove:\n",
+					"    green_taxi_df.pop(col)\n",
+					"    \n",
+					"green_taxi_df.head(5)"
+				],
+				"attachments": null,
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"green_taxi_df.describe()"
+				],
+				"attachments": null,
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"final_df = green_taxi_df.query(\"pickupLatitude>=40.53 and pickupLatitude<=40.88\")\r\n",
+					"final_df = final_df.query(\"pickupLongitude>=-74.09 and pickupLongitude<=-73.72\")\r\n",
+					"final_df = final_df.query(\"tripDistance>=0.25 and tripDistance<31\")\r\n",
+					"final_df = final_df.query(\"passengerCount>0 and totalAmount>0\")\r\n",
+					"\r\n",
+					"columns_to_remove_for_training = [\"pickupLongitude\", \"pickupLatitude\", \"dropoffLongitude\", \"dropoffLatitude\"]\r\n",
+					"for col in columns_to_remove_for_training:\r\n",
+					"    final_df.pop(col)"
+				],
+				"attachments": null,
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"final_df.describe()"
+				],
+				"attachments": null,
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"passengerCount"
+							],
+							"values": [
+								"vendorID"
+							],
+							"yLabel": "vendorID",
+							"xLabel": "passengerCount",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"vendorID\":{\"1\":1487,\"2\":122,\"3\":44,\"4\":7,\"5\":90,\"6\":40}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(final_df)"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"## AutoML setup and running experiment\n",
+					""
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import azureml.core\n",
+					"import logging\n",
+					"from azureml.core.workspace import Workspace\n",
+					"from azureml.core import Workspace\n",
+					"from azureml.core.experiment import Experiment\n",
+					"from azureml.train.automl import AutoMLConfig\n",
+					"import os\n",
+					"\n",
+					"subscription_id = os.getenv(\"SUBSCRIPTION_ID\", default=\"c46a9435-c957-4e6c-a0f4-b9a597984773\")\n",
+					"resource_group = os.getenv(\"RESOURCE_GROUP\", default=\"mlops\")\n",
+					"workspace_name = os.getenv(\"WORKSPACE_NAME\", default=\"mlopsdev\")\n",
+					"workspace_region = os.getenv(\"WORKSPACE_REGION\", default=\"Central US\")\n",
+					"\n",
+					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
+					"ws.write_config()"
+				],
+				"execution_count": 23
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from sklearn.model_selection import train_test_split\r\n",
+					"\r\n",
+					"y_df = final_df.pop(\"totalAmount\")\r\n",
+					"x_df = final_df\r\n",
+					"\r\n",
+					"x_train, x_test, y_train, y_test = train_test_split(x_df, y_df, test_size=0.2, random_state=223)"
+				],
+				"attachments": null,
+				"execution_count": 24
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import logging\n",
+					"\n",
+					"automl_settings = {\n",
+					"    \"iteration_timeout_minutes\": 2,\n",
+					"    \"iterations\": 5,\n",
+					"    \"primary_metric\": 'spearman_correlation',\n",
+					"    \"preprocess\": True,\n",
+					"    \"verbosity\": logging.INFO,\n",
+					"    \"n_cross_validations\": 2\n",
+					"}"
+				],
+				"attachments": null,
+				"execution_count": 25
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from azureml.train.automl import AutoMLConfig\n",
+					"\n",
+					"label = \"totalAmount\"\n",
+					"\n",
+					"automl_config = AutoMLConfig(task='regression',\n",
+					"                             debug_log='automl_errors_5.log',\n",
+					"#                             compute_target = AMLCompute,\n",
+					"                             X=x_train,\n",
+					"                             y=y_train,\n",
+					"#                             label_column_name = label,\n",
+					"                             enable_onnx_compatible_models=True,\n",
+					"                             **automl_settings)"
+				],
+				"attachments": null,
+				"execution_count": 26
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from azureml.core.experiment import Experiment\n",
+					"experiment = Experiment(ws, \"greentaxi-experiment1\")\n",
+					"local_run = experiment.submit(automl_config, show_output=True)"
+				],
+				"attachments": null,
+				"execution_count": 27
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Retrieve the best onnx model\n",
+					""
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"best_run, onnx_mdl = local_run.get_output(return_onnx_model=True) "
+				],
+				"attachments": null,
+				"execution_count": 28
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from azureml.automl.runtime.onnx_convert.onnx_converter import OnnxConverter\n",
+					"onnx_fl_path = \"./taxi_best_model.onnx\"\n",
+					"OnnxConverter.save_onnx_model(onnx_mdl, onnx_fl_path) #save the best onnx model"
+				],
+				"attachments": null,
+				"execution_count": 29
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"with open(\"taxi_best_model.onnx\", \"wb\") as f:\n",
+					"    f.write(onnx_mdl.SerializeToString())"
+				],
+				"execution_count": 30
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import os, uuid\n",
+					"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient, __version__\n",
+					"\n",
+					"try:\n",
+					"    print(\"Azure Blob storage v\" + __version__ + \" - Python quickstart sample\")\n",
+					"    # Quick start code goes here\n",
+					"except Exception as ex:\n",
+					"    print('Exception:')\n",
+					"    print(ex)"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Export ONNX model\n",
+					""
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from azure.storage.blob import BlobServiceClient\n",
+					"from azure.storage.blob import BlobClient\n",
+					"\n",
+					"connection_string = \"DefaultEndpointsProtocol=https;AccountName=accsynapsestorage;AccountKey=ex1PbXf87GVGWh2OkZnBETN0wDCmlgzHDGpPR4+E/+DbJ3MYSeJHgec5lIgOkGOp9m13qVa7dWRXS52CTeRxRQ==;EndpointSuffix=core.windows.net\"\n",
+					"service = BlobServiceClient.from_connection_string(conn_str=connection_string)\n",
+					"\n",
+					"blob = BlobClient.from_connection_string(conn_str=connection_string, container_name=\"taximodel\", blob_name=\"taxiscore/taxi_best_model.onnx\")\n",
+					"\n",
+					"with open(\"./taxi_best_model.onnx\", \"rb\") as data:\n",
+					"    blob.upload_blob(data,overwrite=True)"
+				],
+				"execution_count": 19
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from azure.storage.blob import *"
+				],
+				"execution_count": 31
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Create the BlockBlockService that the system uses to call the Blob service for the storage account.\n",
+					"block_blob_service = BlockBlobService(\n",
+					"    account_name='accsynapsestorage', account_key='ex1PbXf87GVGWh2OkZnBETN0wDCmlgzHDGpPR4+E/+DbJ3MYSeJHgec5lIgOkGOp9m13qVa7dWRXS52CTeRxRQ==')\n",
+					"\n",
+					"# Create a container called 'quickstartblobs'.\n",
+					"container_name = 'taximodel'\n",
+					"block_blob_service.create_container(container_name)"
+				],
+				"execution_count": 32
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Upload the created file, use local_file_name for the blob name.\n",
+					"#block_blob_service.create_blob_from_path(\n",
+					"#    container_name, local_file_name, full_path_to_file)\n",
+					"\n",
+					"filename = \"./taxi_best_model.onnx\"\n",
+					"#block_blob_service.create_blob_from_path(container_name,\"taxi_best_model.onnx\",filename)\n",
+					"\n",
+					"#with open(\"./taxi_best_model.onnx\", \"rb\") as data:\n",
+					"#    block_blob_service.create_blob_from_path(data,overwrite=True)\n",
+					"\n",
+					"with open(\"./taxi_best_model.onnx\", \"rb\") as data:\n",
+					"    block_blob_service.create_blob_from_path(container_name,\"taxi_best_model.onnx\",filename)"
+				],
+				"execution_count": 34
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"\n",
+					""
+				],
+				"execution_count": null
+			}
+		]
+	}
+}

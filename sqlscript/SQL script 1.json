@@ -1,0 +1,16 @@
+{
+	"name": "SQL script 1",
+	"properties": {
+		"content": {
+			"query": "SELECT TOP (100) [Id]\n,[FirstName]\n,[LastName]\n,[Company]\n,[Address]\n,[City]\n,[County]\n,[State]\n,[Phone]\n,[email]\n,[SSN]\n FROM [wwi].[EmployeePIIData]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "accsynapsepools",
+				"type": "SqlPool"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

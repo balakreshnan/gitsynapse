@@ -1,0 +1,16 @@
+{
+	"name": "dailaggrsql",
+	"properties": {
+		"content": {
+			"query": "-- type your sql script here, we now have intellisense\n\nDrop Table [wwi].[dailyaggr];\n\nCREATE TABLE [wwi].[dailyaggr]\n( \n\t[tsYear] [bigint]  NOT NULL,\n\t[tsMonth] [bigint]  NOT NULL,\n\t[tsDay] [bigint]  NULL,\n\t[tsHour] [bigint]  NULL,\n\t[avgFare] [real]  NULL\n)\nWITH\n(\n\tDISTRIBUTION = HASH ( [tsYear] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\n\nSelect  * from [wwi].[dailyaggr];\n\nSelect  count(*) from [wwi].[dailyaggr];",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "accsynapsepools",
+				"type": "SqlPool"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

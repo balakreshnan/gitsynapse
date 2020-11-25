@@ -1,0 +1,18 @@
+{
+	"name": "nycdataoutput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "nyctaxi"
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

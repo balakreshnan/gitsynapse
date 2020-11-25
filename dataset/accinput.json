@@ -1,0 +1,19 @@
+{
+	"name": "accinput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "accinput",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "nyctlc",
+				"fileSystem": "opendataset"
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
