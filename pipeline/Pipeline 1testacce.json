@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Dataflow1",
+				"name": "SimpleSelect",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
