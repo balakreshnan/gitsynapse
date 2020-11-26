@@ -1,0 +1,602 @@
+{
+	"name": "AzureMLtest",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "accsparkpools",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "112g",
+			"driverCores": 16,
+			"executorMemory": "112g",
+			"executorCores": 16,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+				"name": "accsparkpools",
+				"type": "Spark",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 16,
+				"memory": 112,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"from azureml.core import Workspace"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"import azureml.core\r\n",
+					"print(azureml.core.VERSION)"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"ws = Workspace.get(name=\"mlopsdev\", subscription_id='c46a9435-c957-4e6c-a0f4-b9a597984773', resource_group='mlops')"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"print('Workspace name: ' + ws.name, \r\n",
+					"      'Azure region: ' + ws.location, \r\n",
+					"      'Subscription id: ' + ws.subscription_id, \r\n",
+					"      'Resource group: ' + ws.resource_group, sep = '\\n')"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"ws.write_config(path='.azureml')"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"# tutorial/02-create-compute.py\r\n",
+					"from azureml.core import Workspace\r\n",
+					"from azureml.core.compute import ComputeTarget, AmlCompute\r\n",
+					"from azureml.core.compute_target import ComputeTargetException\r\n",
+					"\r\n",
+					"ws = Workspace.from_config() # This automatically looks for a directory .azureml\r\n",
+					"\r\n",
+					"# Choose a name for your CPU cluster\r\n",
+					"cpu_cluster_name = \"cpu-cluster\"\r\n",
+					"\r\n",
+					"# Verify that the cluster does not exist already\r\n",
+					"try:\r\n",
+					"    cpu_cluster = ComputeTarget(workspace=ws, name=cpu_cluster_name)\r\n",
+					"    print('Found existing cluster, use it.')\r\n",
+					"except ComputeTargetException:\r\n",
+					"    compute_config = AmlCompute.provisioning_configuration(vm_size='STANDARD_D2_V2',\r\n",
+					"                                                           idle_seconds_before_scaledown=2400,\r\n",
+					"                                                           min_nodes=0,\r\n",
+					"                                                           max_nodes=4)\r\n",
+					"    cpu_cluster = ComputeTarget.create(ws, cpu_cluster_name, compute_config)\r\n",
+					"\r\n",
+					"cpu_cluster.wait_for_completion(show_output=True)"
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"from azureml.opendatasets import NycTlcGreen\r\n",
+					"import pandas as pd\r\n",
+					"from datetime import datetime\r\n",
+					"from dateutil.relativedelta import relativedelta"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"green_taxi_df = pd.DataFrame([])\r\n",
+					"start = datetime.strptime(\"1/1/2015\",\"%m/%d/%Y\")\r\n",
+					"end = datetime.strptime(\"1/31/2015\",\"%m/%d/%Y\")\r\n",
+					"\r\n",
+					"for sample_month in range(12):\r\n",
+					"    temp_df_green = NycTlcGreen(start + relativedelta(months=sample_month), end + relativedelta(months=sample_month)) \\\r\n",
+					"        .to_pandas_dataframe()\r\n",
+					"    green_taxi_df = green_taxi_df.append(temp_df_green.sample(2000))\r\n",
+					"\r\n",
+					"green_taxi_df.head(10)"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"def build_time_features(vector):\r\n",
+					"    pickup_datetime = vector[0]\r\n",
+					"    month_num = pickup_datetime.month\r\n",
+					"    day_of_month = pickup_datetime.day\r\n",
+					"    day_of_week = pickup_datetime.weekday()\r\n",
+					"    hour_of_day = pickup_datetime.hour\r\n",
+					"\r\n",
+					"    return pd.Series((month_num, day_of_month, day_of_week, hour_of_day))\r\n",
+					"\r\n",
+					"green_taxi_df[[\"month_num\", \"day_of_month\",\"day_of_week\", \"hour_of_day\"]] = green_taxi_df[[\"lpepPickupDatetime\"]].apply(build_time_features, axis=1)\r\n",
+					"green_taxi_df.head(10)"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"columns_to_remove = [\"lpepPickupDatetime\", \"lpepDropoffDatetime\", \"puLocationId\", \"doLocationId\", \"extra\", \"mtaTax\",\r\n",
+					"                     \"improvementSurcharge\", \"tollsAmount\", \"ehailFee\", \"tripType\", \"rateCodeID\",\r\n",
+					"                     \"storeAndFwdFlag\", \"paymentType\", \"fareAmount\", \"tipAmount\"\r\n",
+					"                    ]\r\n",
+					"for col in columns_to_remove:\r\n",
+					"    green_taxi_df.pop(col)\r\n",
+					"\r\n",
+					"green_taxi_df.head(5)"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"green_taxi_df.describe()"
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"final_df = green_taxi_df.query(\"pickupLatitude>=40.53 and pickupLatitude<=40.88\")\r\n",
+					"final_df = final_df.query(\"pickupLongitude>=-74.09 and pickupLongitude<=-73.72\")\r\n",
+					"final_df = final_df.query(\"tripDistance>=0.25 and tripDistance<31\")\r\n",
+					"final_df = final_df.query(\"passengerCount>0 and totalAmount>0\")\r\n",
+					"\r\n",
+					"columns_to_remove_for_training = [\"pickupLongitude\", \"pickupLatitude\", \"dropoffLongitude\", \"dropoffLatitude\"]\r\n",
+					"for col in columns_to_remove_for_training:\r\n",
+					"    final_df.pop(col)"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"final_df.describe()"
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"from sklearn.model_selection import train_test_split\r\n",
+					"\r\n",
+					"x_train, x_test = train_test_split(final_df, test_size=0.2, random_state=223)"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"import logging\r\n",
+					"\r\n",
+					"automl_settings = {\r\n",
+					"    \"iteration_timeout_minutes\": 2,\r\n",
+					"    \"experiment_timeout_hours\": 0.3,\r\n",
+					"    \"enable_early_stopping\": True,\r\n",
+					"    \"primary_metric\": 'spearman_correlation',\r\n",
+					"    \"featurization\": 'auto',\r\n",
+					"    \"verbosity\": logging.INFO,\r\n",
+					"    \"n_cross_validations\": 5\r\n",
+					"}"
+				],
+				"execution_count": 19
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"from azureml.train.automl import AutoMLConfig\r\n",
+					"\r\n",
+					"automl_config = AutoMLConfig(task='regression',\r\n",
+					"                             debug_log='automated_ml_errors.log',\r\n",
+					"                             training_data=x_train,\r\n",
+					"                             label_column_name=\"totalAmount\",\r\n",
+					"                             **automl_settings)"
+				],
+				"execution_count": 20
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"from azureml.core.experiment import Experiment\r\n",
+					"experiment = Experiment(ws, \"taxi-experiment-fromsynapsews\")\r\n",
+					"local_run = experiment.submit(automl_config, show_output=True)"
+				],
+				"execution_count": 21
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"from azureml.widgets import RunDetails\r\n",
+					"RunDetails(local_run).show()"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"best_run, fitted_model = local_run.get_output()\r\n",
+					"print(best_run)\r\n",
+					"print(fitted_model)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"y_test = x_test.pop(\"totalAmount\")\r\n",
+					"\r\n",
+					"y_predict = fitted_model.predict(x_test)\r\n",
+					"print(y_predict[:10])"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"from sklearn.metrics import mean_squared_error\r\n",
+					"from math import sqrt\r\n",
+					"\r\n",
+					"y_actual = y_test.values.flatten().tolist()\r\n",
+					"rmse = sqrt(mean_squared_error(y_actual, y_predict))\r\n",
+					"rmse"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"sum_actuals = sum_errors = 0\r\n",
+					"\r\n",
+					"for actual_val, predict_val in zip(y_actual, y_predict):\r\n",
+					"    abs_error = actual_val - predict_val\r\n",
+					"    if abs_error < 0:\r\n",
+					"        abs_error = abs_error * -1\r\n",
+					"\r\n",
+					"    sum_errors = sum_errors + abs_error\r\n",
+					"    sum_actuals = sum_actuals + actual_val\r\n",
+					"\r\n",
+					"mean_abs_percent_error = sum_errors / sum_actuals\r\n",
+					"print(\"Model MAPE:\")\r\n",
+					"print(mean_abs_percent_error)\r\n",
+					"print()\r\n",
+					"print(\"Model Accuracy:\")\r\n",
+					"print(1 - mean_abs_percent_error)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
