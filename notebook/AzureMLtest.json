@@ -456,7 +456,7 @@
 					"from azureml.widgets import RunDetails\r\n",
 					"RunDetails(local_run).show()"
 				],
-				"execution_count": null
+				"execution_count": 22
 			},
 			{
 				"cell_type": "code",
@@ -477,7 +477,7 @@
 					"print(best_run)\r\n",
 					"print(fitted_model)"
 				],
-				"execution_count": null
+				"execution_count": 23
 			},
 			{
 				"cell_type": "code",
@@ -499,7 +499,7 @@
 					"y_predict = fitted_model.predict(x_test)\r\n",
 					"print(y_predict[:10])"
 				],
-				"execution_count": null
+				"execution_count": 24
 			},
 			{
 				"cell_type": "code",
@@ -523,7 +523,7 @@
 					"rmse = sqrt(mean_squared_error(y_actual, y_predict))\r\n",
 					"rmse"
 				],
-				"execution_count": null
+				"execution_count": 25
 			},
 			{
 				"cell_type": "code",
@@ -557,7 +557,7 @@
 					"print(\"Model Accuracy:\")\r\n",
 					"print(1 - mean_abs_percent_error)"
 				],
-				"execution_count": null
+				"execution_count": 26
 			},
 			{
 				"cell_type": "code",
