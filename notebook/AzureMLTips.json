@@ -70,7 +70,7 @@
 				"source": [
 					"ws = Workspace.get(name=\"mlopsdev\", subscription_id='c46a9435-c957-4e6c-a0f4-b9a597984773', resource_group='mlops')"
 				],
-				"execution_count": 3
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -92,7 +92,7 @@
 					"      'Subscription id: ' + ws.subscription_id, \r\n",
 					"      'Resource group: ' + ws.resource_group, sep = '\\n')"
 				],
-				"execution_count": 4
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -111,7 +111,7 @@
 				"source": [
 					"ws.write_config(path='.azureml')"
 				],
-				"execution_count": 5
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -131,7 +131,7 @@
 					"ws = Workspace.from_config()\r\n",
 					"ws.get_details()"
 				],
-				"execution_count": 6
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -155,7 +155,7 @@
 					"ws = Workspace.from_config() # This automatically looks for a directory .azureml\r\n",
 					"\r\n",
 					"# Choose a name for your CPU cluster\r\n",
-					"cpu_cluster_name = \"cpu-cluster\"\r\n",
+					"cpu_cluster_name = \"cpucluster\"\r\n",
 					"\r\n",
 					"# Verify that the cluster does not exist already\r\n",
 					"try:\r\n",
@@ -170,7 +170,7 @@
 					"\r\n",
 					"cpu_cluster.wait_for_completion(show_output=True)"
 				],
-				"execution_count": 7
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -192,7 +192,7 @@
 					"from datetime import datetime\r\n",
 					"from dateutil.relativedelta import relativedelta"
 				],
-				"execution_count": 8
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -220,7 +220,7 @@
 					"\r\n",
 					"green_taxi_df.head(10)"
 				],
-				"execution_count": 9
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
