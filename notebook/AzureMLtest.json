@@ -453,8 +453,8 @@
 					"collapsed": true
 				},
 				"source": [
-					"from azureml.widgets import RunDetails\r\n",
-					"RunDetails(local_run).show()"
+					"#from azureml.widgets import RunDetails\n",
+					"#RunDetails(local_run).show()"
 				],
 				"execution_count": 22
 			},
