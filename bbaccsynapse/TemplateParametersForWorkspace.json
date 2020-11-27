@@ -1,0 +1,42 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "bbaccsynapse"
+		},
+		"accinput_accountKey": {
+			"value": ""
+		},
+		"accsqlsvr_connectionString": {
+			"value": ""
+		},
+		"bbaccsynapse-WorkspaceDefaultSqlServer_connectionString": {
+			"value": ""
+		},
+		"iiotdata_accountKey": {
+			"value": ""
+		},
+		"accinput_properties_typeProperties_url": {
+			"value": "https://accbbstore.dfs.core.windows.net"
+		},
+		"bbaccsynapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://accsynapsestorage.dfs.core.windows.net"
+		},
+		"bing-covid-19-data_sasUri": {
+			"value": ""
+		},
+		"iiotdata_properties_typeProperties_url": {
+			"value": "https://iitostore.dfs.core.windows.net"
+		},
+		"nyc_tlc_green_sasUri": {
+			"value": ""
+		},
+		"nyc_tlc_yellow_sasUri": {
+			"value": ""
+		},
+		"us-decennial-census-county_sasUri": {
+			"value": ""
+		}
+	}
+}
