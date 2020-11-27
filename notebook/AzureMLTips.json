@@ -1,5 +1,5 @@
 {
-	"name": "AzureMLtest",
+	"name": "AzureMLTips",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -68,29 +68,9 @@
 					"collapsed": true
 				},
 				"source": [
-					"import azureml.core\r\n",
-					"print(azureml.core.VERSION)"
-				],
-				"execution_count": 2
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
 					"ws = Workspace.get(name=\"mlopsdev\", subscription_id='c46a9435-c957-4e6c-a0f4-b9a597984773', resource_group='mlops')"
 				],
-				"execution_count": 5
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -112,7 +92,7 @@
 					"      'Subscription id: ' + ws.subscription_id, \r\n",
 					"      'Resource group: ' + ws.resource_group, sep = '\\n')"
 				],
-				"execution_count": 6
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -131,7 +111,7 @@
 				"source": [
 					"ws.write_config(path='.azureml')"
 				],
-				"execution_count": 9
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -148,7 +128,26 @@
 					"collapsed": true
 				},
 				"source": [
-					"# tutorial/02-create-compute.py\r\n",
+					"ws = Workspace.from_config()\r\n",
+					"ws.get_details()"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
 					"from azureml.core import Workspace\r\n",
 					"from azureml.core.compute import ComputeTarget, AmlCompute\r\n",
 					"from azureml.core.compute_target import ComputeTargetException\r\n",
@@ -156,7 +155,7 @@
 					"ws = Workspace.from_config() # This automatically looks for a directory .azureml\r\n",
 					"\r\n",
 					"# Choose a name for your CPU cluster\r\n",
-					"cpu_cluster_name = \"cpu-cluster\"\r\n",
+					"cpu_cluster_name = \"cpucluster\"\r\n",
 					"\r\n",
 					"# Verify that the cluster does not exist already\r\n",
 					"try:\r\n",
@@ -171,7 +170,7 @@
 					"\r\n",
 					"cpu_cluster.wait_for_completion(show_output=True)"
 				],
-				"execution_count": 10
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -193,7 +192,7 @@
 					"from datetime import datetime\r\n",
 					"from dateutil.relativedelta import relativedelta"
 				],
-				"execution_count": 11
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -221,7 +220,26 @@
 					"\r\n",
 					"green_taxi_df.head(10)"
 				],
-				"execution_count": 12
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"display(green_taxi_df)"
+				],
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -250,7 +268,7 @@
 					"green_taxi_df[[\"month_num\", \"day_of_month\",\"day_of_week\", \"hour_of_day\"]] = green_taxi_df[[\"lpepPickupDatetime\"]].apply(build_time_features, axis=1)\r\n",
 					"green_taxi_df.head(10)"
 				],
-				"execution_count": 13
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -269,14 +287,33 @@
 				"source": [
 					"columns_to_remove = [\"lpepPickupDatetime\", \"lpepDropoffDatetime\", \"puLocationId\", \"doLocationId\", \"extra\", \"mtaTax\",\r\n",
 					"                     \"improvementSurcharge\", \"tollsAmount\", \"ehailFee\", \"tripType\", \"rateCodeID\",\r\n",
-					"                     \"storeAndFwdFlag\", \"paymentType\", \"fareAmount\", \"tipAmount\"\r\n",
+					"                     \"storeAndFwdFlag\", \"paymentType\", \"fareAmount\" #, \"tipAmount\"\r\n",
 					"                    ]\r\n",
 					"for col in columns_to_remove:\r\n",
 					"    green_taxi_df.pop(col)\r\n",
 					"\r\n",
 					"green_taxi_df.head(5)"
 				],
-				"execution_count": 14
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"green_taxi_df.columns"
+				],
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
@@ -295,7 +332,7 @@
 				"source": [
 					"green_taxi_df.describe()"
 				],
-				"execution_count": 15
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
@@ -321,7 +358,7 @@
 					"for col in columns_to_remove_for_training:\r\n",
 					"    final_df.pop(col)"
 				],
-				"execution_count": 16
+				"execution_count": 15
 			},
 			{
 				"cell_type": "code",
@@ -340,7 +377,7 @@
 				"source": [
 					"final_df.describe()"
 				],
-				"execution_count": 17
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
@@ -361,7 +398,7 @@
 					"\r\n",
 					"x_train, x_test = train_test_split(final_df, test_size=0.2, random_state=223)"
 				],
-				"execution_count": 18
+				"execution_count": 17
 			},
 			{
 				"cell_type": "code",
@@ -390,7 +427,7 @@
 					"    \"n_cross_validations\": 5\r\n",
 					"}"
 				],
-				"execution_count": 19
+				"execution_count": 18
 			},
 			{
 				"cell_type": "code",
@@ -411,11 +448,12 @@
 					"\r\n",
 					"automl_config = AutoMLConfig(task='regression',\r\n",
 					"                             debug_log='automated_ml_errors.log',\r\n",
+					"                             compute_target=cpu_cluster,\r\n",
 					"                             training_data=x_train,\r\n",
-					"                             label_column_name=\"totalAmount\",\r\n",
+					"                             label_column_name=\"tipAmount\",\r\n",
 					"                             **automl_settings)"
 				],
-				"execution_count": 20
+				"execution_count": 19
 			},
 			{
 				"cell_type": "code",
@@ -436,27 +474,7 @@
 					"experiment = Experiment(ws, \"taxi-experiment-fromsynapsews\")\r\n",
 					"local_run = experiment.submit(automl_config, show_output=True)"
 				],
-				"execution_count": 21
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"from azureml.widgets import RunDetails\r\n",
-					"RunDetails(local_run).show()"
-				],
-				"execution_count": 22
+				"execution_count": 20
 			},
 			{
 				"cell_type": "code",
@@ -477,7 +495,7 @@
 					"print(best_run)\r\n",
 					"print(fitted_model)"
 				],
-				"execution_count": 23
+				"execution_count": 21
 			},
 			{
 				"cell_type": "code",
@@ -494,12 +512,12 @@
 					"collapsed": true
 				},
 				"source": [
-					"y_test = x_test.pop(\"totalAmount\")\r\n",
+					"y_test = x_test.pop(\"tipAmount\")\r\n",
 					"\r\n",
 					"y_predict = fitted_model.predict(x_test)\r\n",
 					"print(y_predict[:10])"
 				],
-				"execution_count": 24
+				"execution_count": 22
 			},
 			{
 				"cell_type": "code",
@@ -523,7 +541,7 @@
 					"rmse = sqrt(mean_squared_error(y_actual, y_predict))\r\n",
 					"rmse"
 				],
-				"execution_count": 25
+				"execution_count": 23
 			},
 			{
 				"cell_type": "code",
@@ -557,45 +575,7 @@
 					"print(\"Model Accuracy:\")\r\n",
 					"print(1 - mean_abs_percent_error)"
 				],
-				"execution_count": 26
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					""
-				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					""
-				],
-				"execution_count": null
+				"execution_count": 24
 			}
 		]
 	}
