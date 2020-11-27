@@ -448,6 +448,7 @@
 					"\r\n",
 					"automl_config = AutoMLConfig(task='regression',\r\n",
 					"                             debug_log='automated_ml_errors.log',\r\n",
+					"                             compute_target=cpu_cluster,\r\n",
 					"                             training_data=x_train,\r\n",
 					"                             label_column_name=\"tipAmount\",\r\n",
 					"                             **automl_settings)"
@@ -494,7 +495,7 @@
 					"print(best_run)\r\n",
 					"print(fitted_model)"
 				],
-				"execution_count": null
+				"execution_count": 21
 			},
 			{
 				"cell_type": "code",
@@ -516,7 +517,7 @@
 					"y_predict = fitted_model.predict(x_test)\r\n",
 					"print(y_predict[:10])"
 				],
-				"execution_count": null
+				"execution_count": 22
 			},
 			{
 				"cell_type": "code",
@@ -540,7 +541,7 @@
 					"rmse = sqrt(mean_squared_error(y_actual, y_predict))\r\n",
 					"rmse"
 				],
-				"execution_count": null
+				"execution_count": 23
 			},
 			{
 				"cell_type": "code",
@@ -574,7 +575,7 @@
 					"print(\"Model Accuracy:\")\r\n",
 					"print(1 - mean_abs_percent_error)"
 				],
-				"execution_count": null
+				"execution_count": 24
 			}
 		]
 	}
