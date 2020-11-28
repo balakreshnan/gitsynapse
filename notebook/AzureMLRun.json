@@ -65,6 +65,8 @@
 					"sc = SparkSession.builder.getOrCreate()\n",
 					"token_library = sc._jvm.com.microsoft.azure.synapse.tokenlibrary.TokenLibrary\n",
 					"tenantid = token_library.getConnectionStringAsMap(\"Keyvaultacc\").get(\"tenantid\")\n",
+					"svcpid = token_library.getConnectionStringAsMap(\"Keyvaultacc\").get(\"svcpid\")\n",
+					"scvpsecret = token_library.getConnectionStringAsMap(\"Keyvaultacc\").get(\"scvpsecret\")\n",
 					"#connection_string = token_library.getConnectionString(\"Keyvaultacc\")\n",
 					"print(tenantid)"
 				],
