@@ -55,12 +55,20 @@
 					"import azureml.core\n",
 					"print(azureml.core.VERSION)"
 				],
-				"execution_count": null
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
-				"source": [],
-				"execution_count": null
+				"source": [
+					"from pyspark.sql import SparkSession\n",
+					"\n",
+					"sc = SparkSession.builder.getOrCreate()\n",
+					"token_library = sc._jvm.com.microsoft.azure.synapse.tokenlibrary.TokenLibrary\n",
+					"tenantid = token_library.getConnectionStringAsMap(\"Keyvaultacc\").get(\"tenantid\")\n",
+					"#connection_string = token_library.getConnectionString(\"Keyvaultacc\")\n",
+					"print(tenantid)"
+				],
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
