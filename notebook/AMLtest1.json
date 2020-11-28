@@ -191,7 +191,7 @@
 					"# Use the get_details function to retrieve the detailed output for the run.\n",
 					"run_details = local_run.get_details()"
 				],
-				"execution_count": null
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -199,7 +199,7 @@
 					"# Get best model\n",
 					"best_run, fitted_model = local_run.get_output()"
 				],
-				"execution_count": null
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -209,7 +209,7 @@
 					"y_test = validation_data_pd.pop(\"fareAmount\").to_frame()\n",
 					"y_predict = fitted_model.predict(validation_data_pd)"
 				],
-				"execution_count": null
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -224,7 +224,7 @@
 					"print(\"Root Mean Square Error:\")\n",
 					"print(rmse)"
 				],
-				"execution_count": null
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
@@ -248,7 +248,7 @@
 					"print(\"Model Accuracy:\")\n",
 					"print(1 - mean_abs_percent_error)"
 				],
-				"execution_count": null
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
@@ -271,7 +271,7 @@
 					"plt.title(\"Actual vs Predicted Fare Amont R^2={}\".format(r2))\n",
 					"plt.show()"
 				],
-				"execution_count": null
+				"execution_count": 15
 			},
 			{
 				"cell_type": "code",
@@ -281,7 +281,7 @@
 					"model = best_run.register_model(model_name = 'NYCGreenTaxiModel', model_path = model_path, description = description)\n",
 					"print(model.name, model.version)"
 				],
-				"execution_count": null
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
