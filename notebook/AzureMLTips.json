@@ -111,7 +111,7 @@
 				"source": [
 					"ws.write_config(path='.azureml')"
 				],
-				"execution_count": 4
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -453,7 +453,7 @@
 					"                             label_column_name=\"tipAmount\",\r\n",
 					"                             **automl_settings)"
 				],
-				"execution_count": 19
+				"execution_count": 17
 			},
 			{
 				"cell_type": "code",
@@ -474,7 +474,7 @@
 					"experiment = Experiment(ws, \"taxi-experiment-fromsynapsews-tips\")\n",
 					"local_run = experiment.submit(automl_config, show_output=True)"
 				],
-				"execution_count": 20
+				"execution_count": 18
 			},
 			{
 				"cell_type": "code",
@@ -495,7 +495,7 @@
 					"print(best_run)\r\n",
 					"print(fitted_model)"
 				],
-				"execution_count": 21
+				"execution_count": 19
 			},
 			{
 				"cell_type": "code",
@@ -517,7 +517,7 @@
 					"y_predict = fitted_model.predict(x_test)\r\n",
 					"print(y_predict[:10])"
 				],
-				"execution_count": 22
+				"execution_count": 20
 			},
 			{
 				"cell_type": "code",
@@ -541,7 +541,7 @@
 					"rmse = sqrt(mean_squared_error(y_actual, y_predict))\r\n",
 					"rmse"
 				],
-				"execution_count": 23
+				"execution_count": 21
 			},
 			{
 				"cell_type": "code",
@@ -575,7 +575,7 @@
 					"print(\"Model Accuracy:\")\r\n",
 					"print(1 - mean_abs_percent_error)"
 				],
-				"execution_count": 24
+				"execution_count": 22
 			}
 		]
 	}
