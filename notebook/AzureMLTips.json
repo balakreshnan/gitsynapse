@@ -111,7 +111,7 @@
 				"source": [
 					"ws.write_config(path='.azureml')"
 				],
-				"execution_count": 4
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -148,26 +148,26 @@
 					"collapsed": true
 				},
 				"source": [
-					"from azureml.core import Workspace\r\n",
-					"from azureml.core.compute import ComputeTarget, AmlCompute\r\n",
-					"from azureml.core.compute_target import ComputeTargetException\r\n",
-					"\r\n",
-					"ws = Workspace.from_config() # This automatically looks for a directory .azureml\r\n",
-					"\r\n",
-					"# Choose a name for your CPU cluster\r\n",
-					"cpu_cluster_name = \"cpucluster\"\r\n",
-					"\r\n",
-					"# Verify that the cluster does not exist already\r\n",
-					"try:\r\n",
-					"    cpu_cluster = ComputeTarget(workspace=ws, name=cpu_cluster_name)\r\n",
-					"    print('Found existing cluster, use it.')\r\n",
-					"except ComputeTargetException:\r\n",
-					"    compute_config = AmlCompute.provisioning_configuration(vm_size='STANDARD_D2_V2',\r\n",
-					"                                                           idle_seconds_before_scaledown=2400,\r\n",
-					"                                                           min_nodes=0,\r\n",
-					"                                                           max_nodes=4)\r\n",
-					"    cpu_cluster = ComputeTarget.create(ws, cpu_cluster_name, compute_config)\r\n",
-					"\r\n",
+					"from azureml.core import Workspace\n",
+					"from azureml.core.compute import ComputeTarget, AmlCompute\n",
+					"from azureml.core.compute_target import ComputeTargetException\n",
+					"\n",
+					"ws = Workspace.from_config() # This automatically looks for a directory .azureml\n",
+					"\n",
+					"# Choose a name for your CPU cluster\n",
+					"cpu_cluster_name = \"cpu-cluster1\"\n",
+					"\n",
+					"# Verify that the cluster does not exist already\n",
+					"try:\n",
+					"    cpu_cluster = ComputeTarget(workspace=ws, name=cpu_cluster_name)\n",
+					"    print('Found existing cluster, use it.')\n",
+					"except ComputeTargetException:\n",
+					"    compute_config = AmlCompute.provisioning_configuration(vm_size='STANDARD_D2_V2',\n",
+					"                                                           idle_seconds_before_scaledown=2400,\n",
+					"                                                           min_nodes=0,\n",
+					"                                                           max_nodes=4)\n",
+					"    cpu_cluster = ComputeTarget.create(ws, cpu_cluster_name, compute_config)\n",
+					"\n",
 					"cpu_cluster.wait_for_completion(show_output=True)"
 				],
 				"execution_count": 6
@@ -453,7 +453,7 @@
 					"                             label_column_name=\"tipAmount\",\r\n",
 					"                             **automl_settings)"
 				],
-				"execution_count": 19
+				"execution_count": 17
 			},
 			{
 				"cell_type": "code",
@@ -470,11 +470,11 @@
 					"collapsed": true
 				},
 				"source": [
-					"from azureml.core.experiment import Experiment\r\n",
-					"experiment = Experiment(ws, \"taxi-experiment-fromsynapsews\")\r\n",
+					"from azureml.core.experiment import Experiment\n",
+					"experiment = Experiment(ws, \"taxi-experiment-fromsynapsews-tips\")\n",
 					"local_run = experiment.submit(automl_config, show_output=True)"
 				],
-				"execution_count": 20
+				"execution_count": 18
 			},
 			{
 				"cell_type": "code",
@@ -495,7 +495,7 @@
 					"print(best_run)\r\n",
 					"print(fitted_model)"
 				],
-				"execution_count": 21
+				"execution_count": 19
 			},
 			{
 				"cell_type": "code",
@@ -517,7 +517,7 @@
 					"y_predict = fitted_model.predict(x_test)\r\n",
 					"print(y_predict[:10])"
 				],
-				"execution_count": 22
+				"execution_count": 20
 			},
 			{
 				"cell_type": "code",
@@ -541,7 +541,7 @@
 					"rmse = sqrt(mean_squared_error(y_actual, y_predict))\r\n",
 					"rmse"
 				],
-				"execution_count": 23
+				"execution_count": 21
 			},
 			{
 				"cell_type": "code",
@@ -575,7 +575,7 @@
 					"print(\"Model Accuracy:\")\r\n",
 					"print(1 - mean_abs_percent_error)"
 				],
-				"execution_count": 24
+				"execution_count": 22
 			}
 		]
 	}

@@ -90,7 +90,7 @@
 				"source": [
 					"ws = Workspace.get(name=\"mlopsdev\", subscription_id='c46a9435-c957-4e6c-a0f4-b9a597984773', resource_group='mlops')"
 				],
-				"execution_count": 5
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -112,7 +112,7 @@
 					"      'Subscription id: ' + ws.subscription_id, \r\n",
 					"      'Resource group: ' + ws.resource_group, sep = '\\n')"
 				],
-				"execution_count": 6
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -131,7 +131,7 @@
 				"source": [
 					"ws.write_config(path='.azureml')"
 				],
-				"execution_count": 9
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -171,7 +171,7 @@
 					"\r\n",
 					"cpu_cluster.wait_for_completion(show_output=True)"
 				],
-				"execution_count": 10
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -193,7 +193,7 @@
 					"from datetime import datetime\r\n",
 					"from dateutil.relativedelta import relativedelta"
 				],
-				"execution_count": 11
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -221,7 +221,7 @@
 					"\r\n",
 					"green_taxi_df.head(10)"
 				],
-				"execution_count": 12
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
@@ -250,7 +250,7 @@
 					"green_taxi_df[[\"month_num\", \"day_of_month\",\"day_of_week\", \"hour_of_day\"]] = green_taxi_df[[\"lpepPickupDatetime\"]].apply(build_time_features, axis=1)\r\n",
 					"green_taxi_df.head(10)"
 				],
-				"execution_count": 13
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -276,7 +276,7 @@
 					"\r\n",
 					"green_taxi_df.head(5)"
 				],
-				"execution_count": 14
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -295,7 +295,7 @@
 				"source": [
 					"green_taxi_df.describe()"
 				],
-				"execution_count": 15
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -321,7 +321,7 @@
 					"for col in columns_to_remove_for_training:\r\n",
 					"    final_df.pop(col)"
 				],
-				"execution_count": 16
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -340,7 +340,7 @@
 				"source": [
 					"final_df.describe()"
 				],
-				"execution_count": 17
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
@@ -361,7 +361,7 @@
 					"\r\n",
 					"x_train, x_test = train_test_split(final_df, test_size=0.2, random_state=223)"
 				],
-				"execution_count": 18
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
@@ -390,7 +390,7 @@
 					"    \"n_cross_validations\": 5\r\n",
 					"}"
 				],
-				"execution_count": 19
+				"execution_count": 15
 			},
 			{
 				"cell_type": "code",
@@ -415,7 +415,7 @@
 					"                             label_column_name=\"totalAmount\",\r\n",
 					"                             **automl_settings)"
 				],
-				"execution_count": 20
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
@@ -432,11 +432,11 @@
 					"collapsed": true
 				},
 				"source": [
-					"from azureml.core.experiment import Experiment\r\n",
-					"experiment = Experiment(ws, \"taxi-experiment-fromsynapsews\")\r\n",
+					"from azureml.core.experiment import Experiment\n",
+					"experiment = Experiment(ws, \"taxi-experiment-fromsynapsews-total\")\n",
 					"local_run = experiment.submit(automl_config, show_output=True)"
 				],
-				"execution_count": 21
+				"execution_count": 17
 			},
 			{
 				"cell_type": "code",
@@ -477,7 +477,7 @@
 					"print(best_run)\r\n",
 					"print(fitted_model)"
 				],
-				"execution_count": 23
+				"execution_count": 18
 			},
 			{
 				"cell_type": "code",
@@ -499,7 +499,7 @@
 					"y_predict = fitted_model.predict(x_test)\r\n",
 					"print(y_predict[:10])"
 				],
-				"execution_count": 24
+				"execution_count": 19
 			},
 			{
 				"cell_type": "code",
@@ -523,7 +523,7 @@
 					"rmse = sqrt(mean_squared_error(y_actual, y_predict))\r\n",
 					"rmse"
 				],
-				"execution_count": 25
+				"execution_count": 20
 			},
 			{
 				"cell_type": "code",
@@ -557,7 +557,7 @@
 					"print(\"Model Accuracy:\")\r\n",
 					"print(1 - mean_abs_percent_error)"
 				],
-				"execution_count": 26
+				"execution_count": 21
 			},
 			{
 				"cell_type": "code",
