@@ -470,8 +470,8 @@
 					"collapsed": true
 				},
 				"source": [
-					"from azureml.core.experiment import Experiment\r\n",
-					"experiment = Experiment(ws, \"taxi-experiment-fromsynapsews\")\r\n",
+					"from azureml.core.experiment import Experiment\n",
+					"experiment = Experiment(ws, \"taxi-experiment-fromsynapsews-tips\")\n",
 					"local_run = experiment.submit(automl_config, show_output=True)"
 				],
 				"execution_count": 20
