@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'iiotdata'"
 		},
+		"Keyvaultacc_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://accvault1.vault.azure.net/"
+		},
 		"accinput_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://accbbstore.dfs.core.windows.net"
@@ -308,6 +312,50 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/dataflows/dataflow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Resume')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Resume",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://management.azure.com/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/sqlPools/accsynapsepools?api-version=2019-06-01-preview",
+							"connectVia": {
+								"referenceName": "AutoResolveIntegrationRuntime",
+								"type": "IntegrationRuntimeReference"
+							},
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"properties": {
+									"requestedServiceObjectiveName": "DW100c"
+								}
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://management.azure.com/"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
 			]
 		},
 		{
@@ -1566,6 +1614,19 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Keyvaultacc')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('Keyvaultacc_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/PowerBIWorkspace1')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -2263,7 +2324,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"content": {
-					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/coviddata/covid_19_data.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        FIRSTROW = 2\n    ) AS [result]\n\nCREATE DATABASE coviddb;\n\nCREATE VIEW covidview AS\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/coviddata/covid_19_data.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        DATA_SOURCE = 'SqlOnDemandDemo',\n        FIRSTROW = 2\n    ) WITH (\n      SNo int,\n      ObservationDate varchar(50),\n      ProvinceState varchar(200),\n      CountryRegion varchar(200),\n      LastUpdate varchar(50),\n      Confirmed decimal(18,2),\n      Deaths decimal(18,2),\n      Recovered decimal(18,2)\n) AS [result]\n\nuse coviddb\nGO\n\nuse coviddb\nCREATE MASTER KEY ENCRYPTION BY PASSWORD = 'xyxpojklnbgtyughd234!234$%';\n-- create credentials for containers in our demo storage account\nCREATE DATABASE SCOPED CREDENTIAL sqlondemand\nWITH IDENTITY='SHARED ACCESS SIGNATURE',  \nSECRET = '?sv=2019-12-12&ss=bfqt&srt=sco&sp=rwdlacupx&se=2021-10-08T20:03:10Z&st=2020-10-08T12:03:10Z&spr=https&sig=73FwbAOqT3VI6SQ%2FjX1E0CQDo0y7Sri8%2FdAdgOnGE8w%3D'\nGO\nCREATE EXTERNAL DATA SOURCE SqlOnDemandDemo WITH (\n    LOCATION = 'https://accsynapsestorage.blob.core.windows.net',\n    CREDENTIAL = sqlondemand\n);\n\n\nDROP VIEW IF EXISTS covidview;\nGO\n\nCREATE VIEW covidview AS\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'coviddata/covid_19_data.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        DATA_SOURCE = 'SqlOnDemandDemo',\n        FIRSTROW = 2\n    ) WITH (\n      SNo int,\n      ObservationDate varchar(50),\n      ProvinceState varchar(200),\n      CountryRegion varchar(200),\n      LastUpdate varchar(50),\n      Confirmed decimal(18,2),\n      Deaths decimal(18,2),\n      Recovered decimal(18,2)\n) AS [result]\n\nselect top 200 * from covidview;\n\nselect count(*) from covidview;\n\nSelect CountryRegion, sum(Confirmed) as Confirmed, sum(Deaths) as Deaths, sum(Recovered) as Recovered\n from covidview \ngroup by CountryRegion\n\nSelect datepart(YEAR, ObservationDate) as year, datepart(MONTH, ObservationDate) as month, \nCountryRegion, \nsum(Confirmed) as Confirmed, sum(Deaths) as Deaths, sum(Recovered) as Recovered\n from covidview \ngroup by datepart(YEAR, ObservationDate), datepart(MONTH, ObservationDate),CountryRegion\n\n-- create a container called covidoutput in blob or adls container.\nCREATE EXTERNAL DATA SOURCE mycovidioutput WITH (\n    LOCATION = 'https://accsynapsestorage.blob.core.windows.net/covidoutput', CREDENTIAL = sqlondemand\n);\nGO\n\nCREATE EXTERNAL FILE FORMAT [ParquetFF] WITH (\n    FORMAT_TYPE = PARQUET,\n    DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec'\n);\nGO\n\nDrop external table covidaggrCETAS;\n\nCREATE EXTERNAL TABLE [dbo].[covidaggrCETAS] WITH (\n        LOCATION = 'covidParquet/',\n        DATA_SOURCE = [mycovidioutput],\n        FILE_FORMAT = [ParquetFF]\n) AS\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'coviddata/covid_19_data.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        DATA_SOURCE = 'SqlOnDemandDemo',\n        FIRSTROW = 2\n    ) WITH (\n      SNo int,\n      ObservationDate varchar(50),\n      ProvinceState varchar(200),\n      CountryRegion varchar(200),\n      LastUpdate varchar(50),\n      Confirmed decimal(18,2),\n      Deaths decimal(18,2),\n      Recovered decimal(18,2)\n) AS [result];\n\nCREATE EXTERNAL TABLE [dbo].[covidaggrCETAS] WITH (\n        LOCATION = 'covidAggr/',\n        DATA_SOURCE = [mycovidioutput],\n        FILE_FORMAT = [ParquetFF]\n) AS\nSelect datepart(YEAR, ObservationDate) as year, datepart(MONTH, ObservationDate) as month, \nCountryRegion, \nsum(Confirmed) as Confirmed, sum(Deaths) as Deaths, sum(Recovered) as Recovered\n from covidview \ngroup by datepart(YEAR, ObservationDate), datepart(MONTH, ObservationDate),CountryRegion;\n\nUSE [coviddb];\nGO\n\nSELECT\n    *\nFROM covidaggrCETAS;",
+					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/coviddata/covid_19_data.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        FIRSTROW = 2\n    ) AS [result]\n\nCREATE DATABASE coviddb;\n\nCREATE VIEW covidview AS\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/coviddata/covid_19_data.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        DATA_SOURCE = 'SqlOnDemandDemo',\n        FIRSTROW = 2\n    ) WITH (\n      SNo int,\n      ObservationDate varchar(50),\n      ProvinceState varchar(200),\n      CountryRegion varchar(200),\n      LastUpdate varchar(50),\n      Confirmed decimal(18,2),\n      Deaths decimal(18,2),\n      Recovered decimal(18,2)\n) AS [result]\n\nuse coviddb\nGO\n\nuse coviddb\nCREATE MASTER KEY ENCRYPTION BY PASSWORD = 'xyxpojklnbgtyughd234!234$%';\n-- create credentials for containers in our demo storage account\nCREATE DATABASE SCOPED CREDENTIAL sqlondemand\nWITH IDENTITY='SHARED ACCESS SIGNATURE',  \nSECRET = '?sv=2019-12-12&ss=bfqt&srt=sco&sp=rwdlacupx&se=2021-10-08T20:03:10Z&st=2020-10-08T12:03:10Z&spr=https&sig=73FwbAOqT3VI6SQ%2FjX1E0CQDo0y7Sri8%2FdAdgOnGE8w%3D'\nGO\nCREATE EXTERNAL DATA SOURCE SqlOnDemandDemo WITH (\n    LOCATION = 'https://accsynapsestorage.blob.core.windows.net',\n    CREDENTIAL = sqlondemand\n);\n\n\nDROP VIEW IF EXISTS covidview;\nGO\n\nCREATE VIEW covidview AS\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'coviddata/covid_19_data.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        DATA_SOURCE = 'SqlOnDemandDemo',\n        FIRSTROW = 2\n    ) WITH (\n      SNo int,\n      ObservationDate varchar(50),\n      ProvinceState varchar(200),\n      CountryRegion varchar(200),\n      LastUpdate varchar(50),\n      Confirmed decimal(18,2),\n      Deaths decimal(18,2),\n      Recovered decimal(18,2)\n) AS [result]\n\nselect top 200 * from covidview;\n\nselect count(*) from covidview;\n\nSelect CountryRegion, sum(Confirmed) as Confirmed, sum(Deaths) as Deaths, sum(Recovered) as Recovered\n from covidview \ngroup by CountryRegion\n\nSelect datepart(YEAR, ObservationDate) as year, datepart(MONTH, ObservationDate) as month, \nCountryRegion, \nsum(Confirmed) as Confirmed, sum(Deaths) as Deaths, sum(Recovered) as Recovered\n from covidview \ngroup by datepart(YEAR, ObservationDate), datepart(MONTH, ObservationDate),CountryRegion\n\n-- create a container called covidoutput in blob or adls container.\nCREATE EXTERNAL DATA SOURCE mycovidioutput WITH (\n    LOCATION = 'https://accsynapsestorage.blob.core.windows.net/covidoutput', CREDENTIAL = sqlondemand\n);\nGO\n\nCREATE EXTERNAL FILE FORMAT [ParquetFF] WITH (\n    FORMAT_TYPE = PARQUET,\n    DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec'\n);\nGO\n\nDrop external table covidaggrCETAS;\n\nCREATE EXTERNAL TABLE [dbo].[covidaggrCETAS] WITH (\n        LOCATION = 'covidParquet/',\n        DATA_SOURCE = [mycovidioutput],\n        FILE_FORMAT = [ParquetFF]\n) AS\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'coviddata/covid_19_data.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        DATA_SOURCE = 'SqlOnDemandDemo',\n        FIRSTROW = 2\n    ) WITH (\n      SNo int,\n      ObservationDate varchar(50),\n      ProvinceState varchar(200),\n      CountryRegion varchar(200),\n      LastUpdate varchar(50),\n      Confirmed decimal(18,2),\n      Deaths decimal(18,2),\n      Recovered decimal(18,2)\n) AS [result];\n\nCREATE EXTERNAL TABLE [dbo].[covidaggrCETAS] WITH (\n        LOCATION = 'covidAggr/',\n        DATA_SOURCE = [mycovidioutput],\n        FILE_FORMAT = [ParquetFF]\n) AS\nSelect datepart(YEAR, ObservationDate) as year, datepart(MONTH, ObservationDate) as month, \nCountryRegion, \nsum(Confirmed) as Confirmed, sum(Deaths) as Deaths, sum(Recovered) as Recovered\n from covidview \ngroup by datepart(YEAR, ObservationDate), datepart(MONTH, ObservationDate),CountryRegion;\n\nUSE [coviddb];\nGO\n\nSELECT\n    *\nFROM covidaggrCETAS;\n\nSelect \nYear, Month, CountryRegion, Confirmed, Deaths, Recovered \nfrom covidaggrCETAS;\n",
 					"metadata": {
 						"language": "sql"
 					},
@@ -2934,6 +2995,429 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/AMLtest1')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "accsparkpools",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "112g",
+					"driverCores": 16,
+					"executorMemory": "112g",
+					"executorCores": 16,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+						"name": "accsparkpools",
+						"type": "Spark",
+						"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 16,
+						"memory": 112
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"blob_account_name = \"azureopendatastorage\"\n",
+							"blob_container_name = \"nyctlc\"\n",
+							"blob_relative_path = \"yellow\"\n",
+							"blob_sas_token = r\"\""
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Allow Spark to read from Blob remotely\n",
+							"wasbs_path = 'wasbs://%s@%s.blob.core.windows.net/%s' % (blob_container_name, blob_account_name, blob_relative_path)\n",
+							"spark.conf.set('fs.azure.sas.%s.%s.blob.core.windows.net' % (blob_container_name, blob_account_name),blob_sas_token)\n",
+							"\n",
+							"# Spark read parquet, note that it won't load any data yet by now\n",
+							"df = spark.read.parquet(wasbs_path)"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Create an ingestion filter\n",
+							"start_date = '2015-01-01 00:00:00'\n",
+							"end_date = '2015-12-31 00:00:00'\n",
+							"\n",
+							"filtered_df = df.filter('tpepPickupDateTime > \"' + start_date + '\" and tpepPickupDateTime < \"' + end_date + '\"')\n",
+							"\n",
+							"filtered_df.describe().show()"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from datetime import datetime\n",
+							"from pyspark.sql.functions import *\n",
+							"\n",
+							"# To make development easier, faster and less expensive down sample for now\n",
+							"sampled_taxi_df = filtered_df.sample(True, 0.001, seed=1234)\n",
+							"\n",
+							"taxi_df = sampled_taxi_df.select('vendorID', 'passengerCount', 'tripDistance',  'startLon', 'startLat', 'endLon' \\\n",
+							"                                , 'endLat', 'paymentType', 'fareAmount', 'tipAmount'\\\n",
+							"                                , column('puMonth').alias('month_num') \\\n",
+							"                                , date_format('tpepPickupDateTime', 'hh').alias('hour_of_day')\\\n",
+							"                                , date_format('tpepPickupDateTime', 'EEEE').alias('day_of_week')\\\n",
+							"                                , dayofmonth(col('tpepPickupDateTime')).alias('day_of_month')\n",
+							"                                ,(unix_timestamp(col('tpepDropoffDateTime')) - unix_timestamp(col('tpepPickupDateTime'))).alias('trip_time'))\\\n",
+							"                        .filter((sampled_taxi_df.passengerCount > 0) & (sampled_taxi_df.passengerCount < 8)\\\n",
+							"                                & (sampled_taxi_df.tipAmount >= 0)\\\n",
+							"                                & (sampled_taxi_df.fareAmount >= 1) & (sampled_taxi_df.fareAmount <= 250)\\\n",
+							"                                & (sampled_taxi_df.tipAmount < sampled_taxi_df.fareAmount)\\\n",
+							"                                & (sampled_taxi_df.tripDistance > 0) & (sampled_taxi_df.tripDistance <= 200)\\\n",
+							"                                & (sampled_taxi_df.rateCodeId <= 5)\\\n",
+							"                                & (sampled_taxi_df.paymentType.isin({\"1\", \"2\"})))\n",
+							"taxi_df.show(10)"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Random split dataset using spark, convert Spark to Pandas\n",
+							"training_data, validation_data = taxi_df.randomSplit([0.8,0.2], 223)"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from azureml.core import Workspace\n",
+							"\n",
+							"# Enter your workspace subscription, resource group, name, and region.\n",
+							"subscription_id = \"c46a9435-c957-4e6c-a0f4-b9a597984773\" #you should be owner or contributor\n",
+							"resource_group = \"mlops\" #you should be owner or contributor\n",
+							"workspace_name = \"mlopsdev\" #your workspace name\n",
+							"#workspace_region = \"<enter workspace region>\" #your region\n",
+							"\n",
+							"ws = Workspace(workspace_name = workspace_name,\n",
+							"               subscription_id = subscription_id,\n",
+							"               resource_group = resource_group)"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"import pandas \n",
+							"from azureml.core import Dataset\n",
+							"\n",
+							"# Get the AML Default Datastore\n",
+							"datastore = ws.get_default_datastore()\n",
+							"training_pd = training_data.toPandas().to_csv('training_pd.csv', index=False)\n",
+							"\n",
+							"# Convert into AML Tabular Dataset\n",
+							"datastore.upload_files(files = ['training_pd.csv'],\n",
+							"                       target_path = 'train-dataset/tabular/',\n",
+							"                       overwrite = True,\n",
+							"                       show_progress = True)\n",
+							"dataset_training = Dataset.Tabular.from_delimited_files(path = [(datastore, 'train-dataset/tabular/training_pd.csv')])"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"import logging\n",
+							"\n",
+							"automl_settings = {\n",
+							"    \"iteration_timeout_minutes\": 10,\n",
+							"    \"experiment_timeout_minutes\": 30,\n",
+							"    \"enable_early_stopping\": True,\n",
+							"    \"primary_metric\": 'r2_score',\n",
+							"    \"featurization\": 'auto',\n",
+							"    \"verbosity\": logging.INFO,\n",
+							"    \"n_cross_validations\": 2}"
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from azureml.train.automl import AutoMLConfig\n",
+							"\n",
+							"automl_config = AutoMLConfig(task='regression',\n",
+							"                             debug_log='automated_ml_errors.log',\n",
+							"                             training_data = dataset_training,\n",
+							"                             spark_context = sc,\n",
+							"                             model_explainability = False, \n",
+							"                             label_column_name =\"fareAmount\",**automl_settings)"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from azureml.core.experiment import Experiment\n",
+							"\n",
+							"# Start an experiment in Azure Machine Learning\n",
+							"experiment = Experiment(ws, \"aml-synapse-regression\")\n",
+							"tags = {\"Synapse\": \"regression\"}\n",
+							"local_run = experiment.submit(automl_config, show_output=True, tags = tags)\n",
+							"\n",
+							"# Use the get_details function to retrieve the detailed output for the run.\n",
+							"run_details = local_run.get_details()"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Get best model\n",
+							"best_run, fitted_model = local_run.get_output()"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Test best model accuracy\n",
+							"validation_data_pd = validation_data.toPandas()\n",
+							"y_test = validation_data_pd.pop(\"fareAmount\").to_frame()\n",
+							"y_predict = fitted_model.predict(validation_data_pd)"
+						],
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from sklearn.metrics import mean_squared_error\n",
+							"from math import sqrt\n",
+							"\n",
+							"# Calculate Root Mean Square Error\n",
+							"y_actual = y_test.values.flatten().tolist()\n",
+							"rmse = sqrt(mean_squared_error(y_actual, y_predict))\n",
+							"\n",
+							"print(\"Root Mean Square Error:\")\n",
+							"print(rmse)"
+						],
+						"outputs": [],
+						"execution_count": 13
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Calculate MAPE and Model Accuracy \n",
+							"sum_actuals = sum_errors = 0\n",
+							"\n",
+							"for actual_val, predict_val in zip(y_actual, y_predict):\n",
+							"    abs_error = actual_val - predict_val\n",
+							"    if abs_error < 0:\n",
+							"        abs_error = abs_error * -1\n",
+							"\n",
+							"    sum_errors = sum_errors + abs_error\n",
+							"    sum_actuals = sum_actuals + actual_val\n",
+							"\n",
+							"mean_abs_percent_error = sum_errors / sum_actuals\n",
+							"\n",
+							"print(\"Model MAPE:\")\n",
+							"print(mean_abs_percent_error)\n",
+							"print()\n",
+							"print(\"Model Accuracy:\")\n",
+							"print(1 - mean_abs_percent_error)"
+						],
+						"outputs": [],
+						"execution_count": 14
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"import matplotlib.pyplot as plt\n",
+							"import numpy as np\n",
+							"from sklearn.metrics import mean_squared_error, r2_score\n",
+							"\n",
+							"# Calculate the R2 score using the predicted and actual fare prices\n",
+							"y_test_actual = y_test[\"fareAmount\"]\n",
+							"r2 = r2_score(y_test_actual, y_predict)\n",
+							"\n",
+							"# Plot the Actual vs Predicted Fare Amount Values\n",
+							"plt.style.use('ggplot')\n",
+							"plt.figure(figsize=(10, 7))\n",
+							"plt.scatter(y_test_actual,y_predict)\n",
+							"plt.plot([np.min(y_test_actual), np.max(y_test_actual)], [np.min(y_test_actual), np.max(y_test_actual)], color='lightblue')\n",
+							"plt.xlabel(\"Actual Fare Amount\")\n",
+							"plt.ylabel(\"Predicted Fare Amount\")\n",
+							"plt.title(\"Actual vs Predicted Fare Amont R^2={}\".format(r2))\n",
+							"plt.show()"
+						],
+						"outputs": [],
+						"execution_count": 15
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"description = 'My AutoML Model'\n",
+							"model_path='outputs/model.pkl'\n",
+							"model = best_run.register_model(model_name = 'NYCGreenTaxiModel', model_path = model_path, description = description)\n",
+							"print(model.name, model.version)"
+						],
+						"outputs": [],
+						"execution_count": 16
+					},
+					{
+						"cell_type": "code",
+						"source": [],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"source": [],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureMLRun')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "accsparkpools",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "112g",
+					"driverCores": 16,
+					"executorMemory": "112g",
+					"executorCores": 16,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+						"name": "accsparkpools",
+						"type": "Spark",
+						"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 16,
+						"memory": 112
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"from azureml.core import Workspace"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"import azureml.core\n",
+							"print(azureml.core.VERSION)"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from pyspark.sql import SparkSession\n",
+							"\n",
+							"sc = SparkSession.builder.getOrCreate()\n",
+							"token_library = sc._jvm.com.microsoft.azure.synapse.tokenlibrary.TokenLibrary\n",
+							"tenantid = token_library.getConnectionStringAsMap(\"Keyvaultacc\").get(\"tenantid\")\n",
+							"svcpid = token_library.getConnectionStringAsMap(\"Keyvaultacc\").get(\"svcpid\")\n",
+							"scvpsecret = token_library.getConnectionStringAsMap(\"Keyvaultacc\").get(\"scvpsecret\")\n",
+							"#connection_string = token_library.getConnectionString(\"Keyvaultacc\")\n",
+							"print(tenantid)"
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from azureml.core.authentication import ServicePrincipalAuthentication\n",
+							"\n",
+							"sp = ServicePrincipalAuthentication(tenant_id=\"your-tenant-id\", # tenantID\n",
+							"                                    service_principal_id=\"your-client-id\", # clientId\n",
+							"                                    service_principal_password=\"your-client-secret\") # clientSecret"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from azureml.core import Workspace\n",
+							"\n",
+							"ws = Workspace.get(name=\"ml-example\",\n",
+							"                   auth=sp,\n",
+							"                   subscription_id=\"your-sub-id\")\n",
+							"ws.get_details()"
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/AzureMLTips')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -3050,7 +3534,7 @@
 							"ws.write_config(path='.azureml')"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -3088,26 +3572,26 @@
 							"collapsed": true
 						},
 						"source": [
-							"from azureml.core import Workspace\r\n",
-							"from azureml.core.compute import ComputeTarget, AmlCompute\r\n",
-							"from azureml.core.compute_target import ComputeTargetException\r\n",
-							"\r\n",
-							"ws = Workspace.from_config() # This automatically looks for a directory .azureml\r\n",
-							"\r\n",
-							"# Choose a name for your CPU cluster\r\n",
-							"cpu_cluster_name = \"cpucluster\"\r\n",
-							"\r\n",
-							"# Verify that the cluster does not exist already\r\n",
-							"try:\r\n",
-							"    cpu_cluster = ComputeTarget(workspace=ws, name=cpu_cluster_name)\r\n",
-							"    print('Found existing cluster, use it.')\r\n",
-							"except ComputeTargetException:\r\n",
-							"    compute_config = AmlCompute.provisioning_configuration(vm_size='STANDARD_D2_V2',\r\n",
-							"                                                           idle_seconds_before_scaledown=2400,\r\n",
-							"                                                           min_nodes=0,\r\n",
-							"                                                           max_nodes=4)\r\n",
-							"    cpu_cluster = ComputeTarget.create(ws, cpu_cluster_name, compute_config)\r\n",
-							"\r\n",
+							"from azureml.core import Workspace\n",
+							"from azureml.core.compute import ComputeTarget, AmlCompute\n",
+							"from azureml.core.compute_target import ComputeTargetException\n",
+							"\n",
+							"ws = Workspace.from_config() # This automatically looks for a directory .azureml\n",
+							"\n",
+							"# Choose a name for your CPU cluster\n",
+							"cpu_cluster_name = \"cpu-cluster1\"\n",
+							"\n",
+							"# Verify that the cluster does not exist already\n",
+							"try:\n",
+							"    cpu_cluster = ComputeTarget(workspace=ws, name=cpu_cluster_name)\n",
+							"    print('Found existing cluster, use it.')\n",
+							"except ComputeTargetException:\n",
+							"    compute_config = AmlCompute.provisioning_configuration(vm_size='STANDARD_D2_V2',\n",
+							"                                                           idle_seconds_before_scaledown=2400,\n",
+							"                                                           min_nodes=0,\n",
+							"                                                           max_nodes=4)\n",
+							"    cpu_cluster = ComputeTarget.create(ws, cpu_cluster_name, compute_config)\n",
+							"\n",
 							"cpu_cluster.wait_for_completion(show_output=True)"
 						],
 						"outputs": [],
@@ -3213,7 +3697,7 @@
 							"green_taxi_df.head(10)"
 						],
 						"outputs": [],
-						"execution_count": 11
+						"execution_count": 9
 					},
 					{
 						"cell_type": "code",
@@ -3240,7 +3724,7 @@
 							"green_taxi_df.head(5)"
 						],
 						"outputs": [],
-						"execution_count": 12
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -3260,7 +3744,7 @@
 							"green_taxi_df.columns"
 						],
 						"outputs": [],
-						"execution_count": 13
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
@@ -3280,7 +3764,7 @@
 							"green_taxi_df.describe()"
 						],
 						"outputs": [],
-						"execution_count": 14
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
@@ -3307,7 +3791,7 @@
 							"    final_df.pop(col)"
 						],
 						"outputs": [],
-						"execution_count": 15
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -3327,7 +3811,7 @@
 							"final_df.describe()"
 						],
 						"outputs": [],
-						"execution_count": 16
+						"execution_count": 14
 					},
 					{
 						"cell_type": "code",
@@ -3349,7 +3833,7 @@
 							"x_train, x_test = train_test_split(final_df, test_size=0.2, random_state=223)"
 						],
 						"outputs": [],
-						"execution_count": 17
+						"execution_count": 15
 					},
 					{
 						"cell_type": "code",
@@ -3379,7 +3863,7 @@
 							"}"
 						],
 						"outputs": [],
-						"execution_count": 18
+						"execution_count": 16
 					},
 					{
 						"cell_type": "code",
@@ -3400,13 +3884,13 @@
 							"\r\n",
 							"automl_config = AutoMLConfig(task='regression',\r\n",
 							"                             debug_log='automated_ml_errors.log',\r\n",
-							"                             compute_target=cpu_cluster,\r\n",
+							"                             #compute_target=cpu_cluster,\r\n",
 							"                             training_data=x_train,\r\n",
 							"                             label_column_name=\"tipAmount\",\r\n",
 							"                             **automl_settings)"
 						],
 						"outputs": [],
-						"execution_count": 19
+						"execution_count": 17
 					},
 					{
 						"cell_type": "code",
@@ -3423,12 +3907,12 @@
 							"collapsed": true
 						},
 						"source": [
-							"from azureml.core.experiment import Experiment\r\n",
-							"experiment = Experiment(ws, \"taxi-experiment-fromsynapsews\")\r\n",
+							"from azureml.core.experiment import Experiment\n",
+							"experiment = Experiment(ws, \"taxi-experiment-fromsynapsews-tips\")\n",
 							"local_run = experiment.submit(automl_config, show_output=True)"
 						],
 						"outputs": [],
-						"execution_count": 20
+						"execution_count": 18
 					},
 					{
 						"cell_type": "code",
@@ -3450,7 +3934,7 @@
 							"print(fitted_model)"
 						],
 						"outputs": [],
-						"execution_count": 21
+						"execution_count": 19
 					},
 					{
 						"cell_type": "code",
@@ -3473,7 +3957,7 @@
 							"print(y_predict[:10])"
 						],
 						"outputs": [],
-						"execution_count": 22
+						"execution_count": 20
 					},
 					{
 						"cell_type": "code",
@@ -3498,7 +3982,7 @@
 							"rmse"
 						],
 						"outputs": [],
-						"execution_count": 23
+						"execution_count": 21
 					},
 					{
 						"cell_type": "code",
@@ -3533,7 +4017,7 @@
 							"print(1 - mean_abs_percent_error)"
 						],
 						"outputs": [],
-						"execution_count": 24
+						"execution_count": 22
 					}
 				]
 			},
@@ -3634,7 +4118,7 @@
 							"ws = Workspace.get(name=\"mlopsdev\", subscription_id='c46a9435-c957-4e6c-a0f4-b9a597984773', resource_group='mlops')"
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
@@ -3657,7 +4141,7 @@
 							"      'Resource group: ' + ws.resource_group, sep = '\\n')"
 						],
 						"outputs": [],
-						"execution_count": 6
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
@@ -3677,7 +4161,7 @@
 							"ws.write_config(path='.azureml')"
 						],
 						"outputs": [],
-						"execution_count": 9
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
@@ -3718,7 +4202,7 @@
 							"cpu_cluster.wait_for_completion(show_output=True)"
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 6
 					},
 					{
 						"cell_type": "code",
@@ -3741,7 +4225,7 @@
 							"from dateutil.relativedelta import relativedelta"
 						],
 						"outputs": [],
-						"execution_count": 11
+						"execution_count": 7
 					},
 					{
 						"cell_type": "code",
@@ -3770,7 +4254,7 @@
 							"green_taxi_df.head(10)"
 						],
 						"outputs": [],
-						"execution_count": 12
+						"execution_count": 8
 					},
 					{
 						"cell_type": "code",
@@ -3800,7 +4284,7 @@
 							"green_taxi_df.head(10)"
 						],
 						"outputs": [],
-						"execution_count": 13
+						"execution_count": 9
 					},
 					{
 						"cell_type": "code",
@@ -3827,7 +4311,7 @@
 							"green_taxi_df.head(5)"
 						],
 						"outputs": [],
-						"execution_count": 14
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -3847,7 +4331,7 @@
 							"green_taxi_df.describe()"
 						],
 						"outputs": [],
-						"execution_count": 15
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
@@ -3874,7 +4358,7 @@
 							"    final_df.pop(col)"
 						],
 						"outputs": [],
-						"execution_count": 16
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
@@ -3894,7 +4378,7 @@
 							"final_df.describe()"
 						],
 						"outputs": [],
-						"execution_count": 17
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -3916,7 +4400,7 @@
 							"x_train, x_test = train_test_split(final_df, test_size=0.2, random_state=223)"
 						],
 						"outputs": [],
-						"execution_count": 18
+						"execution_count": 14
 					},
 					{
 						"cell_type": "code",
@@ -3946,7 +4430,7 @@
 							"}"
 						],
 						"outputs": [],
-						"execution_count": 19
+						"execution_count": 15
 					},
 					{
 						"cell_type": "code",
@@ -3972,7 +4456,7 @@
 							"                             **automl_settings)"
 						],
 						"outputs": [],
-						"execution_count": 20
+						"execution_count": 16
 					},
 					{
 						"cell_type": "code",
@@ -3989,12 +4473,12 @@
 							"collapsed": true
 						},
 						"source": [
-							"from azureml.core.experiment import Experiment\r\n",
-							"experiment = Experiment(ws, \"taxi-experiment-fromsynapsews\")\r\n",
+							"from azureml.core.experiment import Experiment\n",
+							"experiment = Experiment(ws, \"taxi-experiment-fromsynapsews-total\")\n",
 							"local_run = experiment.submit(automl_config, show_output=True)"
 						],
 						"outputs": [],
-						"execution_count": 21
+						"execution_count": 17
 					},
 					{
 						"cell_type": "code",
@@ -4037,7 +4521,7 @@
 							"print(fitted_model)"
 						],
 						"outputs": [],
-						"execution_count": 23
+						"execution_count": 18
 					},
 					{
 						"cell_type": "code",
@@ -4060,7 +4544,7 @@
 							"print(y_predict[:10])"
 						],
 						"outputs": [],
-						"execution_count": 24
+						"execution_count": 19
 					},
 					{
 						"cell_type": "code",
@@ -4085,7 +4569,7 @@
 							"rmse"
 						],
 						"outputs": [],
-						"execution_count": 25
+						"execution_count": 20
 					},
 					{
 						"cell_type": "code",
@@ -4120,7 +4604,7 @@
 							"print(1 - mean_abs_percent_error)"
 						],
 						"outputs": [],
-						"execution_count": 26
+						"execution_count": 21
 					},
 					{
 						"cell_type": "code",
@@ -4141,6 +4625,365 @@
 						],
 						"outputs": [],
 						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureSparkMLLib')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "accsparkpools",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "112g",
+					"driverCores": 16,
+					"executorMemory": "112g",
+					"executorCores": 16,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+						"name": "accsparkpools",
+						"type": "Spark",
+						"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 16,
+						"memory": 112
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"import matplotlib.pyplot as plt\r\n",
+							"from datetime import datetime\r\n",
+							"from dateutil import parser\r\n",
+							"from pyspark.sql.functions import unix_timestamp, date_format, col, when\r\n",
+							"from pyspark.ml import Pipeline\r\n",
+							"from pyspark.ml import PipelineModel\r\n",
+							"from pyspark.ml.feature import RFormula\r\n",
+							"from pyspark.ml.feature import OneHotEncoder, StringIndexer, VectorIndexer\r\n",
+							"from pyspark.ml.classification import LogisticRegression\r\n",
+							"from pyspark.mllib.evaluation import BinaryClassificationMetrics\r\n",
+							"from pyspark.ml.evaluation import BinaryClassificationEvaluator"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"from azureml.opendatasets import NycTlcYellow\r\n",
+							"\r\n",
+							"end_date = parser.parse('2018-06-06')\r\n",
+							"start_date = parser.parse('2018-05-01')\r\n",
+							"nyc_tlc = NycTlcYellow(start_date=start_date, end_date=end_date)\r\n",
+							"filtered_df = nyc_tlc.to_spark_dataframe()"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"# To make development easier, faster and less expensive down sample for now\r\n",
+							"sampled_taxi_df = filtered_df.sample(True, 0.001, seed=1234)"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"#sampled_taxi_df.show(5)\r\n",
+							"display(sampled_taxi_df)"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"sampled_taxi_df.createOrReplaceTempView(\"nytaxi\")"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"taxi_df = sampled_taxi_df.select('totalAmount', 'fareAmount', 'tipAmount', 'paymentType', 'rateCodeId', 'passengerCount'\\\r\n",
+							"                                , 'tripDistance', 'tpepPickupDateTime', 'tpepDropoffDateTime'\\\r\n",
+							"                                , date_format('tpepPickupDateTime', 'hh').alias('pickupHour')\\\r\n",
+							"                                , date_format('tpepPickupDateTime', 'EEEE').alias('weekdayString')\\\r\n",
+							"                                , (unix_timestamp(col('tpepDropoffDateTime')) - unix_timestamp(col('tpepPickupDateTime'))).alias('tripTimeSecs')\\\r\n",
+							"                                , (when(col('tipAmount') > 0, 1).otherwise(0)).alias('tipped')\r\n",
+							"                                )\\\r\n",
+							"                        .filter((sampled_taxi_df.passengerCount > 0) & (sampled_taxi_df.passengerCount < 8)\\\r\n",
+							"                                & (sampled_taxi_df.tipAmount >= 0) & (sampled_taxi_df.tipAmount <= 25)\\\r\n",
+							"                                & (sampled_taxi_df.fareAmount >= 1) & (sampled_taxi_df.fareAmount <= 250)\\\r\n",
+							"                                & (sampled_taxi_df.tipAmount < sampled_taxi_df.fareAmount)\\\r\n",
+							"                                & (sampled_taxi_df.tripDistance > 0) & (sampled_taxi_df.tripDistance <= 100)\\\r\n",
+							"                                & (sampled_taxi_df.rateCodeId <= 5)\r\n",
+							"                                & (sampled_taxi_df.paymentType.isin({\"1\", \"2\"}))\r\n",
+							"                                )"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"taxi_featurised_df = taxi_df.select('totalAmount', 'fareAmount', 'tipAmount', 'paymentType', 'passengerCount'\\\r\n",
+							"                                                , 'tripDistance', 'weekdayString', 'pickupHour','tripTimeSecs','tipped'\\\r\n",
+							"                                                , when((taxi_df.pickupHour <= 6) | (taxi_df.pickupHour >= 20),\"Night\")\\\r\n",
+							"                                                .when((taxi_df.pickupHour >= 7) & (taxi_df.pickupHour <= 10), \"AMRush\")\\\r\n",
+							"                                                .when((taxi_df.pickupHour >= 11) & (taxi_df.pickupHour <= 15), \"Afternoon\")\\\r\n",
+							"                                                .when((taxi_df.pickupHour >= 16) & (taxi_df.pickupHour <= 19), \"PMRush\")\\\r\n",
+							"                                                .otherwise(0).alias('trafficTimeBins')\r\n",
+							"                                              )\\\r\n",
+							"                                       .filter((taxi_df.tripTimeSecs >= 30) & (taxi_df.tripTimeSecs <= 7200))"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"# Since the sample uses an algorithm that only works with numeric features, convert them so they can be consumed\r\n",
+							"sI1 = StringIndexer(inputCol=\"trafficTimeBins\", outputCol=\"trafficTimeBinsIndex\")\r\n",
+							"en1 = OneHotEncoder(dropLast=False, inputCol=\"trafficTimeBinsIndex\", outputCol=\"trafficTimeBinsVec\")\r\n",
+							"sI2 = StringIndexer(inputCol=\"weekdayString\", outputCol=\"weekdayIndex\")\r\n",
+							"en2 = OneHotEncoder(dropLast=False, inputCol=\"weekdayIndex\", outputCol=\"weekdayVec\")\r\n",
+							"\r\n",
+							"# Create a new dataframe that has had the encodings applied\r\n",
+							"encoded_final_df = Pipeline(stages=[sI1, en1, sI2, en2]).fit(taxi_featurised_df).transform(taxi_featurised_df)"
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"#Decide on the split between training and testing data from the dataframe\r\n",
+							"trainingFraction = 0.7\r\n",
+							"testingFraction = (1-trainingFraction)\r\n",
+							"seed = 1234\r\n",
+							"\r\n",
+							"# Split the dataframe into test and training dataframes\r\n",
+							"train_data_df, test_data_df = encoded_final_df.randomSplit([trainingFraction, testingFraction], seed=seed)"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"## Create a new LR object for the model\r\n",
+							"logReg = LogisticRegression(maxIter=10, regParam=0.3, labelCol = 'tipped')\r\n",
+							"\r\n",
+							"## The formula for the model\r\n",
+							"classFormula = RFormula(formula=\"tipped ~ pickupHour + weekdayVec + passengerCount + tripTimeSecs + tripDistance + fareAmount + paymentType+ trafficTimeBinsVec\")\r\n",
+							"\r\n",
+							"## Undertake training and create an LR model\r\n",
+							"lrModel = Pipeline(stages=[classFormula, logReg]).fit(train_data_df)\r\n",
+							"\r\n",
+							"## Saving the model is optional but its another form of inter session cache\r\n",
+							"datestamp = datetime.now().strftime('%m-%d-%Y-%s')\r\n",
+							"fileName = \"lrModel_\" + datestamp\r\n",
+							"logRegDirfilename = fileName\r\n",
+							"lrModel.save(logRegDirfilename)\r\n",
+							"\r\n",
+							"## Predict tip 1/0 (yes/no) on the test dataset, evaluation using AUROC\r\n",
+							"predictions = lrModel.transform(test_data_df)\r\n",
+							"predictionAndLabels = predictions.select(\"label\",\"prediction\").rdd\r\n",
+							"metrics = BinaryClassificationMetrics(predictionAndLabels)\r\n",
+							"print(\"Area under ROC = %s\" % metrics.areaUnderROC)"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"## Plot the ROC curve, no need for pandas as this uses the modelSummary object\r\n",
+							"modelSummary = lrModel.stages[-1].summary\r\n",
+							"\r\n",
+							"plt.plot([0, 1], [0, 1], 'r--')\r\n",
+							"plt.plot(modelSummary.roc.select('FPR').collect(),\r\n",
+							"         modelSummary.roc.select('TPR').collect())\r\n",
+							"plt.xlabel('False Positive Rate')\r\n",
+							"plt.ylabel('True Positive Rate')\r\n",
+							"plt.show()"
+						],
+						"outputs": [],
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
@@ -5285,6 +6128,251 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/SparkMLLib')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "accsparkpools",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "112g",
+					"driverCores": 16,
+					"executorMemory": "112g",
+					"executorCores": 16,
+					"numExecutors": 3,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "3",
+						"spark.dynamicAllocation.maxExecutors": "3"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+						"name": "accsparkpools",
+						"type": "Spark",
+						"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 16,
+						"memory": 112
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"import matplotlib.pyplot as plt\n",
+							"from datetime import datetime\n",
+							"from dateutil import parser\n",
+							"from pyspark.sql.functions import unix_timestamp, date_format, col, when\n",
+							"from pyspark.ml import Pipeline\n",
+							"from pyspark.ml import PipelineModel\n",
+							"from pyspark.ml.feature import RFormula\n",
+							"from pyspark.ml.feature import OneHotEncoder, StringIndexer, VectorIndexer\n",
+							"from pyspark.ml.classification import LogisticRegression\n",
+							"from pyspark.mllib.evaluation import BinaryClassificationMetrics\n",
+							"from pyspark.ml.evaluation import BinaryClassificationEvaluator"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from azureml.opendatasets import NycTlcYellow\n",
+							"\n",
+							"end_date = parser.parse('2018-06-06')\n",
+							"start_date = parser.parse('2018-05-01')\n",
+							"nyc_tlc = NycTlcYellow(start_date=start_date, end_date=end_date)\n",
+							"filtered_df = nyc_tlc.to_spark_dataframe()"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# To make development easier, faster and less expensive down sample for now\n",
+							"sampled_taxi_df = filtered_df.sample(True, 0.001, seed=1234)"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"diagram": {
+								"activateDiagramType": 1,
+								"chartConfig": {
+									"category": "bar",
+									"keys": [
+										"vendorID"
+									],
+									"values": [
+										"tpepPickupDateTime"
+									],
+									"yLabel": "tpepPickupDateTime",
+									"xLabel": "vendorID",
+									"aggregation": "SUM",
+									"aggByBackend": false
+								},
+								"aggData": "{\"tpepPickupDateTime\":{\"1\":0,\"2\":0}}",
+								"isSummary": false,
+								"previewData": {
+									"filter": null
+								},
+								"isSql": false
+							}
+						},
+						"source": [
+							"#sampled_taxi_df.show(5)\n",
+							"display(sampled_taxi_df)"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"sampled_taxi_df.createOrReplaceTempView(\"nytaxi\")"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"taxi_df = sampled_taxi_df.select('totalAmount', 'fareAmount', 'tipAmount', 'paymentType', 'rateCodeId', 'passengerCount'\\\n",
+							"                                , 'tripDistance', 'tpepPickupDateTime', 'tpepDropoffDateTime'\\\n",
+							"                                , date_format('tpepPickupDateTime', 'hh').alias('pickupHour')\\\n",
+							"                                , date_format('tpepPickupDateTime', 'EEEE').alias('weekdayString')\\\n",
+							"                                , (unix_timestamp(col('tpepDropoffDateTime')) - unix_timestamp(col('tpepPickupDateTime'))).alias('tripTimeSecs')\\\n",
+							"                                , (when(col('tipAmount') > 0, 1).otherwise(0)).alias('tipped')\n",
+							"                                )\\\n",
+							"                        .filter((sampled_taxi_df.passengerCount > 0) & (sampled_taxi_df.passengerCount < 8)\\\n",
+							"                                & (sampled_taxi_df.tipAmount >= 0) & (sampled_taxi_df.tipAmount <= 25)\\\n",
+							"                                & (sampled_taxi_df.fareAmount >= 1) & (sampled_taxi_df.fareAmount <= 250)\\\n",
+							"                                & (sampled_taxi_df.tipAmount < sampled_taxi_df.fareAmount)\\\n",
+							"                                & (sampled_taxi_df.tripDistance > 0) & (sampled_taxi_df.tripDistance <= 100)\\\n",
+							"                                & (sampled_taxi_df.rateCodeId <= 5)\n",
+							"                                & (sampled_taxi_df.paymentType.isin({\"1\", \"2\"}))\n",
+							"                                )"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"taxi_featurised_df = taxi_df.select('totalAmount', 'fareAmount', 'tipAmount', 'paymentType', 'passengerCount'\\\n",
+							"                                                , 'tripDistance', 'weekdayString', 'pickupHour','tripTimeSecs','tipped'\\\n",
+							"                                                , when((taxi_df.pickupHour <= 6) | (taxi_df.pickupHour >= 20),\"Night\")\\\n",
+							"                                                .when((taxi_df.pickupHour >= 7) & (taxi_df.pickupHour <= 10), \"AMRush\")\\\n",
+							"                                                .when((taxi_df.pickupHour >= 11) & (taxi_df.pickupHour <= 15), \"Afternoon\")\\\n",
+							"                                                .when((taxi_df.pickupHour >= 16) & (taxi_df.pickupHour <= 19), \"PMRush\")\\\n",
+							"                                                .otherwise(0).alias('trafficTimeBins')\n",
+							"                                              )\\\n",
+							"                                       .filter((taxi_df.tripTimeSecs >= 30) & (taxi_df.tripTimeSecs <= 7200))"
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Since the sample uses an algorithm that only works with numeric features, convert them so they can be consumed\n",
+							"sI1 = StringIndexer(inputCol=\"trafficTimeBins\", outputCol=\"trafficTimeBinsIndex\")\n",
+							"en1 = OneHotEncoder(dropLast=False, inputCol=\"trafficTimeBinsIndex\", outputCol=\"trafficTimeBinsVec\")\n",
+							"sI2 = StringIndexer(inputCol=\"weekdayString\", outputCol=\"weekdayIndex\")\n",
+							"en2 = OneHotEncoder(dropLast=False, inputCol=\"weekdayIndex\", outputCol=\"weekdayVec\")\n",
+							"\n",
+							"# Create a new dataframe that has had the encodings applied\n",
+							"encoded_final_df = Pipeline(stages=[sI1, en1, sI2, en2]).fit(taxi_featurised_df).transform(taxi_featurised_df)"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"#Decide on the split between training and testing data from the dataframe\n",
+							"trainingFraction = 0.7\n",
+							"testingFraction = (1-trainingFraction)\n",
+							"seed = 1234\n",
+							"\n",
+							"# Split the dataframe into test and training dataframes\n",
+							"train_data_df, test_data_df = encoded_final_df.randomSplit([trainingFraction, testingFraction], seed=seed)"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"## Create a new LR object for the model\n",
+							"logReg = LogisticRegression(maxIter=10, regParam=0.3, labelCol = 'tipped')\n",
+							"\n",
+							"## The formula for the model\n",
+							"classFormula = RFormula(formula=\"tipped ~ pickupHour + weekdayVec + passengerCount + tripTimeSecs + tripDistance + fareAmount + paymentType+ trafficTimeBinsVec\")\n",
+							"\n",
+							"## Undertake training and create an LR model\n",
+							"lrModel = Pipeline(stages=[classFormula, logReg]).fit(train_data_df)\n",
+							"\n",
+							"## Saving the model is optional but its another form of inter session cache\n",
+							"datestamp = datetime.now().strftime('%m-%d-%Y-%s')\n",
+							"fileName = \"lrModel_\" + datestamp\n",
+							"logRegDirfilename = fileName\n",
+							"lrModel.save(logRegDirfilename)\n",
+							"\n",
+							"## Predict tip 1/0 (yes/no) on the test dataset, evaluation using AUROC\n",
+							"predictions = lrModel.transform(test_data_df)\n",
+							"predictionAndLabels = predictions.select(\"label\",\"prediction\").rdd\n",
+							"metrics = BinaryClassificationMetrics(predictionAndLabels)\n",
+							"print(\"Area under ROC = %s\" % metrics.areaUnderROC)"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"## Plot the ROC curve, no need for pandas as this uses the modelSummary object\n",
+							"modelSummary = lrModel.stages[-1].summary\n",
+							"\n",
+							"plt.plot([0, 1], [0, 1], 'r--')\n",
+							"plt.plot(modelSummary.roc.select('FPR').collect(),\n",
+							"         modelSummary.roc.select('TPR').collect())\n",
+							"plt.xlabel('False Positive Rate')\n",
+							"plt.ylabel('True Positive Rate')\n",
+							"plt.show()"
+						],
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "code",
+						"source": [],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Using Azure Open Datasets in Synapse')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -5728,6 +6816,464 @@
 						],
 						"outputs": [],
 						"execution_count": 23
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/csharpdeltalake')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "accsparkpools",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "112g",
+					"driverCores": 16,
+					"executorMemory": "112g",
+					"executorCores": 16,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "csharp"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+						"name": "accsparkpools",
+						"type": "Spark",
+						"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 16,
+						"memory": 112
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"source": [
+							"# Hitchhiker's Guide to Delta Lake (.NET for Spark C#)\n",
+							"\n",
+							"This tutorial has been adapted for more clarity from its original counterpart [here](https://docs.delta.io/latest/quick-start.html). This notebook helps you quickly explore the main features of [Delta Lake](https://github.com/delta-io/delta). It provides code snippets that show how to read from and write to Delta Lake tables from interactive, batch, and streaming queries.\n",
+							"\n",
+							"Here's what we will cover:\n",
+							"* Create a table\n",
+							"* Understanding meta-data\n",
+							"* Read data\n",
+							"* Update table data\n",
+							"* Overwrite table data\n",
+							"* Conditional update without overwrite\n",
+							"* Read older versions of data using Time Travel\n",
+							"* Write a stream of data to a table\n",
+							"* Read a stream of changes from a table"
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Configuration\n",
+							"Make sure you modify this as appropriate."
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"var sessionId = (new Random()).Next(10000000);\n",
+							"var deltaTablePath = $\"/delta/delta-table-{sessionId}\";\n",
+							"\n",
+							"deltaTablePath"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Create a table\n",
+							"To create a Delta Lake table, write a DataFrame out in the **delta** format. You can use existing Spark SQL code and change the format from parquet, csv, json, and so on, to delta.\n",
+							"\n",
+							"These operations create a new Delta Lake table using the schema that was inferred from your DataFrame. For the full set of options available when you create a new Delta Lake table, see Create a table and Write to a table (subsequent cells in this notebook)."
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"var data = spark.Range(0,5);\n",
+							"data.Show();\n",
+							"data.Write().Format(\"delta\").Save(deltaTablePath);"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Understanding Meta-data\n",
+							"\n",
+							"In Delta Lake, meta-data is no different from data i.e., it is stored next to the data. Therefore, an interesting side-effect here is that you can peek into meta-data using regular Spark APIs. "
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"using System.Linq;\n",
+							"spark.Read().Text($\"{deltaTablePath}/_delta_log/\").Collect().ToList().ForEach(x => Console.WriteLine(x.GetAs<string>(\"value\")));"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Read data\n",
+							"\n",
+							"You read data in your Delta Lake table by specifying the path to the files."
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"var df = spark.Read().Format(\"delta\").Load(deltaTablePath);\n",
+							"df.Show()"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Update table data\n",
+							"\n",
+							"Delta Lake supports several operations to modify tables using standard DataFrame APIs. This example runs a batch job to overwrite the data in the table.\n",
+							""
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"var data = spark.Range(5,10);\n",
+							"data.Write().Format(\"delta\").Mode(\"overwrite\").Save(deltaTablePath);\n",
+							"df.Show();"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"When you now inspect the meta-data, what you will notice is that the original data is over-written. Well, not in a true sense but appropriate entries are added to Delta's transaction log so it can provide an \"illusion\" that the original data was deleted. We can verify this by re-inspecting the meta-data. You will see several entries indicating reference removal to the original data."
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"spark.Read().Text($\"{deltaTablePath}/_delta_log/\").Collect().ToList().ForEach(x => Console.WriteLine(x.GetAs<string>(\"value\")));"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Save as catalog tables\n",
+							"\n",
+							"Delta Lake can write to managed or external catalog tables.\n",
+							""
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"// Write data to a new managed catalog table.\n",
+							"data.Write().Format(\"delta\").SaveAsTable(\"ManagedDeltaTable\");"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"// Define an external catalog table that points to the existing Delta Lake data in storage.\n",
+							"spark.Sql($\"CREATE TABLE ExternalDeltaTable USING DELTA LOCATION '{deltaTablePath}'\");"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"// List the 2 new tables.\n",
+							"spark.Sql(\"SHOW TABLES\").Show();\n",
+							"\n",
+							"// Explore their properties.\n",
+							"spark.Sql(\"DESCRIBE EXTENDED ManagedDeltaTable\").Show(truncate: 0);\n",
+							"spark.Sql(\"DESCRIBE EXTENDED ExternalDeltaTable\").Show(truncate: 0);"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Conditional update without overwrite\n",
+							"\n",
+							"Delta Lake provides programmatic APIs to conditional update, delete, and merge (upsert) data into tables. For more information on these operations, see [Table Deletes, Updates, and Merges](https://docs.delta.io/latest/delta-update.html)."
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"using Microsoft.Spark.Extensions.Delta;\n",
+							"using Microsoft.Spark.Extensions.Delta.Tables;\n",
+							"using Microsoft.Spark.Sql;\n",
+							"using static Microsoft.Spark.Sql.Functions;\n",
+							"\n",
+							"var deltaTable = DeltaTable.ForPath(deltaTablePath);"
+						],
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"// Update every even value by adding 100 to it\n",
+							"deltaTable.Update(\n",
+							"  condition: Expr(\"id % 2 == 0\"),\n",
+							"  set: new Dictionary<string, Column>(){{ \"id\", Expr(\"id + 100\") }});\n",
+							"deltaTable.ToDF().Show();"
+						],
+						"outputs": [],
+						"execution_count": 13
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"// Delete every even value\n",
+							"deltaTable.Delete(condition: Expr(\"id % 2 == 0\"));\n",
+							"deltaTable.ToDF().Show();"
+						],
+						"outputs": [],
+						"execution_count": 14
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"// Upsert (merge) new data\n",
+							"var newData = spark.Range(20).As(\"newData\");\n",
+							"\n",
+							"deltaTable\n",
+							"    .As(\"oldData\")\n",
+							"    .Merge(newData, \"oldData.id = newData.id\")\n",
+							"    .WhenMatched()\n",
+							"        .Update(new Dictionary<string, Column>() {{\"id\", Lit(\"-1\")}})\n",
+							"    .WhenNotMatched()\n",
+							"        .Insert(new Dictionary<string, Column>() {{\"id\", Col(\"newData.id\")}})\n",
+							"    .Execute();\n",
+							"\n",
+							"deltaTable.ToDF().Show(100);"
+						],
+						"outputs": [],
+						"execution_count": 15
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## History\n",
+							"Delta's most powerful feature is the ability to allow looking into history i.e., the changes that were made to the underlying Delta Table. The cell below shows how simple it is to inspect the history."
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"deltaTable.History().Show(20, 1000, false);"
+						],
+						"outputs": [],
+						"execution_count": 16
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Read older versions of data using Time Travel\n",
+							"\n",
+							"You can query previous snapshots of your Delta Lake table by using a feature called Time Travel. If you want to access the data that you overwrote, you can query a snapshot of the table before you overwrote the first set of data using the versionAsOf option.\n",
+							"\n",
+							"Once you run the cell below, you should see the first set of data, from before you overwrote it. Time Travel is an extremely powerful feature that takes advantage of the power of the Delta Lake transaction log to access data that is no longer in the table. Removing the version 0 option (or specifying version 1) would let you see the newer data again. For more information, see [Query an older snapshot of a table (time travel)](https://docs.delta.io/latest/delta-batch.html#deltatimetravel)."
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"var df = spark.Read().Format(\"delta\").Option(\"versionAsOf\", 0).Load(deltaTablePath);\n",
+							"df.Show();"
+						],
+						"outputs": [],
+						"execution_count": 17
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Write a stream of data to a table\n",
+							"\n",
+							"You can also write to a Delta Lake table using Spark's Structured Streaming. The Delta Lake transaction log guarantees exactly-once processing, even when there are other streams or batch queries running concurrently against the table. By default, streams run in append mode, which adds new records to the table.\n",
+							"\n",
+							"For more information about Delta Lake integration with Structured Streaming, see [Table Streaming Reads and Writes](https://docs.delta.io/latest/delta-streaming.html).\n",
+							"\n",
+							"In the cells below, here's what we are doing:\n",
+							"\n",
+							"1. *Cell 28* Setup a simple Spark Structured Streaming job to generate a sequence and make the job write into our Delta Table\n",
+							"2. *Cell 30* Show the newly appended data\n",
+							"3. *Cell 31* Inspect history\n",
+							"4. *Cell 32* Stop the structured streaming job\n",
+							"5. *Cell 33* Inspect history <-- You'll notice appends have stopped"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"var streamingDf = spark.ReadStream().Format(\"rate\").Load();\n",
+							"var stream = streamingDf.SelectExpr(\"value as id\").WriteStream().Format(\"delta\").Option(\"checkpointLocation\", $\"/tmp/checkpoint-{sessionId}\").Start(deltaTablePath);"
+						],
+						"outputs": [],
+						"execution_count": 18
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Read a stream of changes from a table\n",
+							"\n",
+							"While the stream is writing to the Delta Lake table, you can also read from that table as streaming source. For example, you can start another streaming query that prints all the changes made to the Delta Lake table."
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"deltaTable.ToDF().Sort(Col(\"id\").Desc()).Show(100);"
+						],
+						"outputs": [],
+						"execution_count": 19
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"deltaTable.History().Drop(\"userId\", \"userName\", \"job\", \"notebook\", \"clusterId\", \"isolationLevel\", \"isBlindAppend\").Show(20, 1000, false);"
+						],
+						"outputs": [],
+						"execution_count": 20
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"stream.Stop();"
+						],
+						"outputs": [],
+						"execution_count": 21
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"deltaTable.History().Drop(\"userId\", \"userName\", \"job\", \"notebook\", \"clusterId\", \"isolationLevel\", \"isBlindAppend\").Show(100, 1000, false);"
+						],
+						"outputs": [],
+						"execution_count": 22
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Convert Parquet to Delta\n",
+							"You can do an in-place conversion from the Parquet format to Delta."
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"var parquetPath = $\"/parquet/parquet-table-{sessionId}\";\n",
+							"\n",
+							"var data = spark.Range(0,5);\n",
+							"data.Write().Parquet(parquetPath);\n",
+							"\n",
+							"// Confirm that the data isn't in the Delta format\n",
+							"DeltaTable.IsDeltaTable(parquetPath)"
+						],
+						"outputs": [],
+						"execution_count": 23
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"DeltaTable.ConvertToDelta(spark, $\"parquet.`{parquetPath}`\");\n",
+							"\n",
+							"//Confirm that the converted data is now in the Delta format\n",
+							"DeltaTable.IsDeltaTable(parquetPath)"
+						],
+						"outputs": [],
+						"execution_count": 24
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## SQL Support\n",
+							"Delta supports table utility commands through SQL.  You can use SQL to:\n",
+							"* Get a DeltaTable's history\n",
+							"* Vacuum a DeltaTable\n",
+							"* Convert a Parquet file to Delta\n",
+							""
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"spark.Sql($\"DESCRIBE HISTORY delta.`{deltaTablePath}`\").Show();"
+						],
+						"outputs": [],
+						"execution_count": 25
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"spark.Sql($\"VACUUM delta.`{deltaTablePath}`\").Show();"
+						],
+						"outputs": [],
+						"execution_count": 26
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"var parquetId =  (new Random()).Next(10000000);\n",
+							"var parquetPath = $\"/parquet/parquet-table-{sessionId}-{parquetId}\";\n",
+							"\n",
+							"var data = spark.Range(0,5);\n",
+							"data.Write().Parquet(parquetPath);\n",
+							"\n",
+							"// Confirm that the data isn't in the Delta format\n",
+							"DeltaTable.IsDeltaTable(parquetPath);\n",
+							"\n",
+							"// Use SQL to convert the parquet table to Delta\n",
+							"spark.Sql($\"CONVERT TO DELTA parquet.`{parquetPath}`\");\n",
+							"\n",
+							"DeltaTable.IsDeltaTable(parquetPath);"
+						],
+						"outputs": [],
+						"execution_count": 27
 					}
 				]
 			},

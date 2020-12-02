@@ -17,6 +17,9 @@
 		"iiotdata_accountKey": {
 			"value": ""
 		},
+		"Keyvaultacc_properties_typeProperties_baseUrl": {
+			"value": "https://accvault1.vault.azure.net/"
+		},
 		"accinput_properties_typeProperties_url": {
 			"value": "https://accbbstore.dfs.core.windows.net"
 		},
