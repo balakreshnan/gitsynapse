@@ -377,12 +377,12 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"url": "https://management.azure.com/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/sqlPools/accsynapsepools?api-version=2019-06-01-preview",
+							"url": "https://management.azure.com/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/sqlPools/accsynapsepools/pause?api-version=2019-06-01-preview",
 							"connectVia": {
 								"referenceName": "AutoResolveIntegrationRuntime",
 								"type": "IntegrationRuntimeReference"
 							},
-							"method": "PATCH",
+							"method": "POST",
 							"headers": {},
 							"body": {
 								"sku": {
