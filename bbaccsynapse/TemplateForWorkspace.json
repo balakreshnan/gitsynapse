@@ -294,7 +294,7 @@
 								"referenceName": "AutoResolveIntegrationRuntime",
 								"type": "IntegrationRuntimeReference"
 							},
-							"method": "PATCH",
+							"method": "POST",
 							"headers": {},
 							"body": {
 								"sku": {
