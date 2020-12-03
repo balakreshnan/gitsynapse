@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Resume",
+				"name": "ResumeSQLPools",
 				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
