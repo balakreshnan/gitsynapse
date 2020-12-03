@@ -23,7 +23,7 @@
 					"method": "PATCH",
 					"body": {
 						"properties": {
-							"requestedServiceObjectiveName": "DW100c"
+							"requestedServiceObjectiveName": "DW100"
 						}
 					},
 					"authentication": {
