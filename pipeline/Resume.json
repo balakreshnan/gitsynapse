@@ -23,7 +23,7 @@
 					"method": "POST",
 					"body": {
 						"sku": {
-							"name": "DW100"
+							"name": "DW100c"
 						}
 					},
 					"authentication": {
