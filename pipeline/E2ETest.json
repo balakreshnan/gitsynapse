@@ -1,0 +1,67 @@
+{
+	"name": "E2ETest",
+	"properties": {
+		"activities": [
+			{
+				"name": "ResumeSQLPool",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Resume",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "NycYellow",
+				"type": "SynapseNotebook",
+				"dependsOn": [
+					{
+						"activity": "ResumeSQLPool",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "nycyellow",
+						"type": "NotebookReference"
+					}
+				}
+			},
+			{
+				"name": "PauseSQLPool",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "NycYellow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PauseDedicatedPools",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": []
+	}
+}
