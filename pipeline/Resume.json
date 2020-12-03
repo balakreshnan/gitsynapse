@@ -22,8 +22,8 @@
 					},
 					"method": "PATCH",
 					"body": {
-						"properties": {
-							"requestedServiceObjectiveName": "DW100"
+						"sku": {
+							"name": "DW100"
 						}
 					},
 					"authentication": {

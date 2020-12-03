@@ -22,7 +22,7 @@
 					},
 					"method": "PATCH",
 					"body": {
-						"properties": {
+						"sku": {
 							"name": "DW100"
 						}
 					},
