@@ -1,0 +1,84 @@
+{
+	"name": "test1",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "accsparkpools",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "112g",
+			"driverCores": 16,
+			"executorMemory": "112g",
+			"executorCores": 16,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "scala"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+				"name": "accsparkpools",
+				"type": "Spark",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 16,
+				"memory": 112,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"val hol_blob_account_name = \"azureopendatastorage\"\r\n",
+					"val hol_blob_container_name = \"holidaydatacontainer\"\r\n",
+					"val hol_blob_relative_path = \"Processed\"\r\n",
+					"val hol_blob_sas_token = \"\"\r\n",
+					"\r\n",
+					"val hol_wasbs_path = f\"wasbs://$hol_blob_container_name@$hol_blob_account_name.blob.core.windows.net/$hol_blob_relative_path\"\r\n",
+					"spark.conf.set(f\"fs.azure.sas.$hol_blob_container_name.$hol_blob_account_name.blob.core.windows.net\",hol_blob_sas_token)"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"val hol_df = spark.read.parquet(hol_wasbs_path) \r\n",
+					"hol_df.show(5, truncate = false)"
+				],
+				"execution_count": 3
+			}
+		]
+	}
+}
