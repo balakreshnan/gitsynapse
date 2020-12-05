@@ -12,9 +12,14 @@
 			"driverCores": 8,
 			"executorMemory": "56g",
 			"executorCores": 8,
-			"numExecutors": 2
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
 		},
 		"metadata": {
+			"saveOutput": true,
 			"language_info": {
 				"name": "python"
 			},
@@ -30,8 +35,10 @@
 				"sparkVersion": "2.4",
 				"nodeCount": 10,
 				"cores": 16,
-				"memory": 112
-			}
+				"memory": 112,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
 			{
@@ -52,7 +59,7 @@
 							"aggregation": "SUM",
 							"aggByBackend": false
 						},
-						"aggData": "{\"tpepPickupDateTime\":{\"1\":0,\"2\":0}}",
+						"aggData": "\"{\\\"tpepPickupDateTime\\\":{\\\"1\\\":0,\\\"2\\\":0}}\"",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -68,15 +75,14 @@
 					"# Display 10 rows\n",
 					"display(data_df.limit(10))"
 				],
-				"attachments": null,
-				"execution_count": 2
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"sc.version"
 				],
-				"execution_count": 3
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -96,7 +102,7 @@
 							"aggregation": "SUM",
 							"aggByBackend": false
 						},
-						"aggData": "{\"tpepPickupDateTime\":{\"1\":0,\"2\":0}}",
+						"aggData": "\"{\\\"tpepPickupDateTime\\\":{\\\"1\\\":0,\\\"2\\\":0}}\"",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -107,7 +113,7 @@
 				"source": [
 					"display(data_df)"
 				],
-				"execution_count": 3
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -119,7 +125,7 @@
 					"#import org.apache.spark.sql._ \n",
 					"#import org.apache.spark.sql.functions._"
 				],
-				"execution_count": 4
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -139,7 +145,7 @@
 							"aggregation": "SUM",
 							"aggByBackend": false
 						},
-						"aggData": "{\"tpepPickupDateTime\":{\"1\":0,\"2\":0}}",
+						"aggData": "\"{\\\"tpepPickupDateTime\\\":{\\\"1\\\":0,\\\"2\\\":0}}\"",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -151,7 +157,7 @@
 					"df1 = data_df.withColumn(\"Date\", (col(\"tpepPickupDateTime\").cast(\"date\"))) \n",
 					"display(df1)"
 				],
-				"execution_count": 5
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -171,7 +177,7 @@
 							"aggregation": "SUM",
 							"aggByBackend": false
 						},
-						"aggData": "{\"tpepPickupDateTime\":{\"1\":0,\"2\":0}}",
+						"aggData": "\"{\\\"tpepPickupDateTime\\\":{\\\"1\\\":0,\\\"2\\\":0}}\"",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -182,21 +188,21 @@
 				"source": [
 					"display(df1)"
 				],
-				"execution_count": 12
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"df1.createOrReplaceTempView(\"nycyellow\")"
 				],
-				"execution_count": 6
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"df1.count()"
 				],
-				"execution_count": 15
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -210,14 +216,14 @@
 				"source": [
 					"df1.printSchema"
 				],
-				"execution_count": 7
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"df2 = df1.withColumn(\"year\", year(col(\"date\"))) .withColumn(\"month\", month(col(\"date\"))) .withColumn(\"day\", dayofmonth(col(\"date\"))) .withColumn(\"hour\", hour(col(\"date\")))"
 				],
-				"execution_count": 6
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -237,7 +243,7 @@
 							"aggregation": "SUM",
 							"aggByBackend": false
 						},
-						"aggData": "{\"tpepPickupDateTime\":{\"1\":0,\"2\":0}}",
+						"aggData": "\"{\\\"tpepPickupDateTime\\\":{\\\"1\\\":0,\\\"2\\\":0}}\"",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -248,21 +254,21 @@
 				"source": [
 					"display(df2)"
 				],
-				"execution_count": 7
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"df2.groupBy(\"year\",\"month\").agg(sum(\"fareAmount\").alias(\"Total\"),count(\"vendorID\").alias(\"Count\")).sort(asc(\"year\"), asc(\"month\")).show()"
 				],
-				"execution_count": 8
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"dfgrouped = df2.groupBy(\"year\",\"month\").agg(sum(\"fareAmount\").alias(\"Total\"),count(\"vendorID\").alias(\"Count\")).sort(asc(\"year\"), asc(\"month\"))"
 				],
-				"execution_count": 8
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -282,7 +288,7 @@
 							"aggregation": "SUM",
 							"aggByBackend": false
 						},
-						"aggData": "{\"year\":{\"1\":12105,\"2\":10085,\"3\":12105,\"4\":10085,\"5\":10085,\"6\":10085,\"7\":10085,\"8\":12105,\"9\":10085,\"10\":10085,\"11\":10085,\"12\":10085}}",
+						"aggData": "\"{\\\"year\\\":{\\\"1\\\":12105,\\\"2\\\":10085,\\\"3\\\":12105,\\\"4\\\":10085,\\\"5\\\":10085,\\\"6\\\":10085,\\\"7\\\":10085,\\\"8\\\":12105,\\\"9\\\":10085,\\\"10\\\":10085,\\\"11\\\":10085,\\\"12\\\":10085}}\"",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -293,32 +299,35 @@
 				"source": [
 					"display(dfgrouped)"
 				],
-				"execution_count": 9
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"dfgrouped.repartition(1).write.parquet(\"/dailyaggr/parquet/dailyaggr.parquet\")"
 				],
-				"execution_count": 16
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"dfgrouped.repartition(1).write.option(\"header\",\"true\").csv(\"/dailyaggrcsv/csv/dailyaggr.csv\")"
 				],
-				"execution_count": 18
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"df2.createOrReplaceTempView(\"nycyellow\")"
 				],
-				"execution_count": 12
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"metadata": {
+					"microsoft": {
+						"language": "sparksql"
+					},
 					"diagram": {
 						"activateDiagramType": 1,
 						"chartConfig": {
@@ -334,7 +343,7 @@
 							"aggregation": "SUM",
 							"aggByBackend": false
 						},
-						"aggData": "{\"passengerCount\":{\"1\":73,\"2\":125}}",
+						"aggData": "\"{\\\"passengerCount\\\":{\\\"1\\\":73,\\\"2\\\":125}}\"",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -346,11 +355,14 @@
 					"%%sql\n",
 					"select * from nycyellow limit 100"
 				],
-				"execution_count": 13
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"metadata": {
+					"microsoft": {
+						"language": "sparksql"
+					},
 					"diagram": {
 						"activateDiagramType": 1,
 						"chartConfig": {
@@ -366,7 +378,7 @@
 							"aggregation": "SUM",
 							"aggByBackend": false
 						},
-						"aggData": "{\"tsDay\":{\"0\":562,\"1\":562,\"2\":562,\"3\":562,\"4\":562,\"5\":562,\"6\":562,\"7\":562,\"8\":562,\"9\":562,\"10\":562,\"11\":562,\"12\":562,\"13\":562,\"14\":562,\"15\":562,\"16\":551,\"17\":551,\"18\":551,\"19\":551,\"20\":551,\"21\":551,\"22\":551,\"23\":551}}",
+						"aggData": "\"{\\\"tsDay\\\":{\\\"0\\\":562,\\\"1\\\":562,\\\"2\\\":562,\\\"3\\\":562,\\\"4\\\":562,\\\"5\\\":562,\\\"6\\\":562,\\\"7\\\":562,\\\"8\\\":562,\\\"9\\\":562,\\\"10\\\":562,\\\"11\\\":562,\\\"12\\\":562,\\\"13\\\":562,\\\"14\\\":562,\\\"15\\\":562,\\\"16\\\":551,\\\"17\\\":551,\\\"18\\\":551,\\\"19\\\":551,\\\"20\\\":551,\\\"21\\\":551,\\\"22\\\":551,\\\"23\\\":551}}\"",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -385,11 +397,14 @@
 					"group by  tsYear, tsmonth,tsDay, tsHour\n",
 					"order by  tsYear, tsmonth,tsDay, tsHour"
 				],
-				"execution_count": 14
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"metadata": {
+					"microsoft": {
+						"language": "sparksql"
+					},
 					"diagram": {
 						"activateDiagramType": 1,
 						"chartConfig": {
@@ -401,7 +416,7 @@
 							"aggregation": "SUM",
 							"aggByBackend": false
 						},
-						"aggData": "{}",
+						"aggData": "\"{}\"",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -413,11 +428,14 @@
 					"%%sql\n",
 					"DROP TABLE dailyaggr"
 				],
-				"execution_count": 27
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"metadata": {
+					"microsoft": {
+						"language": "sparksql"
+					},
 					"diagram": {
 						"activateDiagramType": 1,
 						"chartConfig": {
@@ -429,7 +447,7 @@
 							"aggregation": "SUM",
 							"aggByBackend": false
 						},
-						"aggData": "{}",
+						"aggData": "\"{}\"",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -450,11 +468,14 @@
 					"group by  tsYear, tsmonth,tsDay, tsHour\n",
 					"order by  tsYear, tsmonth,tsDay, tsHour"
 				],
-				"execution_count": 33
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"metadata": {
+					"microsoft": {
+						"language": "sparksql"
+					},
 					"diagram": {
 						"activateDiagramType": 1,
 						"chartConfig": {
@@ -470,7 +491,7 @@
 							"aggregation": "SUM",
 							"aggByBackend": false
 						},
-						"aggData": "{\"tsYear\":{\"1\":96720,\"2\":96720,\"3\":96720,\"4\":96720,\"5\":96720,\"6\":96720,\"7\":96720,\"8\":96720,\"9\":96720,\"10\":96720,\"11\":80600,\"12\":48360,\"13\":48360,\"14\":48360,\"15\":48360,\"16\":48360,\"17\":48360,\"18\":48360,\"19\":48360,\"20\":48360,\"21\":48360,\"22\":48360,\"23\":48360,\"24\":48360,\"25\":48360,\"26\":48360,\"27\":48360,\"28\":48360,\"29\":48360,\"30\":48360,\"31\":48360}}",
+						"aggData": "\"{\\\"tsYear\\\":{\\\"1\\\":96720,\\\"2\\\":96720,\\\"3\\\":96720,\\\"4\\\":96720,\\\"5\\\":96720,\\\"6\\\":96720,\\\"7\\\":96720,\\\"8\\\":96720,\\\"9\\\":96720,\\\"10\\\":96720,\\\"11\\\":80600,\\\"12\\\":48360,\\\"13\\\":48360,\\\"14\\\":48360,\\\"15\\\":48360,\\\"16\\\":48360,\\\"17\\\":48360,\\\"18\\\":48360,\\\"19\\\":48360,\\\"20\\\":48360,\\\"21\\\":48360,\\\"22\\\":48360,\\\"23\\\":48360,\\\"24\\\":48360,\\\"25\\\":48360,\\\"26\\\":48360,\\\"27\\\":48360,\\\"28\\\":48360,\\\"29\\\":48360,\\\"30\\\":48360,\\\"31\\\":48360}}\"",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -482,14 +503,14 @@
 					"%%sql\n",
 					"select * from dailyaggr"
 				],
-				"execution_count": 12
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"dailyaggr = spark.sql(\"SELECT tsYear, tsMonth, tsDay, tsHour, avgTotal FROM dailyaggr\")"
 				],
-				"execution_count": 13
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -509,7 +530,7 @@
 							"aggregation": "SUM",
 							"aggByBackend": false
 						},
-						"aggData": "{\"tsYear\":{\"1\":96720,\"2\":96720,\"3\":96720,\"4\":96720,\"5\":96720,\"6\":96720,\"7\":96720,\"8\":96720,\"9\":96720,\"10\":96720,\"11\":82615,\"12\":48360,\"13\":48360,\"14\":48360,\"15\":48360,\"16\":48360,\"17\":48360,\"18\":48360,\"19\":48360,\"20\":48360,\"21\":48360,\"22\":48360,\"23\":48360,\"24\":48360,\"25\":48360,\"26\":48360,\"27\":48360,\"28\":48360,\"29\":48360,\"30\":48360,\"31\":48360}}",
+						"aggData": "\"{\\\"tsYear\\\":{\\\"1\\\":96720,\\\"2\\\":96720,\\\"3\\\":96720,\\\"4\\\":96720,\\\"5\\\":96720,\\\"6\\\":96720,\\\"7\\\":96720,\\\"8\\\":96720,\\\"9\\\":96720,\\\"10\\\":96720,\\\"11\\\":82615,\\\"12\\\":48360,\\\"13\\\":48360,\\\"14\\\":48360,\\\"15\\\":48360,\\\"16\\\":48360,\\\"17\\\":48360,\\\"18\\\":48360,\\\"19\\\":48360,\\\"20\\\":48360,\\\"21\\\":48360,\\\"22\\\":48360,\\\"23\\\":48360,\\\"24\\\":48360,\\\"25\\\":48360,\\\"26\\\":48360,\\\"27\\\":48360,\\\"28\\\":48360,\\\"29\\\":48360,\\\"30\\\":48360,\\\"31\\\":48360}}\"",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -520,33 +541,43 @@
 				"source": [
 					"display(dailyaggr)"
 				],
-				"execution_count": 14
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"dailyaggr.write.sqlanalytics(\"accsynapsepools.wwi.dailyaggr\", Constants.INTERNAL)"
 				],
-				"execution_count": 15
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"from pyspark.ml.regression import LinearRegression"
 				],
-				"execution_count": 37
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "python"
+					}
+				},
 				"source": [
 					"%%pyspark \n",
 					"import pyspark \n",
 					"print(print(pyspark.__version__))"
 				],
-				"execution_count": 38
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "scala"
+					}
+				},
 				"source": [
 					"%%spark\n",
 					"import org.apache.spark.ml.feature.VectorAssembler \n",
@@ -557,41 +588,61 @@
 					"val assembledDF = assembler.setHandleInvalid(\"skip\").transform(dailyaggr) \n",
 					"val assembledFinalDF = assembledDF.select(\"avgTotal\",\"features\")"
 				],
-				"execution_count": 16
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "scala"
+					}
+				},
 				"source": [
 					"%%spark\n",
 					"import com.microsoft.spark.sqlanalytics.utils.Constants\n",
 					"import org.apache.spark.sql.SqlAnalyticsConnector._"
 				],
-				"execution_count": 20
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "scala"
+					}
+				},
 				"source": [
 					"%%spark\n",
 					"dailyaggr.repartition(2).write.sqlanalytics(\"accsynapsepools.wwi.dailyaggr\", Constants.INTERNAL)"
 				],
-				"execution_count": 23
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "scala"
+					}
+				},
 				"source": [
 					"%%spark\n",
 					"import org.apache.spark.ml.feature.Normalizer \n",
 					"val normalizedDF = new Normalizer().setInputCol(\"features\").setOutputCol(\"normalizedFeatures\").transform(assembledFinalDF)"
 				],
-				"execution_count": 43
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "scala"
+					}
+				},
 				"source": [
 					"%%spark\n",
 					"val normalizedDF1 = normalizedDF.na.drop()"
 				],
-				"execution_count": 44
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -602,14 +653,24 @@
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "scala"
+					}
+				},
 				"source": [
 					"%%spark\n",
 					"val Array(trainingDS, testDS) = normalizedDF1.randomSplit(Array(0.7, 0.3))"
 				],
-				"execution_count": 45
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "scala"
+					}
+				},
 				"source": [
 					"%%spark\n",
 					"import org.apache.spark.ml.regression.LinearRegression\n",
@@ -622,10 +683,15 @@
 					"// LinearRegression.transform will only use the 'features' column. \n",
 					"val lrPredictions = lrModel.transform(testDS)"
 				],
-				"execution_count": 49
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "scala"
+					}
+				},
 				"source": [
 					"%%spark\n",
 					"import org.apache.spark.sql.functions._ \n",
@@ -633,10 +699,15 @@
 					"println(\"\\nPredictions : \" ) \n",
 					"lrPredictions.select($\"avgTotal\".cast(IntegerType),$\"prediction\".cast(IntegerType)).orderBy(abs($\"prediction\"-$\"avgTotal\")).distinct.show(15)"
 				],
-				"execution_count": 51
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "scala"
+					}
+				},
 				"source": [
 					"%%spark\n",
 					"import org.apache.spark.ml.evaluation.RegressionEvaluator \n",
@@ -646,10 +717,15 @@
 					"val isLargerBetter : Boolean = evaluator_r2.isLargerBetter \n",
 					"println(\"Coefficient of determination = \" + evaluator_r2.evaluate(lrPredictions))"
 				],
-				"execution_count": 54
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "scala"
+					}
+				},
 				"source": [
 					"%%spark\n",
 					"//Evaluate the results. Calculate Root Mean Square Error \n",
@@ -658,19 +734,27 @@
 					"val isLargerBetter1 : Boolean = evaluator_rmse.isLargerBetter \n",
 					"println(\"Root Mean Square Error = \" + evaluator_rmse.evaluate(lrPredictions))"
 				],
-				"execution_count": 55
-			},
-			{
-				"cell_type": "code",
-				"source": [
-					"%%spark\n",
-					"val dailyaggrdf = spark.read.sqlanalytics(\"accsynapsepools.wwi.dailyaggr\")"
-				],
-				"execution_count": 26
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"metadata": {
+					"microsoft": {
+						"language": "scala"
+					}
+				},
+				"source": [
+					"%%spark\n",
+					"val dailyaggrdf = spark.read.sqlanalytics(\"accsynapsepools.wwi.dailyaggr\")"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "scala"
+					},
 					"diagram": {
 						"activateDiagramType": 1,
 						"chartConfig": {
@@ -686,7 +770,7 @@
 							"aggregation": "SUM",
 							"aggByBackend": false
 						},
-						"aggData": "{\"tsYear\":{\"8\":474230,\"9\":726480,\"10\":548896,\"11\":199782,\"12\":70630}}",
+						"aggData": "\"{\\\"tsYear\\\":{\\\"8\\\":474230,\\\"9\\\":726480,\\\"10\\\":548896,\\\"11\\\":199782,\\\"12\\\":70630}}\"",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -698,15 +782,20 @@
 					"%%spark\n",
 					"display(dailyaggrdf)"
 				],
-				"execution_count": 27
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "scala"
+					}
+				},
 				"source": [
 					"%%spark\n",
 					"dailyaggrdf.count()"
 				],
-				"execution_count": 28
+				"execution_count": null
 			}
 		]
 	}
