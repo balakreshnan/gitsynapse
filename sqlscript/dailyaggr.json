@@ -1,0 +1,16 @@
+{
+	"name": "dailyaggr",
+	"properties": {
+		"content": {
+			"query": "Drop Table [wwi].[dailyaggr];",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "accsynapsepools",
+				"type": "SqlPool"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
