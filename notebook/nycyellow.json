@@ -20,6 +20,10 @@
 		},
 		"metadata": {
 			"saveOutput": true,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
 			"language_info": {
 				"name": "python"
 			},
@@ -65,7 +69,8 @@
 							"filter": null
 						},
 						"isSql": false
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"from azureml.opendatasets import NycTlcYellow\n",
@@ -108,7 +113,8 @@
 							"filter": null
 						},
 						"isSql": false
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"display(data_df)"
@@ -151,7 +157,8 @@
 							"filter": null
 						},
 						"isSql": false
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"df1 = data_df.withColumn(\"Date\", (col(\"tpepPickupDateTime\").cast(\"date\"))) \n",
@@ -183,7 +190,8 @@
 							"filter": null
 						},
 						"isSql": false
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"display(df1)"
@@ -200,14 +208,14 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"df1.count()"
+					"#df1.count()"
 				],
 				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
-					"df1.dropDuplicates(\"key\",\"pickup_datetime\",\"pickup_longitude\",\"pickup_latitude\",\"dropoff_longitude\",\"dropoff_latitude\")"
+					"#df1.dropDuplicates([\"key\",\"pickup_datetime\",\"pickup_longitude\",\"pickup_latitude\"])"
 				],
 				"execution_count": null
 			},
@@ -249,10 +257,11 @@
 							"filter": null
 						},
 						"isSql": false
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
-					"display(df2)"
+					"#display(df2)"
 				],
 				"execution_count": null
 			},
@@ -294,7 +303,8 @@
 							"filter": null
 						},
 						"isSql": false
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"display(dfgrouped)"
@@ -304,14 +314,14 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"dfgrouped.repartition(1).write.parquet(\"/dailyaggr/parquet/dailyaggr.parquet\")"
+					"dfgrouped.repartition(1).write.mode('overwrite').parquet(\"/dailyaggr/parquet/dailyaggr.parquet\")"
 				],
 				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
-					"dfgrouped.repartition(1).write.option(\"header\",\"true\").csv(\"/dailyaggrcsv/csv/dailyaggr.csv\")"
+					"dfgrouped.repartition(1).write.mode('overwrite').option(\"header\",\"true\").csv(\"/dailyaggrcsv/csv/dailyaggr.csv\")"
 				],
 				"execution_count": null
 			},
@@ -349,7 +359,8 @@
 							"filter": null
 						},
 						"isSql": true
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"%%sql\n",
@@ -384,7 +395,8 @@
 							"filter": null
 						},
 						"isSql": true
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"%%sql\n",
@@ -422,7 +434,8 @@
 							"filter": null
 						},
 						"isSql": true
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"%%sql\n",
@@ -453,7 +466,8 @@
 							"filter": null
 						},
 						"isSql": true
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"%%sql\n",
@@ -497,7 +511,8 @@
 							"filter": null
 						},
 						"isSql": true
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"%%sql\n",
@@ -536,7 +551,8 @@
 							"filter": null
 						},
 						"isSql": false
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"display(dailyaggr)"
