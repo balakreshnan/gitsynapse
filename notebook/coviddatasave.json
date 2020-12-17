@@ -87,8 +87,8 @@
 				},
 				"source": [
 					"spark.conf.set(\r\n",
-					"  \"fs.azure.account.key.accsynapsestorage.dfs.core.windows.net\",\r\n",
-					"  \"ex1PbXf87GVGWh2OkZnBETN0wDCmlgzHDGpPR4+E/+DbJ3MYSeJHgec5lIgOkGOp9m13qVa7dWRXS52CTeRxRQ==\"\r\n",
+					"  \"fs.azure.account.key.xxxxxx.dfs.core.windows.net\",\r\n",
+					"  \"xxxxxxxxxxxxxxxxxxx\"\r\n",
 					")"
 				],
 				"execution_count": 7
