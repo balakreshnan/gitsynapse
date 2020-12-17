@@ -72,13 +72,52 @@
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
 				"source": [
-					"df = spark.sql(\"SELECT * FROM default.covid19\")\n",
-					"\n",
+					"df = spark.sql(\"SELECT * FROM default.covid19\")\r\n",
+					"from pyspark.sql.types import *"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"df = df.withColumn(\"_c5\", df[\"_c5\"].cast(DoubleType()).alias(\"_c5\"))\r\n",
+					"df = df.withColumn(\"_c6\", df[\"_c6\"].cast(DoubleType()).alias(\"_c6\"))\r\n",
+					"df = df.withColumn(\"_c7\", df[\"_c7\"].cast(DoubleType()).alias(\"_c7\"))"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"source": [
 					"datastore = Datastore.get_default(ws)\n",
 					"dataset = TabularDatasetFactory.register_spark_dataframe(df, datastore, name = experiment_name + \"-dataset\")"
 				],
-				"execution_count": 3
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -92,14 +131,33 @@
 					"                             max_concurrent_iterations = 2,\n",
 					"                             enable_onnx_compatible_models = False)"
 				],
-				"execution_count": 4
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"run = experiment.submit(automl_config)"
 				],
-				"execution_count": 5
+				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"run.wait_for_completion(show_output=True)"
+				],
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
