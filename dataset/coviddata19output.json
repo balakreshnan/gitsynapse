@@ -1,0 +1,20 @@
+{
+	"name": "coviddata19output",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "covid19output",
+				"fileSystem": "coviddata19"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
