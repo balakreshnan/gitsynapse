@@ -1,0 +1,16 @@
+{
+	"name": "serverlesscovid19sql",
+	"properties": {
+		"content": {
+			"query": "SELECT TOP (100) [_c0]\n,[_c1]\n,[_c2]\n,[_c3]\n,[_c4]\n,[_c5]\n,[_c6]\n,[_c7]\n FROM [default].[dbo].[covid19]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "default",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
