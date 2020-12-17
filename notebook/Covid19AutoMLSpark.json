@@ -87,7 +87,7 @@
 					"                             task = \"regression\",\n",
 					"                             training_data = dataset,\n",
 					"                             label_column_name = \"_c7\",\n",
-					"                             primary_metric = \"normalized_root_mean_squared_error\",\n",
+					"                             primary_metric = \"spearman_correlation\",\n",
 					"                             experiment_timeout_hours = 3,\n",
 					"                             max_concurrent_iterations = 2,\n",
 					"                             enable_onnx_compatible_models = False)"
