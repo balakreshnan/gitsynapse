@@ -18,6 +18,10 @@
 					"dataflow": {
 						"referenceName": "hashtest",
 						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
 					}
 				}
 			}
