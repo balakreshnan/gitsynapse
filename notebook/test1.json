@@ -78,6 +78,25 @@
 					"hol_df.show(5, truncate = false)"
 				],
 				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(hol_df)"
+				],
+				"execution_count": 3
 			}
 		]
 	}
