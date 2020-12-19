@@ -11,6 +11,9 @@
 		"accml_servicePrincipalKey": {
 			"value": ""
 		},
+		"accml1_servicePrincipalKey": {
+			"value": ""
+		},
 		"accsqlsvr_connectionString": {
 			"value": ""
 		},
@@ -18,6 +21,9 @@
 			"value": ""
 		},
 		"iiotdata_accountKey": {
+			"value": ""
+		},
+		"serverlesssqlsvr_connectionString": {
 			"value": ""
 		},
 		"Keyvaultacc_properties_typeProperties_baseUrl": {
@@ -38,10 +44,25 @@
 		"accml_properties_typeProperties_tenant": {
 			"value": "72f988bf-86f1-41af-91ab-2d7cd011db47"
 		},
+		"accml1_properties_typeProperties_subscriptionId": {
+			"value": "c46a9435-c957-4e6c-a0f4-b9a597984773"
+		},
+		"accml1_properties_typeProperties_resourceGroupName": {
+			"value": "accenture"
+		},
+		"accml1_properties_typeProperties_servicePrincipalId": {
+			"value": "8a3ddafe-6dd6-48af-867e-d745232a1833"
+		},
+		"accml1_properties_typeProperties_tenant": {
+			"value": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+		},
 		"bbaccsynapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://accsynapsestorage.dfs.core.windows.net"
 		},
 		"bing-covid-19-data_sasUri": {
+			"value": ""
+		},
+		"covid-tracking_sasUri": {
 			"value": ""
 		},
 		"iiotdata_properties_typeProperties_url": {
@@ -51,6 +72,9 @@
 			"value": ""
 		},
 		"nyc_tlc_yellow_sasUri": {
+			"value": ""
+		},
+		"sample-diabetes_sasUri": {
 			"value": ""
 		},
 		"us-decennial-census-county_sasUri": {

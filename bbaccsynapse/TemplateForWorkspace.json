@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalKey' of 'accml'"
 		},
+		"accml1_servicePrincipalKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalKey' of 'accml1'"
+		},
 		"accsqlsvr_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'accsqlsvr'"
@@ -26,6 +30,10 @@
 		"iiotdata_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'iiotdata'"
+		},
+		"serverlesssqlsvr_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'serverlesssqlsvr'"
 		},
 		"Keyvaultacc_properties_typeProperties_baseUrl": {
 			"type": "string",
@@ -51,6 +59,22 @@
 			"type": "string",
 			"defaultValue": "72f988bf-86f1-41af-91ab-2d7cd011db47"
 		},
+		"accml1_properties_typeProperties_subscriptionId": {
+			"type": "string",
+			"defaultValue": "c46a9435-c957-4e6c-a0f4-b9a597984773"
+		},
+		"accml1_properties_typeProperties_resourceGroupName": {
+			"type": "string",
+			"defaultValue": "accenture"
+		},
+		"accml1_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "8a3ddafe-6dd6-48af-867e-d745232a1833"
+		},
+		"accml1_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+		},
 		"bbaccsynapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://accsynapsestorage.dfs.core.windows.net"
@@ -58,6 +82,10 @@
 		"bing-covid-19-data_sasUri": {
 			"type": "secureString",
 			"metadata": "Secure string for 'sasUri' of 'bing-covid-19-data'"
+		},
+		"covid-tracking_sasUri": {
+			"type": "secureString",
+			"metadata": "Secure string for 'sasUri' of 'covid-tracking'"
 		},
 		"iiotdata_properties_typeProperties_url": {
 			"type": "string",
@@ -70,6 +98,10 @@
 		"nyc_tlc_yellow_sasUri": {
 			"type": "secureString",
 			"metadata": "Secure string for 'sasUri' of 'nyc_tlc_yellow'"
+		},
+		"sample-diabetes_sasUri": {
+			"type": "secureString",
+			"metadata": "Secure string for 'sasUri' of 'sample-diabetes'"
 		},
 		"us-decennial-census-county_sasUri": {
 			"type": "secureString",
@@ -559,6 +591,48 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/coviddata19')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "hashtest",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "hashtest",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"covid19input": {},
+									"Sink1": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "AutoResolveIntegrationRuntime",
+								"type": "IntegrationRuntimeReference"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/dataflows/hashtest')]",
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/devopsdatapipeline')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -705,6 +779,38 @@
 				"[concat(variables('workspaceId'), '/dataflows/devopsenv')]",
 				"[concat(variables('workspaceId'), '/dataflows/dependenciesmeta')]",
 				"[concat(variables('workspaceId'), '/pipelines/ForEachTest')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/diabetespipeline')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "diabetes",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "diabetessample",
+								"type": "NotebookReference"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/notebooks/diabetessample')]"
 			]
 		},
 		{
@@ -916,6 +1022,332 @@
 					}
 				},
 				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/bbaccsynapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/covid19input')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "accinput",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "part-00000-a790a8ae-ed8c-4963-87e5-93fca39b7b70-c000.snappy.parquet",
+						"fileSystem": "coviddata19"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "date",
+						"type": "DATE"
+					},
+					{
+						"name": "state",
+						"type": "UTF8"
+					},
+					{
+						"name": "positive",
+						"type": "INT32"
+					},
+					{
+						"name": "negative",
+						"type": "INT32"
+					},
+					{
+						"name": "pending",
+						"type": "INT_16"
+					},
+					{
+						"name": "hospitalized_currently",
+						"type": "INT_16"
+					},
+					{
+						"name": "hospitalized_cumulative",
+						"type": "INT32"
+					},
+					{
+						"name": "in_icu_currently",
+						"type": "INT_16"
+					},
+					{
+						"name": "in_icu_cumulative",
+						"type": "INT_16"
+					},
+					{
+						"name": "on_ventilator_currently",
+						"type": "INT_16"
+					},
+					{
+						"name": "on_ventilator_cumulative",
+						"type": "INT_16"
+					},
+					{
+						"name": "recovered",
+						"type": "INT32"
+					},
+					{
+						"name": "data_quality_grade",
+						"type": "UTF8"
+					},
+					{
+						"name": "last_update_et",
+						"type": "INT96"
+					},
+					{
+						"name": "hash",
+						"type": "UTF8"
+					},
+					{
+						"name": "date_checked",
+						"type": "UTF8"
+					},
+					{
+						"name": "death",
+						"type": "INT_16"
+					},
+					{
+						"name": "hospitalized",
+						"type": "INT32"
+					},
+					{
+						"name": "total",
+						"type": "INT32"
+					},
+					{
+						"name": "total_test_results",
+						"type": "INT32"
+					},
+					{
+						"name": "pos_neg",
+						"type": "INT32"
+					},
+					{
+						"name": "fips",
+						"type": "INT_16"
+					},
+					{
+						"name": "death_increase",
+						"type": "INT_16"
+					},
+					{
+						"name": "hospitalized_increase",
+						"type": "INT_16"
+					},
+					{
+						"name": "negative_increase",
+						"type": "INT32"
+					},
+					{
+						"name": "positive_increase",
+						"type": "INT_16"
+					},
+					{
+						"name": "total_test_results_increase",
+						"type": "INT32"
+					},
+					{
+						"name": "fips_code",
+						"type": "UTF8"
+					},
+					{
+						"name": "iso_subdivision",
+						"type": "UTF8"
+					},
+					{
+						"name": "load_time",
+						"type": "INT96"
+					},
+					{
+						"name": "iso_country",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/accinput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/coviddata19output')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "covid19output",
+						"fileSystem": "coviddata19"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/bbaccsynapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/defaultstore')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "part-00000-a790a8ae-ed8c-4963-87e5-93fca39b7b70-c000.snappy.parquet",
+						"folderPath": "coviddata19",
+						"fileSystem": "coviddata19"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "date",
+						"type": "DATE"
+					},
+					{
+						"name": "state",
+						"type": "UTF8"
+					},
+					{
+						"name": "positive",
+						"type": "INT32"
+					},
+					{
+						"name": "negative",
+						"type": "INT32"
+					},
+					{
+						"name": "pending",
+						"type": "INT_16"
+					},
+					{
+						"name": "hospitalized_currently",
+						"type": "INT_16"
+					},
+					{
+						"name": "hospitalized_cumulative",
+						"type": "INT32"
+					},
+					{
+						"name": "in_icu_currently",
+						"type": "INT_16"
+					},
+					{
+						"name": "in_icu_cumulative",
+						"type": "INT_16"
+					},
+					{
+						"name": "on_ventilator_currently",
+						"type": "INT_16"
+					},
+					{
+						"name": "on_ventilator_cumulative",
+						"type": "INT_16"
+					},
+					{
+						"name": "recovered",
+						"type": "INT32"
+					},
+					{
+						"name": "data_quality_grade",
+						"type": "UTF8"
+					},
+					{
+						"name": "last_update_et",
+						"type": "INT96"
+					},
+					{
+						"name": "hash",
+						"type": "UTF8"
+					},
+					{
+						"name": "date_checked",
+						"type": "UTF8"
+					},
+					{
+						"name": "death",
+						"type": "INT_16"
+					},
+					{
+						"name": "hospitalized",
+						"type": "INT32"
+					},
+					{
+						"name": "total",
+						"type": "INT32"
+					},
+					{
+						"name": "total_test_results",
+						"type": "INT32"
+					},
+					{
+						"name": "pos_neg",
+						"type": "INT32"
+					},
+					{
+						"name": "fips",
+						"type": "INT_16"
+					},
+					{
+						"name": "death_increase",
+						"type": "INT_16"
+					},
+					{
+						"name": "hospitalized_increase",
+						"type": "INT_16"
+					},
+					{
+						"name": "negative_increase",
+						"type": "INT32"
+					},
+					{
+						"name": "positive_increase",
+						"type": "INT_16"
+					},
+					{
+						"name": "total_test_results_increase",
+						"type": "INT32"
+					},
+					{
+						"name": "fips_code",
+						"type": "UTF8"
+					},
+					{
+						"name": "iso_subdivision",
+						"type": "UTF8"
+					},
+					{
+						"name": "load_time",
+						"type": "INT96"
+					},
+					{
+						"name": "iso_country",
+						"type": "UTF8"
+					}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/bbaccsynapse-WorkspaceDefaultStorage')]"
@@ -1809,6 +2241,67 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/sqlcoviddata')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "accsqlsvr",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "SNo",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ObservationDate",
+						"type": "varchar"
+					},
+					{
+						"name": "ProvinceState",
+						"type": "varchar"
+					},
+					{
+						"name": "CountryRegion",
+						"type": "varchar"
+					},
+					{
+						"name": "LastUpdate",
+						"type": "varchar"
+					},
+					{
+						"name": "Confirmed",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "Deaths",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "Recovered",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "coviddata"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/accsqlsvr')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/tblconnsvr')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -1923,6 +2416,33 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/accml1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureMLService",
+				"typeProperties": {
+					"subscriptionId": "[parameters('accml1_properties_typeProperties_subscriptionId')]",
+					"resourceGroupName": "[parameters('accml1_properties_typeProperties_resourceGroupName')]",
+					"mlWorkspaceName": "accml",
+					"servicePrincipalId": "[parameters('accml1_properties_typeProperties_servicePrincipalId')]",
+					"servicePrincipalKey": {
+						"type": "SecureString",
+						"value": "[parameters('accml1_servicePrincipalKey')]"
+					},
+					"tenant": "[parameters('accml1_properties_typeProperties_tenant')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/accsqlsvr')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -1998,6 +2518,19 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/covid-tracking')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"sasUri": "[parameters('covid-tracking_sasUri')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/iiotdata')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -2045,6 +2578,38 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/sample-diabetes')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"sasUri": "[parameters('sample-diabetes_sasUri')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/serverlesssqlsvr')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('serverlesssqlsvr_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/us-decennial-census-county')]",
@@ -2328,6 +2893,41 @@
 				"[concat(variables('workspaceId'), '/datasets/devopsjsoninput')]",
 				"[concat(variables('workspaceId'), '/datasets/deveopsjsonoutputdepend')]",
 				"[concat(variables('workspaceId'), '/datasets/dependcsv')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/hashtest')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "covid19input",
+							"script": "",
+							"dataset": {
+								"referenceName": "covid19input",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"sinks": [
+						{
+							"name": "Sink1",
+							"dataset": {
+								"referenceName": "coviddata19output",
+								"type": "DatasetReference"
+							},
+							"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Sink1"
+						}
+					],
+					"script": "section Section1;\r\nshared covid19input = let\r\n  AdfDoc = AzureStorage.DataLakeContents(\"https://accbbstore.dfs.core.windows.net/coviddata19/part-00000-a790a8ae-ed8c-4963-87e5-93fca39b7b70-c000.snappy.parquet\"),\r\n  Parquet = Parquet.Document(AdfDoc)\r\nin\r\n  Parquet;\r\nshared UserQuery = let\r\n  Source = covid19input,\r\n  #\"Added custom\" = Table.AddColumn(Source, \"NeHash\", each [hash])\r\nin\r\n  #\"Added custom\";\r\n"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/covid19input')]",
+				"[concat(variables('workspaceId'), '/datasets/coviddata19output')]"
 			]
 		},
 		{
@@ -2646,6 +3246,25 @@
 					},
 					"currentConnection": {
 						"name": "nyctaxi",
+						"type": "SqlOnDemand"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/serverlesscovid19sql')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT TOP (100) [_c0]\n,[_c1]\n,[_c2]\n,[_c3]\n,[_c4]\n,[_c5]\n,[_c6]\n,[_c7]\n FROM [default].[dbo].[covid19]",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"name": "default",
 						"type": "SqlOnDemand"
 					}
 				},
@@ -5288,6 +5907,504 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Covid19AutoMLSpark')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "accsparkpools",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+						"name": "accsparkpools",
+						"type": "Spark",
+						"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 16,
+						"memory": 112
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"import azureml.core\n",
+							"\n",
+							"from azureml.core import Experiment, Workspace, Dataset, Datastore\n",
+							"from azureml.train.automl import AutoMLConfig\n",
+							"from azureml.data.dataset_factory import TabularDatasetFactory"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"subscription_id = \"c46a9435-c957-4e6c-a0f4-b9a597984773\"\n",
+							"resource_group = \"accenture\"\n",
+							"workspace_name = \"accml\"\n",
+							"experiment_name = \"bbaccsynapse-covid19-20201217032226\"\n",
+							"\n",
+							"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
+							"experiment = Experiment(ws, experiment_name)"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"df = spark.sql(\"SELECT * FROM default.covid19\")\r\n",
+							"from pyspark.sql.types import *"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"df = df.withColumn(\"_c5\", df[\"_c5\"].cast(DoubleType()).alias(\"_c5\"))\r\n",
+							"df = df.withColumn(\"_c6\", df[\"_c6\"].cast(DoubleType()).alias(\"_c6\"))\r\n",
+							"df = df.withColumn(\"_c7\", df[\"_c7\"].cast(DoubleType()).alias(\"_c7\"))"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"datastore = Datastore.get_default(ws)\n",
+							"dataset = TabularDatasetFactory.register_spark_dataframe(df, datastore, name = experiment_name + \"-dataset\")"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"automl_config = AutoMLConfig(spark_context = sc,\n",
+							"                             task = \"regression\",\n",
+							"                             training_data = dataset,\n",
+							"                             label_column_name = \"_c7\",\n",
+							"                             primary_metric = \"spearman_correlation\",\n",
+							"                             experiment_timeout_hours = 3,\n",
+							"                             max_concurrent_iterations = 2,\n",
+							"                             enable_onnx_compatible_models = False)"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"run = experiment.submit(automl_config)"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"run.wait_for_completion(show_output=True)"
+						],
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"displayHTML(\"<a href={} target='_blank'>Your experiment in Azure Machine Learning portal: {}</a>\".format(run.get_portal_url(), run.id))"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"run.wait_for_completion()\n",
+							"\n",
+							"# Install required dependency\n",
+							"import pip\n",
+							"pip.main([\"install\", \"azure-storage-blob==12.5.0\"])\n",
+							"\n",
+							"import mlflow\n",
+							"\n",
+							"# Get best model from automl run\n",
+							"best_run, non_onnx_model = run.get_output()\n",
+							"\n",
+							"artifact_path = experiment_name + \"_artifact\"\n",
+							"\n",
+							"mlflow.set_tracking_uri(ws.get_mlflow_tracking_uri())\n",
+							"mlflow.set_experiment(experiment_name)\n",
+							"\n",
+							"with mlflow.start_run() as run:\n",
+							"    # Save the model to the outputs directory for capture\n",
+							"    mlflow.sklearn.log_model(non_onnx_model, artifact_path)\n",
+							"\n",
+							"    # Register the model to AML model registry\n",
+							"    mlflow.register_model(\"runs:/\" + run.info.run_id + \"/\" + artifact_path, \"bbaccsynapse-covid19-20201217032226-Best\")"
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Covid19AutoMLSparkOnnx')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "accsparkpools",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+						"name": "accsparkpools",
+						"type": "Spark",
+						"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 16,
+						"memory": 112
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"import azureml.core\n",
+							"\n",
+							"from azureml.core import Experiment, Workspace, Dataset, Datastore\n",
+							"from azureml.train.automl import AutoMLConfig\n",
+							"from azureml.data.dataset_factory import TabularDatasetFactory"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"subscription_id = \"c46a9435-c957-4e6c-a0f4-b9a597984773\"\n",
+							"resource_group = \"accenture\"\n",
+							"workspace_name = \"accml\"\n",
+							"experiment_name = \"bbaccsynapse-covid19-20201217032448-onnx\"\n",
+							"\n",
+							"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
+							"experiment = Experiment(ws, experiment_name)"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"df = spark.sql(\"SELECT * FROM default.covid19\")\r\n",
+							"from pyspark.sql.types import *\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 18
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"df = df.withColumn(\"_c5\", df[\"_c5\"].cast(DoubleType()).alias(\"_c5\"))\r\n",
+							"df = df.withColumn(\"_c6\", df[\"_c6\"].cast(DoubleType()).alias(\"_c6\"))\r\n",
+							"df = df.withColumn(\"_c7\", df[\"_c7\"].cast(DoubleType()).alias(\"_c7\"))"
+						],
+						"outputs": [],
+						"execution_count": 19
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"datastore = Datastore.get_default(ws)\n",
+							"dataset = TabularDatasetFactory.register_spark_dataframe(df, datastore, name = experiment_name + \"-dataset\")"
+						],
+						"outputs": [],
+						"execution_count": 20
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(df)"
+						],
+						"outputs": [],
+						"execution_count": 21
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"df.printSchema"
+						],
+						"outputs": [],
+						"execution_count": 22
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"automl_config = AutoMLConfig(spark_context = sc,\n",
+							"                             task = \"regression\",\n",
+							"                             training_data = dataset,\n",
+							"                             label_column_name = \"_c7\",\n",
+							"                             primary_metric = \"spearman_correlation\",\n",
+							"                             experiment_timeout_hours = 3,\n",
+							"                             max_concurrent_iterations = 2,\n",
+							"                             enable_onnx_compatible_models = True)"
+						],
+						"outputs": [],
+						"execution_count": 23
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"run = experiment.submit(automl_config)"
+						],
+						"outputs": [],
+						"execution_count": 24
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"run.wait_for_completion(show_output=True)"
+						],
+						"outputs": [],
+						"execution_count": 26
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"displayHTML(\"<a href={} target='_blank'>Your experiment in Azure Machine Learning portal: {}</a>\".format(run.get_portal_url(), run.id))"
+						],
+						"outputs": [],
+						"execution_count": 25
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"run.wait_for_completion()\n",
+							"\n",
+							"# Install required dependency\n",
+							"import pip\n",
+							"pip.main([\"install\", \"azure-storage-blob==12.5.0\"])\n",
+							"\n",
+							"import onnxruntime\n",
+							"import mlflow\n",
+							"import mlflow.onnx\n",
+							"\n",
+							"from mlflow.models.signature import ModelSignature\n",
+							"from mlflow.types import DataType\n",
+							"from mlflow.types.schema import ColSpec, Schema\n",
+							"\n",
+							"# Get best model from automl run\n",
+							"best_run, onnx_model = run.get_output(return_onnx_model=True)\n",
+							"\n",
+							"# Define utility functions to infer the schema of ONNX model\n",
+							"def _infer_schema(data):\n",
+							"    res = []\n",
+							"    for _, col in enumerate(data):\n",
+							"        t = col.type.replace(\"tensor(\", \"\").replace(\")\", \"\")\n",
+							"        if t in [\"bool\"]:\n",
+							"            dt = DataType.boolean\n",
+							"        elif t in [\"int8\", \"uint8\", \"int16\", \"uint16\", \"int32\"]:\n",
+							"            dt = DateType.integer\n",
+							"        elif t in [\"uint32\", \"int64\"]:\n",
+							"            dt = DataType.long\n",
+							"        elif t in [\"float16\", \"bfloat16\", \"float\"]:\n",
+							"            dt = DataType.float\n",
+							"        elif t in [\"double\"]:\n",
+							"            dt = DataType.double\n",
+							"        elif t in [\"string\"]:\n",
+							"            dt = DataType.string\n",
+							"        else:\n",
+							"            raise Exception(\"Unsupported type: \" + t)\n",
+							"        res.append(ColSpec(type=dt, name=col.name))\n",
+							"    return Schema(res)\n",
+							"\n",
+							"def _infer_signature(onnx_model):\n",
+							"    onnx_model_bytes = onnx_model.SerializeToString()\n",
+							"    onnx_runtime = onnxruntime.InferenceSession(onnx_model_bytes)\n",
+							"    inputs = _infer_schema(onnx_runtime.get_inputs())\n",
+							"    outputs = _infer_schema(onnx_runtime.get_outputs())\n",
+							"    return ModelSignature(inputs, outputs)\n",
+							"\n",
+							"# Infer signature of ONNX model\n",
+							"signature = _infer_signature(onnx_model)\n",
+							"\n",
+							"artifact_path = experiment_name + \"_artifact\"\n",
+							"mlflow.set_tracking_uri(ws.get_mlflow_tracking_uri())\n",
+							"mlflow.set_experiment(experiment_name)\n",
+							"\n",
+							"with mlflow.start_run() as run:\n",
+							"    # Save the model to the outputs directory for capture\n",
+							"    mlflow.onnx.log_model(onnx_model, artifact_path, signature=signature)\n",
+							"\n",
+							"    # Register the model to AML model registry\n",
+							"    mlflow.register_model(\"runs:/\" + run.info.run_id + \"/\" + artifact_path, \"bbaccsynapse-covid19-20201217032448-Best-onnx\")"
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Creating a managed Spark Table')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -7100,6 +8217,147 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/coviddatasave')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "accsparkpools",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "112g",
+					"driverCores": 16,
+					"executorMemory": "112g",
+					"executorCores": 16,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+						"name": "accsparkpools",
+						"type": "Spark",
+						"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 16,
+						"memory": 112
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\n",
+							"blob_account_name = \"pandemicdatalake\"\n",
+							"blob_container_name = \"public\"\n",
+							"blob_relative_path = \"curated/covid-19/covid_tracking/latest/covid_tracking.parquet\"\n",
+							"blob_sas_token = r\"\"\n",
+							"# Allow SPARK to read from Blob remotely\n",
+							"wasbs_path = 'wasbs://%s@%s.blob.core.windows.net/%s' % (blob_container_name, blob_account_name, blob_relative_path)\n",
+							"\n",
+							"spark.conf.set(\n",
+							"    'fs.azure.sas.%s.%s.blob.core.windows.net' % (blob_container_name, blob_account_name),\n",
+							"    blob_sas_token)\n",
+							"df = spark.read.parquet(wasbs_path)\n",
+							"display(df.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"spark.conf.set(\r\n",
+							"  \"fs.azure.account.key.xxxxxx.dfs.core.windows.net\",\r\n",
+							"  \"xxxxxxxxxxxxxxxxxxx\"\r\n",
+							")"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"df.repartition(1).write.option(\"mode\",\"overwrite\").parquet(\"/coviddata19/\")"
+						],
+						"outputs": [],
+						"execution_count": 13
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"df.repartition(1).write.option(\"mode\",\"overwrite\").parquet(\"wasbs://coviddata19@accsynapsestorage.blob.core.windows.net/coviddata19/\")"
+						],
+						"outputs": [],
+						"execution_count": 12
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/csharpdeltalake')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -7552,6 +8810,479 @@
 						],
 						"outputs": [],
 						"execution_count": 27
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/diabetessample')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "accsparkpools",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "112g",
+					"driverCores": 16,
+					"executorMemory": "112g",
+					"executorCores": 16,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+						"name": "accsparkpools",
+						"type": "Spark",
+						"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 16,
+						"memory": 112
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\n",
+							"blob_account_name = \"azureopendatastorage\"\n",
+							"blob_container_name = \"mlsamples\"\n",
+							"blob_relative_path = \"diabetes\"\n",
+							"blob_sas_token = r\"\"\n",
+							"# Allow SPARK to read from Blob remotely\n",
+							"wasbs_path = 'wasbs://%s@%s.blob.core.windows.net/%s' % (blob_container_name, blob_account_name, blob_relative_path)\n",
+							"\n",
+							"spark.conf.set(\n",
+							"    'fs.azure.sas.%s.%s.blob.core.windows.net' % (blob_container_name, blob_account_name),\n",
+							"    blob_sas_token)\n",
+							"df = spark.read.parquet(wasbs_path)\n",
+							"display(df.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"df.cache()"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"df = df.dropna() # drop rows with missing values\r\n",
+							"#exprs = [col(column).alias(column.replace(' ', '_')) for column in df.columns]"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"print(\"The dataset has %d rows.\" % df.count())"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"train, test = df.randomSplit([0.7, 0.3], seed = 0)\r\n",
+							"print(\"There are %d training examples and %d test examples.\" % (train.count(), test.count()))"
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"from pyspark.ml.feature import VectorAssembler, VectorIndexer\r\n",
+							" \r\n",
+							"# Remove the target column from the input feature set.\r\n",
+							"featuresCols = df.columns\r\n",
+							"featuresCols.remove('Y')\r\n",
+							" \r\n",
+							"# vectorAssembler combines all feature columns into a single feature vector column, \"rawFeatures\".\r\n",
+							"vectorAssembler = VectorAssembler(inputCols=featuresCols, outputCol=\"rawFeatures\")\r\n",
+							" \r\n",
+							"# vectorIndexer identifies categorical features and indexes them, and creates a new column \"features\". \r\n",
+							"vectorIndexer = VectorIndexer(inputCol=\"rawFeatures\", outputCol=\"features\", maxCategories=4)"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"from pyspark.ml.regression import GBTRegressor\r\n",
+							" \r\n",
+							"# The next step is to define the model training stage of the pipeline. \r\n",
+							"# The following command defines a GBTRegressor model that takes an input column \"features\" by default and learns to predict the labels in the \"cnt\" column. \r\n",
+							"gbt = GBTRegressor(labelCol=\"Y\")"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"from pyspark.ml.tuning import CrossValidator, ParamGridBuilder\r\n",
+							"from pyspark.ml.evaluation import RegressionEvaluator\r\n",
+							" \r\n",
+							"# Define a grid of hyperparameters to test:\r\n",
+							"#  - maxDepth: maximum depth of each decision tree \r\n",
+							"#  - maxIter: iterations, or the total number of trees \r\n",
+							"paramGrid = ParamGridBuilder()\\\r\n",
+							"  .addGrid(gbt.maxDepth, [2, 5])\\\r\n",
+							"  .addGrid(gbt.maxIter, [10, 100])\\\r\n",
+							"  .build()\r\n",
+							" \r\n",
+							"# Define an evaluation metric.  The CrossValidator compares the true labels with predicted values for each combination of parameters, and calculates this value to determine the best model.\r\n",
+							"evaluator = RegressionEvaluator(metricName=\"rmse\", labelCol=gbt.getLabelCol(), predictionCol=gbt.getPredictionCol())\r\n",
+							" \r\n",
+							"# Declare the CrossValidator, which performs the model tuning.\r\n",
+							"cv = CrossValidator(estimator=gbt, evaluator=evaluator, estimatorParamMaps=paramGrid)"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"from pyspark.ml import Pipeline\r\n",
+							"pipeline = Pipeline(stages=[vectorAssembler, vectorIndexer, cv])"
+						],
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"pipelineModel = pipeline.fit(train)"
+						],
+						"outputs": [],
+						"execution_count": 13
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"predictions = pipelineModel.transform(test)"
+						],
+						"outputs": [],
+						"execution_count": 14
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(predictions.select(\"Y\", \"prediction\", *featuresCols))"
+						],
+						"outputs": [],
+						"execution_count": 15
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"rmse = evaluator.evaluate(predictions)\r\n",
+							"print(\"RMSE on our test set: %g\" % rmse)"
+						],
+						"outputs": [],
+						"execution_count": 16
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(predictions.select(\"Y\", \"prediction\"))"
+						],
+						"outputs": [],
+						"execution_count": 18
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"import pyspark.sql.functions as F\r\n",
+							"predictions_with_residuals = predictions.withColumn(\"residual\", (F.col(\"Y\") - F.col(\"prediction\")))\r\n",
+							"display(predictions_with_residuals.agg({'residual': 'mean'}))"
+						],
+						"outputs": [],
+						"execution_count": 19
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(predictions_with_residuals.select(\"Y\", \"residual\"))"
+						],
+						"outputs": [],
+						"execution_count": 20
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
 					}
 				]
 			},
@@ -8623,16 +10354,12 @@
 						"sparkVersion": "2.4",
 						"nodeCount": 10,
 						"cores": 16,
-						"memory": 112,
-						"extraHeader": {},
-						"automaticScaleJobs": false
-					},
-					"sessionKeepAliveTimeout": 30
+						"memory": 112
+					}
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"val hol_blob_account_name = \"azureopendatastorage\"\r\n",
 							"val hol_blob_container_name = \"holidaydatacontainer\"\r\n",
@@ -8665,6 +10392,26 @@
 						],
 						"outputs": [],
 						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(hol_df)"
+						],
+						"outputs": [],
+						"execution_count": 3
 					}
 				]
 			},
