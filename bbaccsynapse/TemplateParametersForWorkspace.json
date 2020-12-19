@@ -8,6 +8,9 @@
 		"accinput_accountKey": {
 			"value": ""
 		},
+		"accml_servicePrincipalKey": {
+			"value": ""
+		},
 		"accsqlsvr_connectionString": {
 			"value": ""
 		},
@@ -22,6 +25,18 @@
 		},
 		"accinput_properties_typeProperties_url": {
 			"value": "https://accbbstore.dfs.core.windows.net"
+		},
+		"accml_properties_typeProperties_subscriptionId": {
+			"value": "c46a9435-c957-4e6c-a0f4-b9a597984773"
+		},
+		"accml_properties_typeProperties_resourceGroupName": {
+			"value": "accenture"
+		},
+		"accml_properties_typeProperties_servicePrincipalId": {
+			"value": "8a3ddafe-6dd6-48af-867e-d745232a1833"
+		},
+		"accml_properties_typeProperties_tenant": {
+			"value": "72f988bf-86f1-41af-91ab-2d7cd011db47"
 		},
 		"bbaccsynapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://accsynapsestorage.dfs.core.windows.net"
