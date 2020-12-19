@@ -21,10 +21,6 @@
 		},
 		"metadata": {
 			"saveOutput": true,
-			"kernelspec": {
-				"name": "synapse_spark",
-				"display_name": "Synapse Spark"
-			},
 			"language_info": {
 				"name": "scala"
 			},
