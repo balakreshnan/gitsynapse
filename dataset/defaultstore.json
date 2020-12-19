@@ -1,0 +1,146 @@
+{
+	"name": "defaultstore",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "part-00000-a790a8ae-ed8c-4963-87e5-93fca39b7b70-c000.snappy.parquet",
+				"folderPath": "coviddata19",
+				"fileSystem": "coviddata19"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "date",
+				"type": "DATE"
+			},
+			{
+				"name": "state",
+				"type": "UTF8"
+			},
+			{
+				"name": "positive",
+				"type": "INT32"
+			},
+			{
+				"name": "negative",
+				"type": "INT32"
+			},
+			{
+				"name": "pending",
+				"type": "INT_16"
+			},
+			{
+				"name": "hospitalized_currently",
+				"type": "INT_16"
+			},
+			{
+				"name": "hospitalized_cumulative",
+				"type": "INT32"
+			},
+			{
+				"name": "in_icu_currently",
+				"type": "INT_16"
+			},
+			{
+				"name": "in_icu_cumulative",
+				"type": "INT_16"
+			},
+			{
+				"name": "on_ventilator_currently",
+				"type": "INT_16"
+			},
+			{
+				"name": "on_ventilator_cumulative",
+				"type": "INT_16"
+			},
+			{
+				"name": "recovered",
+				"type": "INT32"
+			},
+			{
+				"name": "data_quality_grade",
+				"type": "UTF8"
+			},
+			{
+				"name": "last_update_et",
+				"type": "INT96"
+			},
+			{
+				"name": "hash",
+				"type": "UTF8"
+			},
+			{
+				"name": "date_checked",
+				"type": "UTF8"
+			},
+			{
+				"name": "death",
+				"type": "INT_16"
+			},
+			{
+				"name": "hospitalized",
+				"type": "INT32"
+			},
+			{
+				"name": "total",
+				"type": "INT32"
+			},
+			{
+				"name": "total_test_results",
+				"type": "INT32"
+			},
+			{
+				"name": "pos_neg",
+				"type": "INT32"
+			},
+			{
+				"name": "fips",
+				"type": "INT_16"
+			},
+			{
+				"name": "death_increase",
+				"type": "INT_16"
+			},
+			{
+				"name": "hospitalized_increase",
+				"type": "INT_16"
+			},
+			{
+				"name": "negative_increase",
+				"type": "INT32"
+			},
+			{
+				"name": "positive_increase",
+				"type": "INT_16"
+			},
+			{
+				"name": "total_test_results_increase",
+				"type": "INT32"
+			},
+			{
+				"name": "fips_code",
+				"type": "UTF8"
+			},
+			{
+				"name": "iso_subdivision",
+				"type": "UTF8"
+			},
+			{
+				"name": "load_time",
+				"type": "INT96"
+			},
+			{
+				"name": "iso_country",
+				"type": "UTF8"
+			}
+		]
+	}
+}

@@ -1,0 +1,29 @@
+{
+	"name": "hashtest",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "covid19input",
+					"script": "",
+					"dataset": {
+						"referenceName": "covid19input",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"sinks": [
+				{
+					"name": "Sink1",
+					"dataset": {
+						"referenceName": "coviddata19output",
+						"type": "DatasetReference"
+					},
+					"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Sink1"
+				}
+			],
+			"script": "section Section1;\r\nshared covid19input = let\r\n  AdfDoc = AzureStorage.DataLakeContents(\"https://accbbstore.dfs.core.windows.net/coviddata19/part-00000-a790a8ae-ed8c-4963-87e5-93fca39b7b70-c000.snappy.parquet\"),\r\n  Parquet = Parquet.Document(AdfDoc)\r\nin\r\n  Parquet;\r\nshared UserQuery = let\r\n  Source = covid19input,\r\n  #\"Added custom\" = Table.AddColumn(Source, \"NeHash\", each [hash])\r\nin\r\n  #\"Added custom\";\r\n"
+		}
+	}
+}
