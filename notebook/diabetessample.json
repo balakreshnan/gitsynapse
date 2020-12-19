@@ -86,6 +86,364 @@
 					"collapsed": true
 				},
 				"source": [
+					"df.cache()"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"df = df.dropna() # drop rows with missing values\r\n",
+					"#exprs = [col(column).alias(column.replace(' ', '_')) for column in df.columns]"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"print(\"The dataset has %d rows.\" % df.count())"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"train, test = df.randomSplit([0.7, 0.3], seed = 0)\r\n",
+					"print(\"There are %d training examples and %d test examples.\" % (train.count(), test.count()))"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"from pyspark.ml.feature import VectorAssembler, VectorIndexer\r\n",
+					" \r\n",
+					"# Remove the target column from the input feature set.\r\n",
+					"featuresCols = df.columns\r\n",
+					"featuresCols.remove('Y')\r\n",
+					" \r\n",
+					"# vectorAssembler combines all feature columns into a single feature vector column, \"rawFeatures\".\r\n",
+					"vectorAssembler = VectorAssembler(inputCols=featuresCols, outputCol=\"rawFeatures\")\r\n",
+					" \r\n",
+					"# vectorIndexer identifies categorical features and indexes them, and creates a new column \"features\". \r\n",
+					"vectorIndexer = VectorIndexer(inputCol=\"rawFeatures\", outputCol=\"features\", maxCategories=4)"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"from pyspark.ml.regression import GBTRegressor\r\n",
+					" \r\n",
+					"# The next step is to define the model training stage of the pipeline. \r\n",
+					"# The following command defines a GBTRegressor model that takes an input column \"features\" by default and learns to predict the labels in the \"cnt\" column. \r\n",
+					"gbt = GBTRegressor(labelCol=\"Y\")"
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"from pyspark.ml.tuning import CrossValidator, ParamGridBuilder\r\n",
+					"from pyspark.ml.evaluation import RegressionEvaluator\r\n",
+					" \r\n",
+					"# Define a grid of hyperparameters to test:\r\n",
+					"#  - maxDepth: maximum depth of each decision tree \r\n",
+					"#  - maxIter: iterations, or the total number of trees \r\n",
+					"paramGrid = ParamGridBuilder()\\\r\n",
+					"  .addGrid(gbt.maxDepth, [2, 5])\\\r\n",
+					"  .addGrid(gbt.maxIter, [10, 100])\\\r\n",
+					"  .build()\r\n",
+					" \r\n",
+					"# Define an evaluation metric.  The CrossValidator compares the true labels with predicted values for each combination of parameters, and calculates this value to determine the best model.\r\n",
+					"evaluator = RegressionEvaluator(metricName=\"rmse\", labelCol=gbt.getLabelCol(), predictionCol=gbt.getPredictionCol())\r\n",
+					" \r\n",
+					"# Declare the CrossValidator, which performs the model tuning.\r\n",
+					"cv = CrossValidator(estimator=gbt, evaluator=evaluator, estimatorParamMaps=paramGrid)"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"from pyspark.ml import Pipeline\r\n",
+					"pipeline = Pipeline(stages=[vectorAssembler, vectorIndexer, cv])"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"pipelineModel = pipeline.fit(train)"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"predictions = pipelineModel.transform(test)"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(predictions.select(\"Y\", \"prediction\", *featuresCols))"
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"rmse = evaluator.evaluate(predictions)\r\n",
+					"print(\"RMSE on our test set: %g\" % rmse)"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(predictions.select(\"Y\", \"prediction\"))"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"import pyspark.sql.functions as F\r\n",
+					"predictions_with_residuals = predictions.withColumn(\"residual\", (F.col(\"Y\") - F.col(\"prediction\")))\r\n",
+					"display(predictions_with_residuals.agg({'residual': 'mean'}))"
+				],
+				"execution_count": 19
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(predictions_with_residuals.select(\"Y\", \"residual\"))"
+				],
+				"execution_count": 20
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
 					""
 				],
 				"execution_count": null
