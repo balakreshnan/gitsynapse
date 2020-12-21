@@ -1,0 +1,27 @@
+{
+	"name": "mlopsdev",
+	"properties": {
+		"annotations": [],
+		"type": "AzureMLService",
+		"typeProperties": {
+			"subscriptionId": "c46a9435-c957-4e6c-a0f4-b9a597984773",
+			"resourceGroupName": "mlops",
+			"mlWorkspaceName": "mlopsdev",
+			"servicePrincipalId": "8a3ddafe-6dd6-48af-867e-d745232a1833",
+			"servicePrincipalKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "accvault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "scvpsecret"
+			},
+			"tenant": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/linkedservices"
+}
