@@ -1,0 +1,10 @@
+{
+	"name": "accvault1bb",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://accvault1.vault.azure.net/"
+		}
+	}
+}
