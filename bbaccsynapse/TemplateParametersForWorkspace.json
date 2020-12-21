@@ -56,6 +56,12 @@
 		"accml1_properties_typeProperties_tenant": {
 			"value": "72f988bf-86f1-41af-91ab-2d7cd011db47"
 		},
+		"accvault1_properties_typeProperties_baseUrl": {
+			"value": "https://accvault1.vault.azure.net/"
+		},
+		"accvault1bb_properties_typeProperties_baseUrl": {
+			"value": "https://accvault1.vault.azure.net/"
+		},
 		"bbaccsynapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://accsynapsestorage.dfs.core.windows.net"
 		},
@@ -67,6 +73,18 @@
 		},
 		"iiotdata_properties_typeProperties_url": {
 			"value": "https://iitostore.dfs.core.windows.net"
+		},
+		"mlopsdev_properties_typeProperties_subscriptionId": {
+			"value": "c46a9435-c957-4e6c-a0f4-b9a597984773"
+		},
+		"mlopsdev_properties_typeProperties_resourceGroupName": {
+			"value": "mlops"
+		},
+		"mlopsdev_properties_typeProperties_servicePrincipalId": {
+			"value": "8a3ddafe-6dd6-48af-867e-d745232a1833"
+		},
+		"mlopsdev_properties_typeProperties_tenant": {
+			"value": "72f988bf-86f1-41af-91ab-2d7cd011db47"
 		},
 		"nyc_tlc_green_sasUri": {
 			"value": ""

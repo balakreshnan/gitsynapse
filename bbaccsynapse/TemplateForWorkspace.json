@@ -75,6 +75,14 @@
 			"type": "string",
 			"defaultValue": "72f988bf-86f1-41af-91ab-2d7cd011db47"
 		},
+		"accvault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://accvault1.vault.azure.net/"
+		},
+		"accvault1bb_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://accvault1.vault.azure.net/"
+		},
 		"bbaccsynapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://accsynapsestorage.dfs.core.windows.net"
@@ -90,6 +98,22 @@
 		"iiotdata_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://iitostore.dfs.core.windows.net"
+		},
+		"mlopsdev_properties_typeProperties_subscriptionId": {
+			"type": "string",
+			"defaultValue": "c46a9435-c957-4e6c-a0f4-b9a597984773"
+		},
+		"mlopsdev_properties_typeProperties_resourceGroupName": {
+			"type": "string",
+			"defaultValue": "mlops"
+		},
+		"mlopsdev_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "8a3ddafe-6dd6-48af-867e-d745232a1833"
+		},
+		"mlopsdev_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "72f988bf-86f1-41af-91ab-2d7cd011db47"
 		},
 		"nyc_tlc_green_sasUri": {
 			"type": "secureString",
@@ -120,6 +144,38 @@
 				"annotations": []
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AMLtest1')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "AMLTest1",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "AMLtest1",
+								"type": "NotebookReference"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/notebooks/AMLtest1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/AzureMLTrain')]",
@@ -2462,6 +2518,32 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/accvault1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('accvault1_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/accvault1bb')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('accvault1bb_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/bbaccsynapse-WorkspaceDefaultSqlServer')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -2551,6 +2633,38 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/mlopsdev')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureMLService",
+				"typeProperties": {
+					"subscriptionId": "[parameters('mlopsdev_properties_typeProperties_subscriptionId')]",
+					"resourceGroupName": "[parameters('mlopsdev_properties_typeProperties_resourceGroupName')]",
+					"mlWorkspaceName": "mlopsdev",
+					"servicePrincipalId": "[parameters('mlopsdev_properties_typeProperties_servicePrincipalId')]",
+					"servicePrincipalKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "accvault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "scvpsecret"
+					},
+					"tenant": "[parameters('mlopsdev_properties_typeProperties_tenant')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/linkedServices/accvault1')]"
 			]
 		},
 		{
@@ -2928,6 +3042,75 @@
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/covid19input')]",
 				"[concat(variables('workspaceId'), '/datasets/coviddata19output')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/scvpsecret')]",
+			"type": "Microsoft.Synapse/workspaces/credentials",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "ServicePrincipal",
+				"typeProperties": {
+					"tenant": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+					"servicePrincipalId": "8a3ddafe-6dd6-48af-867e-d745232a1833",
+					"servicePrincipalKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "accvault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "scvpsecret"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/accvault1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/svcname')]",
+			"type": "Microsoft.Synapse/workspaces/credentials",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "ServicePrincipal",
+				"typeProperties": {
+					"tenant": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+					"servicePrincipalId": "8a3ddafe-6dd6-48af-867e-d745232a1833",
+					"servicePrincipalKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "accvault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "svcname"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/accvault1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/tenantid')]",
+			"type": "Microsoft.Synapse/workspaces/credentials",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "ServicePrincipal",
+				"typeProperties": {
+					"tenant": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+					"servicePrincipalId": "8a3ddafe-6dd6-48af-867e-d745232a1833",
+					"servicePrincipalKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "accvault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "tenantid"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/accvault1')]"
 			]
 		},
 		{
@@ -3916,6 +4099,10 @@
 				},
 				"metadata": {
 					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
 					"language_info": {
 						"name": "python"
 					},
@@ -4194,13 +4381,17 @@
 					},
 					{
 						"cell_type": "code",
-						"source": [],
+						"source": [
+							""
+						],
 						"outputs": [],
 						"execution_count": null
 					},
 					{
 						"cell_type": "code",
-						"source": [],
+						"source": [
+							""
+						],
 						"outputs": [],
 						"execution_count": null
 					}
