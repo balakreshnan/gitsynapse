@@ -107,40 +107,6 @@
 					"collapsed": true
 				},
 				"source": [
-					"from pyspark.sql import SparkSession\r\n",
-					"\r\n",
-					"# Azure storage access info\r\n",
-					"blob_account_name = blob_acc_name # replace with your blob name\r\n",
-					"blob_container_name = 'coviddata19' # replace with your container name\r\n",
-					"blob_relative_path = '' # replace with your relative folder path\r\n",
-					"linked_service_name = 'accvault1' # replace with your linked service name\r\n",
-					"\r\n",
-					"blob_sas_token = mssparkutils.credentials.getConnectionStringOrCreds(linked_service_name)\r\n",
-					"\r\n",
-					"# Allow SPARK to access from Blob remotely\r\n",
-					"\r\n",
-					"wasb_path = 'wasbs://%s@%s.blob.core.windows.net/%s' % (blob_container_name, blob_account_name, blob_relative_path)\r\n",
-					"\r\n",
-					"spark.conf.set('fs.azure.sas.%s.%s.blob.core.windows.net' % (blob_container_name, blob_account_name), blob_sas_token)\r\n",
-					"print('Remote blob path: ' + wasb_path)"
-				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
 					"blob_account_name = blob_acc_name\r\n",
 					"blob_container_name = 'coviddata19'\r\n",
 					"blob_relative_path = ''\r\n",
