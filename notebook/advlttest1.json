@@ -68,9 +68,9 @@
 					"collapsed": true
 				},
 				"source": [
-					"val customerDF = spark.read.parquet(\"/adventureworkslt/2020/12/29/SalesLT_Customer_20201229.parquet\")"
+					"val customerDF = spark.read.parquet(\"/adventureworkslt/2020/12/29/SalesLT_Customer_20201229.parquet \")"
 				],
-				"execution_count": 29
+				"execution_count": 36
 			},
 			{
 				"cell_type": "code",
@@ -91,10 +91,58 @@
 				},
 				"source": [
 					"%%pyspark\r\n",
-					"data_path = spark.read.load('abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_Customer_20201229.parquet', format='parquet')\r\n",
-					"data_path.show(100)"
+					"data_path = spark.read.load('adventureworkslt/2020/12/29/SalesLT_Customer_20201229.parquet ', format='parquet')\r\n",
+					"#data_path.show(100)"
 				],
-				"execution_count": 30
+				"execution_count": 37
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"val customerDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_Customer_20201229.parquet \")\r\n",
+					"val addressDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_Address_20201229.parquet \")\r\n",
+					"val customeraddressDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_CustomerAddress_20201229.parquet \")\r\n",
+					"val productDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_Product_20201229.parquet \")\r\n",
+					"val productcategoryDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_ProductCategory_20201229.parquet \")\r\n",
+					"val productdescriptionDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_ProductDescription_20201229.parquet \")\r\n",
+					"val productmodelDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_ProductModel_20201229.parquet \")\r\n",
+					"val productmodeldescriptionDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_ProductModelProductDescription_20201229.parquet \")\r\n",
+					"\r\n",
+					"val salesorderdetailDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_SalesOrderDetail_20201229.parquet \")\r\n",
+					"val salesorderheaderDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_SalesOrderHeader_20201229.parquet \")"
+				],
+				"execution_count": 39
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(customerDF)"
+				],
+				"execution_count": 40
 			},
 			{
 				"cell_type": "code",
