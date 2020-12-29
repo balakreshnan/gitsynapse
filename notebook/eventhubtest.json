@@ -52,7 +52,7 @@
 					"import org.apache.spark.eventhubs._\r\n",
 					"import org.apache.spark.sql.SparkSession"
 				],
-				"execution_count": 1
+				"execution_count": null
 			}
 		]
 	}
