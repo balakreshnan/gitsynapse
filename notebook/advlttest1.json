@@ -142,7 +142,7 @@
 				"source": [
 					"display(customerDF)"
 				],
-				"execution_count": 41
+				"execution_count": 46
 			},
 			{
 				"cell_type": "code",
