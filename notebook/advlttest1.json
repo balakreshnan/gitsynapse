@@ -68,9 +68,9 @@
 					"collapsed": true
 				},
 				"source": [
-					"val customerDF = spark.read.parquet(\"/adventureworkslt/2020/12/29/SalesLT_Customer_20201229.parquet\")"
+					"val customerDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/synapseroot/adventureworkslt/2020/12/29/SalesLT_Customer_20201229.parquet\")"
 				],
-				"execution_count": 12
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
