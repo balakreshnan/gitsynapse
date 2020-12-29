@@ -12,11 +12,11 @@
 			"driverCores": 16,
 			"executorMemory": "112g",
 			"executorCores": 16,
-			"numExecutors": 2,
+			"numExecutors": 5,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
-				"spark.dynamicAllocation.minExecutors": "2",
-				"spark.dynamicAllocation.maxExecutors": "2"
+				"spark.dynamicAllocation.minExecutors": "5",
+				"spark.dynamicAllocation.maxExecutors": "5"
 			}
 		},
 		"metadata": {
@@ -81,7 +81,7 @@
 					"\n",
 					"//nyc_tlc.show(5, truncate = false)"
 				],
-				"execution_count": 1
+				"execution_count": 18
 			},
 			{
 				"cell_type": "code",
@@ -96,7 +96,7 @@
 					"val nyc_tlc_df = nyc_tlc.filter((nyc_tlc(\"lpepPickupDatetime\") >= start_date) && (nyc_tlc(\"lpepPickupDatetime\") <= end_date)) \n",
 					"nyc_tlc_df.show(5, truncate = false)"
 				],
-				"execution_count": 2
+				"execution_count": 19
 			},
 			{
 				"cell_type": "markdown",
