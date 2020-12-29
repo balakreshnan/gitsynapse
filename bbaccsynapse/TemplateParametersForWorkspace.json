@@ -17,6 +17,9 @@
 		"accsqlsvr_connectionString": {
 			"value": ""
 		},
+		"advenworkLT_connectionString": {
+			"value": ""
+		},
 		"bbaccsynapse-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
 		},
