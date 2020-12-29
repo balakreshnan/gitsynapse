@@ -1,0 +1,30 @@
+{
+	"name": "advworksparquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"FileName": {
+				"type": "string",
+				"defaultValue": "@concat(item().Table_Schema,'_',item().Table_Name)"
+			}
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@{formatDateTime(utcnow(),'yyyy')}/@{formatDateTime(utcnow(),'MM')}/@{formatDateTime(utcnow(),'dd')}/@{concat(dataset().FileName,'_',formatDateTime(utcnow(),'yyyyMMdd'),'.parquet')} ",
+					"type": "Expression"
+				},
+				"folderPath": "adventureworkslt",
+				"fileSystem": "synapseroot"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

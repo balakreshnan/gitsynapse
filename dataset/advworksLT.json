@@ -1,0 +1,12 @@
+{
+	"name": "advworksLT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "advenworkLT",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
