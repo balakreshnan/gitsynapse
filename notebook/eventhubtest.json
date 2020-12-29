@@ -21,10 +21,6 @@
 		},
 		"metadata": {
 			"saveOutput": true,
-			"kernelspec": {
-				"name": "synapse_spark",
-				"display_name": "Synapse Spark"
-			},
 			"language_info": {
 				"name": "scala"
 			},
@@ -52,7 +48,7 @@
 					"import org.apache.spark.eventhubs._\r\n",
 					"import org.apache.spark.sql.SparkSession"
 				],
-				"execution_count": null
+				"execution_count": 1
 			}
 		]
 	}
