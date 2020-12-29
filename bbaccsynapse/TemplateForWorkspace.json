@@ -7839,22 +7839,44 @@
 			"properties": {
 				"nbformat": 4,
 				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "accsparkpools",
+					"type": "BigDataPoolReference"
+				},
 				"sessionProperties": {
-					"driverMemory": "28g",
-					"driverCores": 4,
-					"executorMemory": "28g",
-					"executorCores": 4,
-					"numExecutors": 2,
+					"driverMemory": "112g",
+					"driverCores": 16,
+					"executorMemory": "112g",
+					"executorCores": 16,
+					"numExecutors": 5,
 					"conf": {
 						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "2",
-						"spark.dynamicAllocation.maxExecutors": "2"
+						"spark.dynamicAllocation.minExecutors": "5",
+						"spark.dynamicAllocation.maxExecutors": "5"
 					}
 				},
 				"metadata": {
 					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_spark",
+						"display_name": "Synapse Spark"
+					},
 					"language_info": {
 						"name": "scala"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+						"name": "accsparkpools",
+						"type": "Spark",
+						"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 16,
+						"memory": 112
 					}
 				},
 				"cells": [
@@ -7894,7 +7916,7 @@
 							"//nyc_tlc.show(5, truncate = false)"
 						],
 						"outputs": [],
-						"execution_count": 3
+						"execution_count": 18
 					},
 					{
 						"cell_type": "code",
@@ -7910,7 +7932,7 @@
 							"nyc_tlc_df.show(5, truncate = false)"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 19
 					},
 					{
 						"cell_type": "markdown",
@@ -7936,7 +7958,7 @@
 							"                        )"
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
@@ -7945,7 +7967,7 @@
 							"// nyc_tlc_df_expand.show(5, truncate = false)"
 						],
 						"outputs": [],
-						"execution_count": 6
+						"execution_count": 4
 					},
 					{
 						"cell_type": "markdown",
@@ -7967,7 +7989,7 @@
 							"                     \"improvementSurcharge\", \"tollsAmount\", \"ehailFee\", \"tripType\" )"
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
@@ -7976,7 +7998,7 @@
 							"nyc_tlc_df_clean.show(5, truncate = false)"
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 6
 					},
 					{
 						"cell_type": "markdown",
@@ -8008,7 +8030,7 @@
 							"// hol_df.show(5, truncate = false)"
 						],
 						"outputs": [],
-						"execution_count": 9
+						"execution_count": 7
 					},
 					{
 						"cell_type": "markdown",
@@ -8027,7 +8049,7 @@
 							"hol_df_clean.show(5, truncate = false)"
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 8
 					},
 					{
 						"cell_type": "markdown",
@@ -8044,7 +8066,7 @@
 							"nyc_taxi_holiday_df.show(5,truncate = false)"
 						],
 						"outputs": [],
-						"execution_count": 11
+						"execution_count": 9
 					},
 					{
 						"cell_type": "code",
@@ -8056,7 +8078,7 @@
 							"result.show(5, truncate = false)"
 						],
 						"outputs": [],
-						"execution_count": 12
+						"execution_count": 10
 					},
 					{
 						"cell_type": "markdown",
@@ -8083,7 +8105,7 @@
 							"// isd.show(5, truncate = false)"
 						],
 						"outputs": [],
-						"execution_count": 13
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
@@ -8095,7 +8117,7 @@
 							"isd_df.show(5, truncate = false)"
 						],
 						"outputs": [],
-						"execution_count": 14
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
@@ -8112,7 +8134,7 @@
 							"                        )"
 						],
 						"outputs": [],
-						"execution_count": 15
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -8123,7 +8145,7 @@
 							"//weather_df_clean.show(5, truncate = false)"
 						],
 						"outputs": [],
-						"execution_count": 16
+						"execution_count": 14
 					},
 					{
 						"cell_type": "markdown",
@@ -8150,7 +8172,7 @@
 							"weather_df_grouped.show(5, truncate = false)"
 						],
 						"outputs": [],
-						"execution_count": 17
+						"execution_count": 15
 					},
 					{
 						"cell_type": "markdown",
@@ -8166,7 +8188,7 @@
 							"nyc_taxi_holiday_weather_df.cache()"
 						],
 						"outputs": [],
-						"execution_count": 18
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -8174,7 +8196,7 @@
 							"nyc_taxi_holiday_weather_df.show(5,truncate = false)"
 						],
 						"outputs": [],
-						"execution_count": 19
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -8183,7 +8205,7 @@
 							"display(nyc_taxi_holiday_weather_df.describe())"
 						],
 						"outputs": [],
-						"execution_count": 20
+						"execution_count": null
 					},
 					{
 						"cell_type": "markdown",
@@ -8204,7 +8226,7 @@
 							"            )"
 						],
 						"outputs": [],
-						"execution_count": 21
+						"execution_count": null
 					},
 					{
 						"cell_type": "markdown",
@@ -8222,7 +8244,7 @@
 							"spark.sql(\"DROP TABLE IF EXISTS NYCTaxi.nyc_taxi_holiday_weather\"); "
 						],
 						"outputs": [],
-						"execution_count": 22
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -8232,7 +8254,7 @@
 							"spark.sql(\"USE NYCTaxi\");"
 						],
 						"outputs": [],
-						"execution_count": 23
+						"execution_count": null
 					},
 					{
 						"cell_type": "markdown",
@@ -8250,7 +8272,7 @@
 							"final_results.show(5, truncate = false)"
 						],
 						"outputs": [],
-						"execution_count": 24
+						"execution_count": null
 					}
 				]
 			},
@@ -9045,6 +9067,647 @@
 						],
 						"outputs": [],
 						"execution_count": 23
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/advlttest1')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "accsparkpools",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "112g",
+					"driverCores": 16,
+					"executorMemory": "112g",
+					"executorCores": 16,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"language_info": {
+						"name": "scala"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+						"name": "accsparkpools",
+						"type": "Spark",
+						"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 16,
+						"memory": 112,
+						"extraHeader": {},
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"import spark.implicits._"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"val customerDF = spark.read.parquet(\"/adventureworkslt/2020/12/29/SalesLT_Customer_20201229.parquet \")"
+						],
+						"outputs": [],
+						"execution_count": 36
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": true
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"data_path = spark.read.load('adventureworkslt/2020/12/29/SalesLT_Customer_20201229.parquet ', format='parquet')\r\n",
+							"#data_path.show(100)"
+						],
+						"outputs": [],
+						"execution_count": 37
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"val customerDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_Customer_20201229.parquet \")\r\n",
+							"val addressDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_Address_20201229.parquet \")\r\n",
+							"val customeraddressDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_CustomerAddress_20201229.parquet \")\r\n",
+							"val productDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_Product_20201229.parquet \")\r\n",
+							"val productcategoryDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_ProductCategory_20201229.parquet \")\r\n",
+							"val productdescriptionDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_ProductDescription_20201229.parquet \")\r\n",
+							"val productmodelDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_ProductModel_20201229.parquet \")\r\n",
+							"val productmodeldescriptionDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_ProductModelProductDescription_20201229.parquet \")\r\n",
+							"\r\n",
+							"val salesorderdetailDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_SalesOrderDetail_20201229.parquet \")\r\n",
+							"val salesorderheaderDF = spark.read.parquet(\"abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_SalesOrderHeader_20201229.parquet \")"
+						],
+						"outputs": [],
+						"execution_count": 39
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(customerDF)"
+						],
+						"outputs": [],
+						"execution_count": 46
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"spark.Sql(\"CREATE DATABASE adventureworkslt\")"
+						],
+						"outputs": [],
+						"execution_count": 45
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/advtablecreationparquet')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "accsparkpools",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "112g",
+					"driverCores": 16,
+					"executorMemory": "112g",
+					"executorCores": 16,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+						"name": "accsparkpools",
+						"type": "Spark",
+						"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 16,
+						"memory": 112
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"microsoft": {
+								"language": "python"
+							}
+						},
+						"source": [
+							"%%pyspark\n",
+							"spark.sql(\"CREATE TABLE IF NOT EXISTS adventureworkslt.customer USING Parquet LOCATION 'abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_Customer_20201229.parquet '\")"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": true
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"spark.sql(\"CREATE TABLE IF NOT EXISTS adventureworkslt.address USING Parquet LOCATION 'abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_Address_20201229.parquet '\")"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": true
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"spark.sql(\"CREATE TABLE IF NOT EXISTS adventureworkslt.customeraddress USING Parquet LOCATION 'abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_CustomerAddress_20201229.parquet '\")"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": true
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"spark.sql(\"CREATE TABLE IF NOT EXISTS adventureworkslt.product USING Parquet LOCATION 'abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_Product_20201229.parquet '\")"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": true
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"spark.sql(\"CREATE TABLE IF NOT EXISTS adventureworkslt.productcategory USING Parquet LOCATION 'abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_ProductCategory_20201229.parquet '\")"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": true
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"spark.sql(\"CREATE TABLE IF NOT EXISTS adventureworkslt.productdescription USING Parquet LOCATION 'abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_ProductDescription_20201229.parquet '\")"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": true
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"spark.sql(\"CREATE TABLE IF NOT EXISTS adventureworkslt.productmodel USING Parquet LOCATION 'abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_ProductModel_20201229.parquet '\")"
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": true
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"spark.sql(\"CREATE TABLE IF NOT EXISTS adventureworkslt.productmodelproductdescription USING Parquet LOCATION 'abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_ProductModelProductDescription_20201229.parquet '\")"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": true
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"spark.sql(\"CREATE TABLE IF NOT EXISTS adventureworkslt.salesorderdetail USING Parquet LOCATION 'abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_SalesOrderDetail_20201229.parquet '\")"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": true
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"spark.sql(\"CREATE TABLE IF NOT EXISTS adventureworkslt.salesorderheader USING Parquet LOCATION 'abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/adventureworkslt/2020/12/29/SalesLT_SalesOrderHeader_20201229.parquet '\")"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"display(spark.sql(\"select * from adventureworkslt.customer\"))"
+						],
+						"outputs": [],
+						"execution_count": 13
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"display(spark.sql(\"select * from adventureworkslt.customeraddress\"))"
+						],
+						"outputs": [],
+						"execution_count": 14
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"display(spark.sql(\"select * from adventureworkslt.product\"))"
+						],
+						"outputs": [],
+						"execution_count": 15
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"display(spark.sql(\"select * from adventureworkslt.productmodel\"))"
+						],
+						"outputs": [],
+						"execution_count": 16
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"display(spark.sql(\"select * from adventureworkslt.salesorderdetail\"))"
+						],
+						"outputs": [],
+						"execution_count": 17
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"display(spark.sql(\"select * from adventureworkslt.salesorderheader\"))"
+						],
+						"outputs": [],
+						"execution_count": 18
 					}
 				]
 			},
