@@ -3,11 +3,15 @@
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "accsparkpools",
+			"type": "BigDataPoolReference"
+		},
 		"sessionProperties": {
-			"driverMemory": "28g",
-			"driverCores": 4,
-			"executorMemory": "28g",
-			"executorCores": 4,
+			"driverMemory": "112g",
+			"driverCores": 16,
+			"executorMemory": "112g",
+			"executorCores": 16,
 			"numExecutors": 2,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
@@ -17,8 +21,27 @@
 		},
 		"metadata": {
 			"saveOutput": true,
+			"kernelspec": {
+				"name": "synapse_spark",
+				"display_name": "Synapse Spark"
+			},
 			"language_info": {
 				"name": "scala"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+				"name": "accsparkpools",
+				"type": "Spark",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 16,
+				"memory": 112,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},
@@ -58,7 +81,7 @@
 					"\n",
 					"//nyc_tlc.show(5, truncate = false)"
 				],
-				"execution_count": 3
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -73,7 +96,7 @@
 					"val nyc_tlc_df = nyc_tlc.filter((nyc_tlc(\"lpepPickupDatetime\") >= start_date) && (nyc_tlc(\"lpepPickupDatetime\") <= end_date)) \n",
 					"nyc_tlc_df.show(5, truncate = false)"
 				],
-				"execution_count": 4
+				"execution_count": 2
 			},
 			{
 				"cell_type": "markdown",
@@ -98,7 +121,7 @@
 					"                                  .withColumn(\"country_code\",lit(\"US\"))\n",
 					"                        )"
 				],
-				"execution_count": 5
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -106,7 +129,7 @@
 					"// Display 5 rows\n",
 					"// nyc_tlc_df_expand.show(5, truncate = false)"
 				],
-				"execution_count": 6
+				"execution_count": 4
 			},
 			{
 				"cell_type": "markdown",
@@ -127,7 +150,7 @@
 					"                     \"storeAndFwdFlag\",\"paymentType\", \"fareAmount\", \"extra\", \"mtaTax\",\n",
 					"                     \"improvementSurcharge\", \"tollsAmount\", \"ehailFee\", \"tripType\" )"
 				],
-				"execution_count": 7
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -135,7 +158,7 @@
 					"// Display 5 rows\n",
 					"nyc_tlc_df_clean.show(5, truncate = false)"
 				],
-				"execution_count": 8
+				"execution_count": 6
 			},
 			{
 				"cell_type": "markdown",
@@ -166,7 +189,7 @@
 					"// Display 5 rows\n",
 					"// hol_df.show(5, truncate = false)"
 				],
-				"execution_count": 9
+				"execution_count": 7
 			},
 			{
 				"cell_type": "markdown",
@@ -184,7 +207,7 @@
 					"\n",
 					"hol_df_clean.show(5, truncate = false)"
 				],
-				"execution_count": 10
+				"execution_count": 8
 			},
 			{
 				"cell_type": "markdown",
@@ -200,7 +223,7 @@
 					"\n",
 					"nyc_taxi_holiday_df.show(5,truncate = false)"
 				],
-				"execution_count": 11
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -211,7 +234,7 @@
 					"val result = spark.sql(\"SELECT * from nyc_taxi_holiday_df WHERE holidayName is NOT NULL \")\n",
 					"result.show(5, truncate = false)"
 				],
-				"execution_count": 12
+				"execution_count": 10
 			},
 			{
 				"cell_type": "markdown",
@@ -237,7 +260,7 @@
 					"// Display 5 rows\n",
 					"// isd.show(5, truncate = false)"
 				],
-				"execution_count": 13
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -248,7 +271,7 @@
 					"// Display 5 rows\n",
 					"isd_df.show(5, truncate = false)"
 				],
-				"execution_count": 14
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -264,7 +287,7 @@
 					"                        .withColumnRenamed(\"datetime\",\"datetime_full\")\n",
 					"                        )"
 				],
-				"execution_count": 15
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
@@ -274,7 +297,7 @@
 					"\n",
 					"//weather_df_clean.show(5, truncate = false)"
 				],
-				"execution_count": 16
+				"execution_count": 14
 			},
 			{
 				"cell_type": "markdown",
@@ -300,7 +323,7 @@
 					"\n",
 					"weather_df_grouped.show(5, truncate = false)"
 				],
-				"execution_count": 17
+				"execution_count": 15
 			},
 			{
 				"cell_type": "markdown",
@@ -315,14 +338,14 @@
 					"val nyc_taxi_holiday_weather_df = nyc_taxi_holiday_df.join(weather_df_grouped, Seq(\"datetime\") ,\"left\")\n",
 					"nyc_taxi_holiday_weather_df.cache()"
 				],
-				"execution_count": 18
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"nyc_taxi_holiday_weather_df.show(5,truncate = false)"
 				],
-				"execution_count": 19
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -330,7 +353,7 @@
 					"// Run the describe() function on the new dataframe to see summary statistics for each field.\n",
 					"display(nyc_taxi_holiday_weather_df.describe())"
 				],
-				"execution_count": 20
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -350,7 +373,7 @@
 					"            filter(nyc_taxi_holiday_weather_df(\"totalAmount\") > 0)\n",
 					"            )"
 				],
-				"execution_count": 21
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -367,7 +390,7 @@
 				"source": [
 					"spark.sql(\"DROP TABLE IF EXISTS NYCTaxi.nyc_taxi_holiday_weather\"); "
 				],
-				"execution_count": 22
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -376,7 +399,7 @@
 					"spark.sql(\"CREATE DATABASE NYCTaxi\"); \n",
 					"spark.sql(\"USE NYCTaxi\");"
 				],
-				"execution_count": 23
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -393,7 +416,7 @@
 					"val final_results = spark.sql(\"SELECT COUNT(*) FROM nyc_taxi_holiday_weather\");\n",
 					"final_results.show(5, truncate = false)"
 				],
-				"execution_count": 24
+				"execution_count": null
 			}
 		]
 	}
