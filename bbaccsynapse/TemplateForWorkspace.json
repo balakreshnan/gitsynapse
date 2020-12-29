@@ -679,7 +679,8 @@
 								"referenceName": "advworksLT",
 								"type": "DatasetReference",
 								"parameters": {}
-							}
+							},
+							"firstRowOnly": false
 						}
 					},
 					{
@@ -696,7 +697,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('GetTables').output.value ",
+								"value": "@activity('GetTables').output.value",
 								"type": "Expression"
 							},
 							"activities": [
