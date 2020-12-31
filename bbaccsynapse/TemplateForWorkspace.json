@@ -214,6 +214,38 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Covid19AutoMLSpark')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Covid19AutoMLSpark",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "Covid19AutoMLSpark",
+								"type": "NotebookReference"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/notebooks/Covid19AutoMLSpark')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/E2ETest')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
