@@ -1,0 +1,27 @@
+{
+	"name": "Covid19AutoMLSpark",
+	"properties": {
+		"activities": [
+			{
+				"name": "Covid19AutoMLSpark",
+				"type": "SynapseNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "Covid19AutoMLSpark",
+						"type": "NotebookReference"
+					}
+				}
+			}
+		],
+		"annotations": []
+	}
+}
