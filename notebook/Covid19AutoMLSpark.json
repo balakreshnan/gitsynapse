@@ -8,15 +8,15 @@
 			"type": "BigDataPoolReference"
 		},
 		"sessionProperties": {
-			"driverMemory": "28g",
-			"driverCores": 4,
-			"executorMemory": "28g",
-			"executorCores": 4,
-			"numExecutors": 2,
+			"driverMemory": "112g",
+			"driverCores": 16,
+			"executorMemory": "112g",
+			"executorCores": 16,
+			"numExecutors": 5,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
-				"spark.dynamicAllocation.minExecutors": "2",
-				"spark.dynamicAllocation.maxExecutors": "2"
+				"spark.dynamicAllocation.minExecutors": "5",
+				"spark.dynamicAllocation.maxExecutors": "5"
 			}
 		},
 		"metadata": {
@@ -55,7 +55,7 @@
 					"from azureml.train.automl import AutoMLConfig\n",
 					"from azureml.data.dataset_factory import TabularDatasetFactory"
 				],
-				"execution_count": 1
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -68,7 +68,7 @@
 					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
 					"experiment = Experiment(ws, experiment_name)"
 				],
-				"execution_count": 2
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -88,7 +88,7 @@
 					"df = spark.sql(\"SELECT * FROM default.covid19\")\r\n",
 					"from pyspark.sql.types import *"
 				],
-				"execution_count": 6
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
@@ -109,7 +109,7 @@
 					"df = df.withColumn(\"_c6\", df[\"_c6\"].cast(DoubleType()).alias(\"_c6\"))\r\n",
 					"df = df.withColumn(\"_c7\", df[\"_c7\"].cast(DoubleType()).alias(\"_c7\"))"
 				],
-				"execution_count": 7
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -117,7 +117,7 @@
 					"datastore = Datastore.get_default(ws)\n",
 					"dataset = TabularDatasetFactory.register_spark_dataframe(df, datastore, name = experiment_name + \"-dataset\")"
 				],
-				"execution_count": 9
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -131,14 +131,14 @@
 					"                             max_concurrent_iterations = 2,\n",
 					"                             enable_onnx_compatible_models = False)"
 				],
-				"execution_count": 10
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"run = experiment.submit(automl_config)"
 				],
-				"execution_count": 11
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -155,9 +155,9 @@
 					"collapsed": true
 				},
 				"source": [
-					"run.wait_for_completion(show_output=True)"
+					"run.wait_for_completion(show_output=False)"
 				],
-				"execution_count": 12
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
