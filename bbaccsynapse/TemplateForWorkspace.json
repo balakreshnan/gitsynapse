@@ -6420,23 +6420,19 @@
 					"type": "BigDataPoolReference"
 				},
 				"sessionProperties": {
-					"driverMemory": "28g",
-					"driverCores": 4,
-					"executorMemory": "28g",
-					"executorCores": 4,
-					"numExecutors": 2,
+					"driverMemory": "112g",
+					"driverCores": 16,
+					"executorMemory": "112g",
+					"executorCores": 16,
+					"numExecutors": 5,
 					"conf": {
 						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "2",
-						"spark.dynamicAllocation.maxExecutors": "2"
+						"spark.dynamicAllocation.minExecutors": "5",
+						"spark.dynamicAllocation.maxExecutors": "5"
 					}
 				},
 				"metadata": {
 					"saveOutput": true,
-					"kernelspec": {
-						"name": "synapse_pyspark",
-						"display_name": "Synapse PySpark"
-					},
 					"language_info": {
 						"name": "python"
 					},
@@ -6452,12 +6448,16 @@
 						"sparkVersion": "2.4",
 						"nodeCount": 10,
 						"cores": 16,
-						"memory": 112
-					}
+						"memory": 112,
+						"extraHeader": {},
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"import azureml.core\n",
 							"\n",
@@ -6466,10 +6466,11 @@
 							"from azureml.data.dataset_factory import TabularDatasetFactory"
 						],
 						"outputs": [],
-						"execution_count": 1
+						"execution_count": 6
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"subscription_id = \"c46a9435-c957-4e6c-a0f4-b9a597984773\"\n",
 							"resource_group = \"accenture\"\n",
@@ -6480,7 +6481,7 @@
 							"experiment = Experiment(ws, experiment_name)"
 						],
 						"outputs": [],
-						"execution_count": 2
+						"execution_count": 7
 					},
 					{
 						"cell_type": "code",
@@ -6501,7 +6502,7 @@
 							"from pyspark.sql.types import *"
 						],
 						"outputs": [],
-						"execution_count": 6
+						"execution_count": 8
 					},
 					{
 						"cell_type": "code",
@@ -6523,19 +6524,21 @@
 							"df = df.withColumn(\"_c7\", df[\"_c7\"].cast(DoubleType()).alias(\"_c7\"))"
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 9
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"datastore = Datastore.get_default(ws)\n",
 							"dataset = TabularDatasetFactory.register_spark_dataframe(df, datastore, name = experiment_name + \"-dataset\")"
 						],
 						"outputs": [],
-						"execution_count": 9
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"automl_config = AutoMLConfig(spark_context = sc,\n",
 							"                             task = \"regression\",\n",
@@ -6547,15 +6550,16 @@
 							"                             enable_onnx_compatible_models = False)"
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"run = experiment.submit(automl_config)"
 						],
 						"outputs": [],
-						"execution_count": 11
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
@@ -6572,13 +6576,14 @@
 							"collapsed": true
 						},
 						"source": [
-							"run.wait_for_completion(show_output=True)"
+							"run.wait_for_completion(show_output=False)"
 						],
 						"outputs": [],
-						"execution_count": 12
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"displayHTML(\"<a href={} target='_blank'>Your experiment in Azure Machine Learning portal: {}</a>\".format(run.get_portal_url(), run.id))"
 						],
@@ -6587,6 +6592,7 @@
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"run.wait_for_completion()\n",
 							"\n",
