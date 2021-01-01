@@ -6424,11 +6424,11 @@
 					"driverCores": 16,
 					"executorMemory": "112g",
 					"executorCores": 16,
-					"numExecutors": 5,
+					"numExecutors": 6,
 					"conf": {
 						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "5",
-						"spark.dynamicAllocation.maxExecutors": "5"
+						"spark.dynamicAllocation.minExecutors": "6",
+						"spark.dynamicAllocation.maxExecutors": "6"
 					}
 				},
 				"metadata": {
@@ -6466,7 +6466,7 @@
 							"from azureml.data.dataset_factory import TabularDatasetFactory"
 						],
 						"outputs": [],
-						"execution_count": 6
+						"execution_count": 2
 					},
 					{
 						"cell_type": "code",
@@ -6481,7 +6481,7 @@
 							"experiment = Experiment(ws, experiment_name)"
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
@@ -6502,7 +6502,7 @@
 							"from pyspark.sql.types import *"
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
@@ -6524,7 +6524,7 @@
 							"df = df.withColumn(\"_c7\", df[\"_c7\"].cast(DoubleType()).alias(\"_c7\"))"
 						],
 						"outputs": [],
-						"execution_count": 9
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
@@ -6534,7 +6534,7 @@
 							"dataset = TabularDatasetFactory.register_spark_dataframe(df, datastore, name = experiment_name + \"-dataset\")"
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 6
 					},
 					{
 						"cell_type": "code",
@@ -6546,7 +6546,7 @@
 							"                             label_column_name = \"_c7\",\n",
 							"                             primary_metric = \"spearman_correlation\",\n",
 							"                             experiment_timeout_hours = 3,\n",
-							"                             max_concurrent_iterations = 2,\n",
+							"                             max_concurrent_iterations = 6,\n",
 							"                             enable_onnx_compatible_models = False)"
 						],
 						"outputs": [],
