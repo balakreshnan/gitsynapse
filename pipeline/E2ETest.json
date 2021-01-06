@@ -86,6 +86,10 @@
 					"secureInput": false
 				},
 				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "accsynapsepools",
+					"type": "SqlPoolReference"
+				},
 				"typeProperties": {
 					"storedProcedureName": "[dbo].[dropdailyaggr]"
 				}
