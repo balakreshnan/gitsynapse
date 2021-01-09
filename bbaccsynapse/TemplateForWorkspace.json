@@ -606,6 +606,49 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/NYCYellowRank')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "NYCyellow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "NYCyellow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 32,
+								"computeType": "MemoryOptimized"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/dataflows/NYCyellow')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/NycYellow')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -1203,6 +1246,149 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/notebooks/test1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/NYCYellowDS')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "nyctaxiyellow",
+						"fileSystem": "synapseroot"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "vendorID",
+						"type": "UTF8"
+					},
+					{
+						"name": "tpepPickupDateTime",
+						"type": "INT96"
+					},
+					{
+						"name": "tpepDropoffDateTime",
+						"type": "INT96"
+					},
+					{
+						"name": "passengerCount",
+						"type": "INT32"
+					},
+					{
+						"name": "tripDistance",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "puLocationId",
+						"type": "UTF8"
+					},
+					{
+						"name": "doLocationId",
+						"type": "UTF8"
+					},
+					{
+						"name": "startLon",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "startLat",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "endLon",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "endLat",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "rateCodeId",
+						"type": "INT32"
+					},
+					{
+						"name": "storeAndFwdFlag",
+						"type": "UTF8"
+					},
+					{
+						"name": "paymentType",
+						"type": "UTF8"
+					},
+					{
+						"name": "fareAmount",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "extra",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "mtaTax",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "improvementSurcharge",
+						"type": "UTF8"
+					},
+					{
+						"name": "tipAmount",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "tollsAmount",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "totalAmount",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "puYear",
+						"type": "INT32"
+					},
+					{
+						"name": "puMonth",
+						"type": "INT32"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/bbaccsynapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/NYCYellowRankDS')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "NYCYellowRank",
+						"fileSystem": "synapseroot"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/bbaccsynapse-WorkspaceDefaultStorage')]"
 			]
 		},
 		{
@@ -3114,6 +3300,50 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/NYCyellow')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "NYCYellowDS",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "NYCYellowRankDS",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Select1"
+						},
+						{
+							"name": "Rank1"
+						},
+						{
+							"name": "Aggregate1"
+						}
+					],
+					"script": "source(output(\n\t\tvendorID as string,\n\t\ttpepPickupDateTime as timestamp,\n\t\ttpepDropoffDateTime as timestamp,\n\t\tpassengerCount as integer,\n\t\ttripDistance as double,\n\t\tpuLocationId as string,\n\t\tdoLocationId as string,\n\t\tstartLon as double,\n\t\tstartLat as double,\n\t\tendLon as double,\n\t\tendLat as double,\n\t\trateCodeId as integer,\n\t\tstoreAndFwdFlag as string,\n\t\tpaymentType as string,\n\t\tfareAmount as double,\n\t\textra as double,\n\t\tmtaTax as double,\n\t\timprovementSurcharge as string,\n\t\ttipAmount as double,\n\t\ttollsAmount as double,\n\t\ttotalAmount as double,\n\t\tpuYear as integer,\n\t\tpuMonth as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> source1\nsource1 select(mapColumn(\n\t\tvendorID,\n\t\ttpepPickupDateTime,\n\t\ttpepDropoffDateTime,\n\t\tpassengerCount,\n\t\ttripDistance,\n\t\tpuLocationId,\n\t\tdoLocationId,\n\t\tstartLon,\n\t\tstartLat,\n\t\tendLon,\n\t\tendLat,\n\t\trateCodeId,\n\t\tstoreAndFwdFlag,\n\t\tpaymentType,\n\t\tfareAmount,\n\t\textra,\n\t\tmtaTax,\n\t\timprovementSurcharge,\n\t\ttipAmount,\n\t\ttollsAmount,\n\t\ttotalAmount,\n\t\tpuYear,\n\t\tpuMonth\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 rank(asc(passengerCount, true),\n\tasc(tripDistance, true),\n\toutput(tblRank as long)) ~> Rank1\nRank1 aggregate(groupBy(puYear,\n\t\tpuMonth),\n\tfareAmount = sum(fareAmount),\n\t\ttotalAmount = sum(totalAmount),\n\t\ttipAmount = sum(tipAmount),\n\t\ttblRank = sum(tblRank)) ~> Aggregate1\nAggregate1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['nycyellorankaggr'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/NYCYellowDS')]",
+				"[concat(variables('workspaceId'), '/datasets/NYCYellowRankDS')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/dataflow')]",
 			"type": "Microsoft.Synapse/workspaces/dataflows",
 			"apiVersion": "2019-06-01-preview",
@@ -3635,6 +3865,25 @@
 					"currentConnection": {
 						"name": "accsynapsepools",
 						"type": "SqlPool"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/NYCYellow')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "use nyctaxi\nGO\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK     'https://accsynapsestorage.blob.core.windows.net/synapseroot/nyctaxiyellow/*',\n        FORMAT = 'parquet'\n    ) AS [result];\n\nSELECT\n    PuYear, PuMonth, sum(FareAmount) as FareAmount, sum(TotalAmount) as TotalAmount\nFROM\n    OPENROWSET(\n        BULK     'https://accsynapsestorage.blob.core.windows.net/synapseroot/nyctaxiyellow/*',\n        FORMAT = 'parquet'\n    ) AS [result] \n    Group by PuYear, PuMonth\n    Order by PuYear, PuMonth;\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"name": "nyctaxi",
+						"type": "SqlOnDemand"
 					}
 				},
 				"type": "SqlQuery"
