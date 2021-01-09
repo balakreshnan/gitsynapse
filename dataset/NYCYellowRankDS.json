@@ -1,0 +1,20 @@
+{
+	"name": "NYCYellowRankDS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "NYCYellowRank",
+				"fileSystem": "synapseroot"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

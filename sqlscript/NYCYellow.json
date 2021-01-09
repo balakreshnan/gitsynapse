@@ -1,0 +1,16 @@
+{
+	"name": "NYCYellow",
+	"properties": {
+		"content": {
+			"query": "use nyctaxi\nGO\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK     'https://accsynapsestorage.blob.core.windows.net/synapseroot/nyctaxiyellow/*',\n        FORMAT = 'parquet'\n    ) AS [result];\n\nSELECT\n    PuYear, PuMonth, sum(FareAmount) as FareAmount, sum(TotalAmount) as TotalAmount\nFROM\n    OPENROWSET(\n        BULK     'https://accsynapsestorage.blob.core.windows.net/synapseroot/nyctaxiyellow/*',\n        FORMAT = 'parquet'\n    ) AS [result] \n    Group by PuYear, PuMonth\n    Order by PuYear, PuMonth;\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "nyctaxi",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
