@@ -614,7 +614,14 @@
 					{
 						"name": "NYCyellow",
 						"type": "ExecuteDataFlow",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "cleanUpNYCYellowRank",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -640,12 +647,39 @@
 							},
 							"traceLevel": "Fine"
 						}
+					},
+					{
+						"name": "cleanUpNYCYellowRank",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "NYCYellowRankDS",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
 					}
 				],
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/dataflows/NYCyellow')]"
+				"[concat(variables('workspaceId'), '/dataflows/NYCyellow')]",
+				"[concat(variables('workspaceId'), '/datasets/NYCYellowRankDS')]"
 			]
 		},
 		{
@@ -722,50 +756,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/Pipeline 1testacce')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "SimpleSelect",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "dataflow",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"annotations": [],
-				"lastPublishTime": "2020-10-06T12:52:38Z"
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/dataflows/dataflow')]"
 			]
 		},
 		{
@@ -972,155 +962,6 @@
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/dataflows/hashtest')]",
 				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/devopsdatapipeline')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "devopsjsondf",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "devopsjsondf",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {},
-									"sink2": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 16,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "devopsenv",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "devopsjsondf",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "devopsenv",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"source2": {},
-									"source3": {},
-									"source4": {},
-									"sink1": {},
-									"sink2": {},
-									"sink3": {},
-									"sink4": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 16,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "dependenciesmeta",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "devopsenv",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "dependenciesmeta",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "Execute Pipeline1",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "dependenciesmeta",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "ForEachTest",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"annotations": [],
-				"lastPublishTime": "2020-10-19T22:39:20Z"
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/dataflows/devopsjsondf')]",
-				"[concat(variables('workspaceId'), '/dataflows/devopsenv')]",
-				"[concat(variables('workspaceId'), '/dataflows/dependenciesmeta')]",
-				"[concat(variables('workspaceId'), '/pipelines/ForEachTest')]"
 			]
 		},
 		{
@@ -3332,7 +3173,7 @@
 							"name": "Aggregate1"
 						}
 					],
-					"script": "source(output(\n\t\tvendorID as string,\n\t\ttpepPickupDateTime as timestamp,\n\t\ttpepDropoffDateTime as timestamp,\n\t\tpassengerCount as integer,\n\t\ttripDistance as double,\n\t\tpuLocationId as string,\n\t\tdoLocationId as string,\n\t\tstartLon as double,\n\t\tstartLat as double,\n\t\tendLon as double,\n\t\tendLat as double,\n\t\trateCodeId as integer,\n\t\tstoreAndFwdFlag as string,\n\t\tpaymentType as string,\n\t\tfareAmount as double,\n\t\textra as double,\n\t\tmtaTax as double,\n\t\timprovementSurcharge as string,\n\t\ttipAmount as double,\n\t\ttollsAmount as double,\n\t\ttotalAmount as double,\n\t\tpuYear as integer,\n\t\tpuMonth as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> source1\nsource1 select(mapColumn(\n\t\tvendorID,\n\t\ttpepPickupDateTime,\n\t\ttpepDropoffDateTime,\n\t\tpassengerCount,\n\t\ttripDistance,\n\t\tpuLocationId,\n\t\tdoLocationId,\n\t\tstartLon,\n\t\tstartLat,\n\t\tendLon,\n\t\tendLat,\n\t\trateCodeId,\n\t\tstoreAndFwdFlag,\n\t\tpaymentType,\n\t\tfareAmount,\n\t\textra,\n\t\tmtaTax,\n\t\timprovementSurcharge,\n\t\ttipAmount,\n\t\ttollsAmount,\n\t\ttotalAmount,\n\t\tpuYear,\n\t\tpuMonth\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 aggregate(groupBy(puYear,\n\t\tpuMonth),\n\tfareAmount = sum(fareAmount),\n\t\ttotalAmount = sum(totalAmount),\n\t\ttipAmount = sum(tipAmount)) ~> Aggregate1\nAggregate1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+					"script": "source(output(\n\t\tvendorID as string,\n\t\ttpepPickupDateTime as timestamp,\n\t\ttpepDropoffDateTime as timestamp,\n\t\tpassengerCount as integer,\n\t\ttripDistance as double,\n\t\tpuLocationId as string,\n\t\tdoLocationId as string,\n\t\tstartLon as double,\n\t\tstartLat as double,\n\t\tendLon as double,\n\t\tendLat as double,\n\t\trateCodeId as integer,\n\t\tstoreAndFwdFlag as string,\n\t\tpaymentType as string,\n\t\tfareAmount as double,\n\t\textra as double,\n\t\tmtaTax as double,\n\t\timprovementSurcharge as string,\n\t\ttipAmount as double,\n\t\ttollsAmount as double,\n\t\ttotalAmount as double,\n\t\tpuYear as integer,\n\t\tpuMonth as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> source1\nsource1 select(mapColumn(\n\t\tvendorID,\n\t\ttpepPickupDateTime,\n\t\ttpepDropoffDateTime,\n\t\tpassengerCount,\n\t\ttripDistance,\n\t\tpuLocationId,\n\t\tdoLocationId,\n\t\tstartLon,\n\t\tstartLat,\n\t\tendLon,\n\t\tendLat,\n\t\trateCodeId,\n\t\tstoreAndFwdFlag,\n\t\tpaymentType,\n\t\tfareAmount,\n\t\textra,\n\t\tmtaTax,\n\t\timprovementSurcharge,\n\t\ttipAmount,\n\t\ttollsAmount,\n\t\ttotalAmount,\n\t\tpuYear,\n\t\tpuMonth\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 aggregate(groupBy(puYear,\n\t\tpuMonth),\n\tfareAmount = sum(fareAmount),\n\t\ttotalAmount = sum(totalAmount),\n\t\ttipAmount = sum(tipAmount),\n\tpartitionBy('hash', 1)) ~> Aggregate1\nAggregate1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['yearmonthaggr'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
 				}
 			},
 			"dependsOn": [
@@ -3341,7 +3182,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/dataflow')]",
+			"name": "[concat(parameters('workspaceName'), '/devopsmt')]",
 			"type": "Microsoft.Synapse/workspaces/dataflows",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -3350,7 +3191,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "input",
+								"referenceName": "devopsjsoninput",
 								"type": "DatasetReference"
 							},
 							"name": "source1"
@@ -3359,7 +3200,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "output",
+								"referenceName": "deveopsjsonoutputdepend",
 								"type": "DatasetReference"
 							},
 							"name": "sink1"
@@ -3370,185 +3211,12 @@
 							"name": "Select1"
 						}
 					],
-					"script": "source(output(\n\t\t{Order Key|City Key|Customer Key|Stock Item Key|Order Date Key|Picked Date Key|Salesperson Key|Picker Key|WWI Order ID|WWI Backorder ID|Description|Package|Quantity|Unit Price|Tax Rate|Total Excluding Tax|Tax Amount|Total Including Tax|Lineage Key} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 select(mapColumn(\n\t\t{Order Key|City Key|Customer Key|Stock Item Key|Order Date Key|Picked Date Key|Salesperson Key|Picker Key|WWI Order ID|WWI Backorder ID|Description|Package|Quantity|Unit Price|Tax Rate|Total Excluding Tax|Tax Amount|Total Including Tax|Lineage Key}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/input')]",
-				"[concat(variables('workspaceId'), '/datasets/output')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/dependenciesmeta')]",
-			"type": "Microsoft.Synapse/workspaces/dataflows",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "metainput",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "devopsjsoninput",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Flatten1"
-						}
-					],
-					"script": "source(output(\n\t\tAirID as string,\n\t\tComponentName as string,\n\t\tVersion as string,\n\t\tEnvironment as string[],\n\t\tEndpoints as string[],\n\t\tPlatform as string,\n\t\tDependencies as (name as string, version as string, type as string, sourceType as string, source as string, collectionSource as string, meta as ({} as string), custom as (Name as string, Endpoints as string[], {InUse[Yes/No]} as boolean))[],\n\t\tBuilderMeta as (MetadataBuilder as (version as string, updated as string), DateTime as string, VSTS as (Build as (BUILD_REPOSITORY_URI as string, BUILD_SOURCEBRANCHNAME as string, BUILD_ARTIFACTSTAGINGDIRECTORY as string, BUILD_BUILDID as string, BUILD_BUILDNUMBER as string, BUILD_BUILDURI as string, BUILD_BINARIESDIRECTORY as string, BUILD_DEFINITIONNAME as string, BUILD_DEFINITIONVERSION as string, BUILD_REASON as string, BUILD_REPOSITORY_CLEAN as string, BUILD_REPOSITORY_LOCALPATH as string, BUILD_REPOSITORY_ID as string, BUILD_REPOSITORY_NAME as string, BUILD_REPOSITORY_PROVIDER as string), Agent as (AGENT_BUILDDIRECTORY as string, AGENT_HOMEDIRECTORY as string, AGENT_ID as string, AGENT_JOBNAME as string, AGENT_JOBSTATUS as string, AGENT_MACHINENAME as string, AGENT_NAME as string, AGENT_OS as string, AGENT_OSARCHITECTURE as string, AGENT_TOOLSDIRECTORY as string, AGENT_WORKFOLDER as string), System as (PIPELINE_WORKSPACE as string, SYSTEM_COLLECTIONID as string, SYSTEM_DEFAULTWORKINGDIRECTORY as string, SYSTEM_DEFINITIONID as string, SYSTEM_HOSTTYPE as string, SYSTEM_PULLREQUEST_ISFORK as string, SYSTEM_PULLREQUEST_PULLREQUESTID as string, SYSTEM_PULLREQUEST_PULLREQUESTNUMBER as string, SYSTEM_PULLREQUEST_SOURCEBRANCH as string, SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI as string, SYSTEM_PULLREQUEST_TARGETBRANCH as string, SYSTEM_TASKDEFINITIONSURI as string, SYSTEM_TASKDISPLAYNAME as string, SYSTEM_TASKINSTANCEID as string, SYSTEM_TASKINSTANCENAME as string, SYSTEM_TEAMFOUNDATIONCOLLECTIONURI as string, SYSTEM_TEAMPROJECT as string, SYSTEM_TEAMPROJECTID as string, TASK_DISPLAYNAME as string))),\n\t\tEso as string[],\n\t\tServices as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tTemplates as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tMRDR as string[],\n\t\tUnsupportedFiles as string[],\n\t\tErrors as (CRITICAL as (Source as string, Time as string, Message as string)[], ERROR as string[], WARNING as (Source as string, Time as string, Message as string)[]),\n\t\tFilteredData as string[],\n\t\tDataSource as string[]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'singleDocument') ~> source1\nsource1 foldDown(unroll(Dependencies.custom.Endpoints),\n\tmapColumn(\n\t\tAirID,\n\t\tComponentName,\n\t\tVersion,\n\t\tPlatform,\n\t\t{InUse[Yes/No]} = Dependencies.custom.{InUse[Yes/No]}\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nFlatten1 sink(input(\n\t\tAirID as string,\n\t\tComponentName as string,\n\t\tVersion as string,\n\t\tEnvironment as string[],\n\t\tEndpoints as string[],\n\t\tPlatform as string,\n\t\tDependencies as (name as string, version as string, type as string, sourceType as string, source as string, collectionSource as string, meta as ({} as string), custom as (Name as string, Endpoints as string[], {InUse[Yes/No]} as boolean))[],\n\t\tBuilderMeta as (MetadataBuilder as (version as string, updated as string), DateTime as string, VSTS as (Build as (BUILD_REPOSITORY_URI as string, BUILD_SOURCEBRANCHNAME as string, BUILD_ARTIFACTSTAGINGDIRECTORY as string, BUILD_BUILDID as string, BUILD_BUILDNUMBER as string, BUILD_BUILDURI as string, BUILD_BINARIESDIRECTORY as string, BUILD_DEFINITIONNAME as string, BUILD_DEFINITIONVERSION as string, BUILD_REASON as string, BUILD_REPOSITORY_CLEAN as string, BUILD_REPOSITORY_LOCALPATH as string, BUILD_REPOSITORY_ID as string, BUILD_REPOSITORY_NAME as string, BUILD_REPOSITORY_PROVIDER as string), Agent as (AGENT_BUILDDIRECTORY as string, AGENT_HOMEDIRECTORY as string, AGENT_ID as string, AGENT_JOBNAME as string, AGENT_JOBSTATUS as string, AGENT_MACHINENAME as string, AGENT_NAME as string, AGENT_OS as string, AGENT_OSARCHITECTURE as string, AGENT_TOOLSDIRECTORY as string, AGENT_WORKFOLDER as string), System as (PIPELINE_WORKSPACE as string, SYSTEM_COLLECTIONID as string, SYSTEM_DEFAULTWORKINGDIRECTORY as string, SYSTEM_DEFINITIONID as string, SYSTEM_HOSTTYPE as string, SYSTEM_PULLREQUEST_ISFORK as string, SYSTEM_PULLREQUEST_PULLREQUESTID as string, SYSTEM_PULLREQUEST_PULLREQUESTNUMBER as string, SYSTEM_PULLREQUEST_SOURCEBRANCH as string, SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI as string, SYSTEM_PULLREQUEST_TARGETBRANCH as string, SYSTEM_TASKDEFINITIONSURI as string, SYSTEM_TASKDISPLAYNAME as string, SYSTEM_TASKINSTANCEID as string, SYSTEM_TASKINSTANCENAME as string, SYSTEM_TEAMFOUNDATIONCOLLECTIONURI as string, SYSTEM_TEAMPROJECT as string, SYSTEM_TEAMPROJECTID as string, TASK_DISPLAYNAME as string))),\n\t\tEso as string[],\n\t\tServices as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tTemplates as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tMRDR as string[],\n\t\tUnsupportedFiles as string[],\n\t\tErrors as (CRITICAL as (Source as string, Time as string, Message as string)[], ERROR as string[], WARNING as (Source as string, Time as string, Message as string)[]),\n\t\tFilteredData as string[],\n\t\tDataSource as string[]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['dependmetaoutput.json'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/metainput')]",
-				"[concat(variables('workspaceId'), '/datasets/devopsjsoninput')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/devopsenv')]",
-			"type": "Microsoft.Synapse/workspaces/dataflows",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "devopsjsoninput",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						},
-						{
-							"dataset": {
-								"referenceName": "devopsjsoninput",
-								"type": "DatasetReference"
-							},
-							"name": "source2"
-						},
-						{
-							"dataset": {
-								"referenceName": "devopsjsoninput",
-								"type": "DatasetReference"
-							},
-							"name": "source3"
-						},
-						{
-							"dataset": {
-								"referenceName": "devopsjsoninput",
-								"type": "DatasetReference"
-							},
-							"name": "source4"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "deveopsjsonoutputdepend",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						},
-						{
-							"dataset": {
-								"referenceName": "deveopsjsonoutputdepend",
-								"type": "DatasetReference"
-							},
-							"name": "sink2"
-						},
-						{
-							"dataset": {
-								"referenceName": "deveopsjsonoutputdepend",
-								"type": "DatasetReference"
-							},
-							"name": "sink3"
-						},
-						{
-							"dataset": {
-								"referenceName": "deveopsjsonoutputdepend",
-								"type": "DatasetReference"
-							},
-							"name": "sink4"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Services"
-						},
-						{
-							"name": "Templates"
-						},
-						{
-							"name": "ErrorCritical"
-						},
-						{
-							"name": "ErrorWarnings"
-						}
-					],
-					"script": "source(output(\n\t\tAirID as string,\n\t\tComponentName as string,\n\t\tVersion as string,\n\t\tEnvironment as string[],\n\t\tEndpoints as string[],\n\t\tPlatform as string,\n\t\tDependencies as (name as string, version as string, type as string, sourceType as string, source as string, collectionSource as string, meta as ({} as string), custom as (Name as string, Endpoints as string[], {InUse[Yes/No]} as boolean))[],\n\t\tBuilderMeta as (MetadataBuilder as (version as string, updated as string), DateTime as string, VSTS as (Build as (BUILD_REPOSITORY_URI as string, BUILD_SOURCEBRANCHNAME as string, BUILD_ARTIFACTSTAGINGDIRECTORY as string, BUILD_BUILDID as string, BUILD_BUILDNUMBER as string, BUILD_BUILDURI as string, BUILD_BINARIESDIRECTORY as string, BUILD_DEFINITIONNAME as string, BUILD_DEFINITIONVERSION as string, BUILD_REASON as string, BUILD_REPOSITORY_CLEAN as string, BUILD_REPOSITORY_LOCALPATH as string, BUILD_REPOSITORY_ID as string, BUILD_REPOSITORY_NAME as string, BUILD_REPOSITORY_PROVIDER as string), Agent as (AGENT_BUILDDIRECTORY as string, AGENT_HOMEDIRECTORY as string, AGENT_ID as string, AGENT_JOBNAME as string, AGENT_JOBSTATUS as string, AGENT_MACHINENAME as string, AGENT_NAME as string, AGENT_OS as string, AGENT_OSARCHITECTURE as string, AGENT_TOOLSDIRECTORY as string, AGENT_WORKFOLDER as string), System as (PIPELINE_WORKSPACE as string, SYSTEM_COLLECTIONID as string, SYSTEM_DEFAULTWORKINGDIRECTORY as string, SYSTEM_DEFINITIONID as string, SYSTEM_HOSTTYPE as string, SYSTEM_PULLREQUEST_ISFORK as string, SYSTEM_PULLREQUEST_PULLREQUESTID as string, SYSTEM_PULLREQUEST_PULLREQUESTNUMBER as string, SYSTEM_PULLREQUEST_SOURCEBRANCH as string, SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI as string, SYSTEM_PULLREQUEST_TARGETBRANCH as string, SYSTEM_TASKDEFINITIONSURI as string, SYSTEM_TASKDISPLAYNAME as string, SYSTEM_TASKINSTANCEID as string, SYSTEM_TASKINSTANCENAME as string, SYSTEM_TEAMFOUNDATIONCOLLECTIONURI as string, SYSTEM_TEAMPROJECT as string, SYSTEM_TEAMPROJECTID as string, TASK_DISPLAYNAME as string))),\n\t\tEso as string[],\n\t\tServices as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tTemplates as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tMRDR as string[],\n\t\tUnsupportedFiles as string[],\n\t\tErrors as (CRITICAL as (Source as string, Time as string, Message as string)[], ERROR as string[], WARNING as (Source as string, Time as string, Message as string)[]),\n\t\tFilteredData as string[],\n\t\tDataSource as string[]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'singleDocument') ~> source1\nsource(output(\n\t\tAirID as string,\n\t\tComponentName as string,\n\t\tVersion as string,\n\t\tEnvironment as string[],\n\t\tEndpoints as string[],\n\t\tPlatform as string,\n\t\tDependencies as (name as string, version as string, type as string, sourceType as string, source as string, collectionSource as string, meta as ({} as string), custom as (Name as string, Endpoints as string[], {InUse[Yes/No]} as boolean))[],\n\t\tBuilderMeta as (MetadataBuilder as (version as string, updated as string), DateTime as string, VSTS as (Build as (BUILD_REPOSITORY_URI as string, BUILD_SOURCEBRANCHNAME as string, BUILD_ARTIFACTSTAGINGDIRECTORY as string, BUILD_BUILDID as string, BUILD_BUILDNUMBER as string, BUILD_BUILDURI as string, BUILD_BINARIESDIRECTORY as string, BUILD_DEFINITIONNAME as string, BUILD_DEFINITIONVERSION as string, BUILD_REASON as string, BUILD_REPOSITORY_CLEAN as string, BUILD_REPOSITORY_LOCALPATH as string, BUILD_REPOSITORY_ID as string, BUILD_REPOSITORY_NAME as string, BUILD_REPOSITORY_PROVIDER as string), Agent as (AGENT_BUILDDIRECTORY as string, AGENT_HOMEDIRECTORY as string, AGENT_ID as string, AGENT_JOBNAME as string, AGENT_JOBSTATUS as string, AGENT_MACHINENAME as string, AGENT_NAME as string, AGENT_OS as string, AGENT_OSARCHITECTURE as string, AGENT_TOOLSDIRECTORY as string, AGENT_WORKFOLDER as string), System as (PIPELINE_WORKSPACE as string, SYSTEM_COLLECTIONID as string, SYSTEM_DEFAULTWORKINGDIRECTORY as string, SYSTEM_DEFINITIONID as string, SYSTEM_HOSTTYPE as string, SYSTEM_PULLREQUEST_ISFORK as string, SYSTEM_PULLREQUEST_PULLREQUESTID as string, SYSTEM_PULLREQUEST_PULLREQUESTNUMBER as string, SYSTEM_PULLREQUEST_SOURCEBRANCH as string, SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI as string, SYSTEM_PULLREQUEST_TARGETBRANCH as string, SYSTEM_TASKDEFINITIONSURI as string, SYSTEM_TASKDISPLAYNAME as string, SYSTEM_TASKINSTANCEID as string, SYSTEM_TASKINSTANCENAME as string, SYSTEM_TEAMFOUNDATIONCOLLECTIONURI as string, SYSTEM_TEAMPROJECT as string, SYSTEM_TEAMPROJECTID as string, TASK_DISPLAYNAME as string))),\n\t\tEso as string[],\n\t\tServices as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tTemplates as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tMRDR as string[],\n\t\tUnsupportedFiles as string[],\n\t\tErrors as (CRITICAL as (Source as string, Time as string, Message as string)[], ERROR as string[], WARNING as (Source as string, Time as string, Message as string)[]),\n\t\tFilteredData as string[],\n\t\tDataSource as string[]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'singleDocument') ~> source2\nsource(output(\n\t\tAirID as string,\n\t\tComponentName as string,\n\t\tVersion as string,\n\t\tEnvironment as string[],\n\t\tEndpoints as string[],\n\t\tPlatform as string,\n\t\tDependencies as (name as string, version as string, type as string, sourceType as string, source as string, collectionSource as string, meta as ({} as string), custom as (Name as string, Endpoints as string[], {InUse[Yes/No]} as boolean))[],\n\t\tBuilderMeta as (MetadataBuilder as (version as string, updated as string), DateTime as string, VSTS as (Build as (BUILD_REPOSITORY_URI as string, BUILD_SOURCEBRANCHNAME as string, BUILD_ARTIFACTSTAGINGDIRECTORY as string, BUILD_BUILDID as string, BUILD_BUILDNUMBER as string, BUILD_BUILDURI as string, BUILD_BINARIESDIRECTORY as string, BUILD_DEFINITIONNAME as string, BUILD_DEFINITIONVERSION as string, BUILD_REASON as string, BUILD_REPOSITORY_CLEAN as string, BUILD_REPOSITORY_LOCALPATH as string, BUILD_REPOSITORY_ID as string, BUILD_REPOSITORY_NAME as string, BUILD_REPOSITORY_PROVIDER as string), Agent as (AGENT_BUILDDIRECTORY as string, AGENT_HOMEDIRECTORY as string, AGENT_ID as string, AGENT_JOBNAME as string, AGENT_JOBSTATUS as string, AGENT_MACHINENAME as string, AGENT_NAME as string, AGENT_OS as string, AGENT_OSARCHITECTURE as string, AGENT_TOOLSDIRECTORY as string, AGENT_WORKFOLDER as string), System as (PIPELINE_WORKSPACE as string, SYSTEM_COLLECTIONID as string, SYSTEM_DEFAULTWORKINGDIRECTORY as string, SYSTEM_DEFINITIONID as string, SYSTEM_HOSTTYPE as string, SYSTEM_PULLREQUEST_ISFORK as string, SYSTEM_PULLREQUEST_PULLREQUESTID as string, SYSTEM_PULLREQUEST_PULLREQUESTNUMBER as string, SYSTEM_PULLREQUEST_SOURCEBRANCH as string, SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI as string, SYSTEM_PULLREQUEST_TARGETBRANCH as string, SYSTEM_TASKDEFINITIONSURI as string, SYSTEM_TASKDISPLAYNAME as string, SYSTEM_TASKINSTANCEID as string, SYSTEM_TASKINSTANCENAME as string, SYSTEM_TEAMFOUNDATIONCOLLECTIONURI as string, SYSTEM_TEAMPROJECT as string, SYSTEM_TEAMPROJECTID as string, TASK_DISPLAYNAME as string))),\n\t\tEso as string[],\n\t\tServices as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tTemplates as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tMRDR as string[],\n\t\tUnsupportedFiles as string[],\n\t\tErrors as (CRITICAL as (Source as string, Time as string, Message as string)[], ERROR as string[], WARNING as (Source as string, Time as string, Message as string)[]),\n\t\tFilteredData as string[],\n\t\tDataSource as string[]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'singleDocument') ~> source3\nsource(output(\n\t\tAirID as string,\n\t\tComponentName as string,\n\t\tVersion as string,\n\t\tEnvironment as string[],\n\t\tEndpoints as string[],\n\t\tPlatform as string,\n\t\tDependencies as (name as string, version as string, type as string, sourceType as string, source as string, collectionSource as string, meta as ({} as string), custom as (Name as string, Endpoints as string[], {InUse[Yes/No]} as boolean))[],\n\t\tBuilderMeta as (MetadataBuilder as (version as string, updated as string), DateTime as string, VSTS as (Build as (BUILD_REPOSITORY_URI as string, BUILD_SOURCEBRANCHNAME as string, BUILD_ARTIFACTSTAGINGDIRECTORY as string, BUILD_BUILDID as string, BUILD_BUILDNUMBER as string, BUILD_BUILDURI as string, BUILD_BINARIESDIRECTORY as string, BUILD_DEFINITIONNAME as string, BUILD_DEFINITIONVERSION as string, BUILD_REASON as string, BUILD_REPOSITORY_CLEAN as string, BUILD_REPOSITORY_LOCALPATH as string, BUILD_REPOSITORY_ID as string, BUILD_REPOSITORY_NAME as string, BUILD_REPOSITORY_PROVIDER as string), Agent as (AGENT_BUILDDIRECTORY as string, AGENT_HOMEDIRECTORY as string, AGENT_ID as string, AGENT_JOBNAME as string, AGENT_JOBSTATUS as string, AGENT_MACHINENAME as string, AGENT_NAME as string, AGENT_OS as string, AGENT_OSARCHITECTURE as string, AGENT_TOOLSDIRECTORY as string, AGENT_WORKFOLDER as string), System as (PIPELINE_WORKSPACE as string, SYSTEM_COLLECTIONID as string, SYSTEM_DEFAULTWORKINGDIRECTORY as string, SYSTEM_DEFINITIONID as string, SYSTEM_HOSTTYPE as string, SYSTEM_PULLREQUEST_ISFORK as string, SYSTEM_PULLREQUEST_PULLREQUESTID as string, SYSTEM_PULLREQUEST_PULLREQUESTNUMBER as string, SYSTEM_PULLREQUEST_SOURCEBRANCH as string, SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI as string, SYSTEM_PULLREQUEST_TARGETBRANCH as string, SYSTEM_TASKDEFINITIONSURI as string, SYSTEM_TASKDISPLAYNAME as string, SYSTEM_TASKINSTANCEID as string, SYSTEM_TASKINSTANCENAME as string, SYSTEM_TEAMFOUNDATIONCOLLECTIONURI as string, SYSTEM_TEAMPROJECT as string, SYSTEM_TEAMPROJECTID as string, TASK_DISPLAYNAME as string))),\n\t\tEso as string[],\n\t\tServices as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tTemplates as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tMRDR as string[],\n\t\tUnsupportedFiles as string[],\n\t\tErrors as (CRITICAL as (Source as string, Time as string, Message as string)[], ERROR as string[], WARNING as (Source as string, Time as string, Message as string)[]),\n\t\tFilteredData as string[],\n\t\tDataSource as string[]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'singleDocument') ~> source4\nsource1 foldDown(unroll(Services),\n\tmapColumn(\n\t\tAirID,\n\t\tComponentName,\n\t\tPlatform,\n\t\tName = Services.Name,\n\t\tVersion = Services.Version,\n\t\tInUse = Services.InUse,\n\t\tcollectionSource = Services.collectionSource\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Services\nsource2 foldDown(unroll(Templates),\n\tmapColumn(\n\t\tAirID,\n\t\tComponentName,\n\t\tPlatform,\n\t\tName = Templates.Name,\n\t\tVersion = Templates.Version,\n\t\tInUse = Templates.InUse,\n\t\tcollectionSource = Templates.collectionSource\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Templates\nsource3 foldDown(unroll(Errors.CRITICAL),\n\tmapColumn(\n\t\tAirID,\n\t\tComponentName,\n\t\tVersion,\n\t\tPlatform,\n\t\tSource = Errors.CRITICAL.Source,\n\t\tTime = Errors.CRITICAL.Time,\n\t\tMessage = Errors.CRITICAL.Message\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> ErrorCritical\nsource4 foldDown(unroll(Errors.WARNING),\n\tmapColumn(\n\t\tAirID,\n\t\tComponentName,\n\t\tVersion,\n\t\tPlatform,\n\t\tSource = Errors.WARNING.Source,\n\t\tTime = Errors.WARNING.Time,\n\t\tMessage = Errors.WARNING.Message\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> ErrorWarnings\nServices sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['devopsservices.json'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1\nTemplates sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['devopstemplate.json'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2\nErrorCritical sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['devopserrorcritical.json'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink3\nErrorWarnings sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['devopserrorswarning.json'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink4"
+					"script": "source(output(\n\t\tAirID as string,\n\t\tComponentName as string,\n\t\tVersion as string,\n\t\tEnvironment as string[],\n\t\tEndpoints as string[],\n\t\tPlatform as string,\n\t\tDependencies as (name as string, version as string, type as string, sourceType as string, source as string, collectionSource as string, meta as ({} as string), custom as (Name as string, Endpoints as string[], {InUse[Yes/No]} as boolean))[],\n\t\tBuilderMeta as (MetadataBuilder as (version as string, updated as string), DateTime as string, VSTS as (Build as (BUILD_REPOSITORY_URI as string, BUILD_SOURCEBRANCHNAME as string, BUILD_ARTIFACTSTAGINGDIRECTORY as string, BUILD_BUILDID as string, BUILD_BUILDNUMBER as string, BUILD_BUILDURI as string, BUILD_BINARIESDIRECTORY as string, BUILD_DEFINITIONNAME as string, BUILD_DEFINITIONVERSION as string, BUILD_REASON as string, BUILD_REPOSITORY_CLEAN as string, BUILD_REPOSITORY_LOCALPATH as string, BUILD_REPOSITORY_ID as string, BUILD_REPOSITORY_NAME as string, BUILD_REPOSITORY_PROVIDER as string), Agent as (AGENT_BUILDDIRECTORY as string, AGENT_HOMEDIRECTORY as string, AGENT_ID as string, AGENT_JOBNAME as string, AGENT_JOBSTATUS as string, AGENT_MACHINENAME as string, AGENT_NAME as string, AGENT_OS as string, AGENT_OSARCHITECTURE as string, AGENT_TOOLSDIRECTORY as string, AGENT_WORKFOLDER as string), System as (PIPELINE_WORKSPACE as string, SYSTEM_COLLECTIONID as string, SYSTEM_DEFAULTWORKINGDIRECTORY as string, SYSTEM_DEFINITIONID as string, SYSTEM_HOSTTYPE as string, SYSTEM_PULLREQUEST_ISFORK as string, SYSTEM_PULLREQUEST_PULLREQUESTID as string, SYSTEM_PULLREQUEST_PULLREQUESTNUMBER as string, SYSTEM_PULLREQUEST_SOURCEBRANCH as string, SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI as string, SYSTEM_PULLREQUEST_TARGETBRANCH as string, SYSTEM_TASKDEFINITIONSURI as string, SYSTEM_TASKDISPLAYNAME as string, SYSTEM_TASKINSTANCEID as string, SYSTEM_TASKINSTANCENAME as string, SYSTEM_TEAMFOUNDATIONCOLLECTIONURI as string, SYSTEM_TEAMPROJECT as string, SYSTEM_TEAMPROJECTID as string, TASK_DISPLAYNAME as string))),\n\t\tEso as string[],\n\t\tServices as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tTemplates as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tMRDR as string[],\n\t\tUnsupportedFiles as string[],\n\t\tErrors as (CRITICAL as (Source as string, Time as string, Message as string)[], ERROR as string[], WARNING as (Source as string, Time as string, Message as string)[]),\n\t\tFilteredData as string[],\n\t\tDataSource as string[]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> source1\nsource1 select(mapColumn(\n\t\tAirID,\n\t\tComponentName,\n\t\tVersion,\n\t\tEnvironment,\n\t\tEndpoints,\n\t\tPlatform,\n\t\tDependencies,\n\t\tBuilderMeta,\n\t\tEso,\n\t\tServices,\n\t\tTemplates,\n\t\tMRDR,\n\t\tUnsupportedFiles,\n\t\tErrors,\n\t\tFilteredData,\n\t\tDataSource\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['devopsoutput.json'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/devopsjsoninput')]",
 				"[concat(variables('workspaceId'), '/datasets/deveopsjsonoutputdepend')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/devopsjsondf')]",
-			"type": "Microsoft.Synapse/workspaces/dataflows",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "devopsjsoninput",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "deveopsjsonoutputdepend",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						},
-						{
-							"dataset": {
-								"referenceName": "dependcsv",
-								"type": "DatasetReference"
-							},
-							"name": "sink2"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Flatten1"
-						}
-					],
-					"script": "source(output(\n\t\tAirID as string,\n\t\tComponentName as string,\n\t\tVersion as string,\n\t\tEnvironment as string[],\n\t\tEndpoints as string[],\n\t\tPlatform as string,\n\t\tDependencies as (name as string, version as string, type as string, sourceType as string, source as string, collectionSource as string, meta as ({} as string), custom as (Name as string, Endpoints as string[], {InUse[Yes/No]} as boolean))[],\n\t\tBuilderMeta as (MetadataBuilder as (version as string, updated as string), DateTime as string, VSTS as (Build as (BUILD_REPOSITORY_URI as string, BUILD_SOURCEBRANCHNAME as string, BUILD_ARTIFACTSTAGINGDIRECTORY as string, BUILD_BUILDID as string, BUILD_BUILDNUMBER as string, BUILD_BUILDURI as string, BUILD_BINARIESDIRECTORY as string, BUILD_DEFINITIONNAME as string, BUILD_DEFINITIONVERSION as string, BUILD_REASON as string, BUILD_REPOSITORY_CLEAN as string, BUILD_REPOSITORY_LOCALPATH as string, BUILD_REPOSITORY_ID as string, BUILD_REPOSITORY_NAME as string, BUILD_REPOSITORY_PROVIDER as string), Agent as (AGENT_BUILDDIRECTORY as string, AGENT_HOMEDIRECTORY as string, AGENT_ID as string, AGENT_JOBNAME as string, AGENT_JOBSTATUS as string, AGENT_MACHINENAME as string, AGENT_NAME as string, AGENT_OS as string, AGENT_OSARCHITECTURE as string, AGENT_TOOLSDIRECTORY as string, AGENT_WORKFOLDER as string), System as (PIPELINE_WORKSPACE as string, SYSTEM_COLLECTIONID as string, SYSTEM_DEFAULTWORKINGDIRECTORY as string, SYSTEM_DEFINITIONID as string, SYSTEM_HOSTTYPE as string, SYSTEM_PULLREQUEST_ISFORK as string, SYSTEM_PULLREQUEST_PULLREQUESTID as string, SYSTEM_PULLREQUEST_PULLREQUESTNUMBER as string, SYSTEM_PULLREQUEST_SOURCEBRANCH as string, SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI as string, SYSTEM_PULLREQUEST_TARGETBRANCH as string, SYSTEM_TASKDEFINITIONSURI as string, SYSTEM_TASKDISPLAYNAME as string, SYSTEM_TASKINSTANCEID as string, SYSTEM_TASKINSTANCENAME as string, SYSTEM_TEAMFOUNDATIONCOLLECTIONURI as string, SYSTEM_TEAMPROJECT as string, SYSTEM_TEAMPROJECTID as string, TASK_DISPLAYNAME as string))),\n\t\tEso as string[],\n\t\tServices as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tTemplates as (Name as string, Version as string, InUse as boolean, collectionSource as string)[],\n\t\tMRDR as string[],\n\t\tUnsupportedFiles as string[],\n\t\tErrors as (CRITICAL as (Source as string, Time as string, Message as string)[], ERROR as string[], WARNING as (Source as string, Time as string, Message as string)[]),\n\t\tFilteredData as string[],\n\t\tDataSource as string[]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'singleDocument',\n\tpartitionBy('hash', 1)) ~> source1\nsource1 foldDown(unroll(Dependencies, Dependencies),\n\tmapColumn(\n\t\tAirID,\n\t\tComponentName,\n\t\tVersion,\n\t\tPlatform,\n\t\tname = Dependencies.name,\n\t\tversion = Dependencies.version,\n\t\ttype = Dependencies.type,\n\t\tsourceType = Dependencies.sourceType,\n\t\tsource = Dependencies.source,\n\t\tcollectionSource = Dependencies.collectionSource,\n\t\tDateTime = BuilderMeta.DateTime,\n\t\tAGENT_NAME = BuilderMeta.VSTS.Agent.AGENT_NAME,\n\t\tSYSTEM_TEAMPROJECT = BuilderMeta.VSTS.System.SYSTEM_TEAMPROJECT,\n\t\tBUILD_REPOSITORY_URI = BuilderMeta.VSTS.Build.BUILD_REPOSITORY_URI,\n\t\tAGENT_MACHINENAME = BuilderMeta.VSTS.Agent.AGENT_MACHINENAME,\n\t\tAGENT_OS = BuilderMeta.VSTS.Agent.AGENT_OS,\n\t\tAGENT_OSARCHITECTURE = BuilderMeta.VSTS.Agent.AGENT_OSARCHITECTURE,\n\t\tEndpoints = Dependencies.custom.Endpoints\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nFlatten1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['outputdependencies.json'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1\nFlatten1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['devopsdependencies.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/devopsjsoninput')]",
-				"[concat(variables('workspaceId'), '/datasets/deveopsjsonoutputdepend')]",
-				"[concat(variables('workspaceId'), '/datasets/dependcsv')]"
 			]
 		},
 		{
@@ -3561,7 +3229,7 @@
 					"sources": [
 						{
 							"name": "covid19input",
-							"script": "",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  covid19input",
 							"dataset": {
 								"referenceName": "covid19input",
 								"type": "DatasetReference"
@@ -4014,6 +3682,25 @@
 					"currentConnection": {
 						"name": "nyctaxi",
 						"type": "SqlOnDemand"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/nyctaxisql')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK     'https://azureopendatastorage.blob.core.windows.net/nyctlc/yellow/puYear=*/puMonth=*/*.parquet',\n        FORMAT = 'parquet'\n    ) AS [result];\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"poolName": "Built-in",
+						"databaseName": "master"
 					}
 				},
 				"type": "SqlQuery"
