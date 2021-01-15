@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "13456-2020.03.23.2-Sample2.json",
+				"fileName": "13456-2020.03.23.2-Sample3.json",
 				"folderPath": "devopsinput",
 				"fileSystem": "synapseroot"
 			}
