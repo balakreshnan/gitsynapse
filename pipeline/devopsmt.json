@@ -1,9 +1,9 @@
 {
-	"name": "JsonDevOps",
+	"name": "devopsmt",
 	"properties": {
 		"activities": [
 			{
-				"name": "JsonDevOpsData",
+				"name": "devopsmt",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,11 +16,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "JsonDevOpsData",
+						"referenceName": "devopsmt",
 						"type": "DataFlowReference"
 					},
 					"compute": {
-						"coreCount": 16,
+						"coreCount": 8,
 						"computeType": "General"
 					},
 					"traceLevel": "Fine"
