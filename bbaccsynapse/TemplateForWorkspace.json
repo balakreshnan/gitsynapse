@@ -965,6 +965,49 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/devopsmt')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "devopsmt",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "devopsmt",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/dataflows/devopsmt')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/diabetespipeline')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -1087,6 +1130,431 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/notebooks/test1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/JsonInput')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "13456-2020.03.23.2-Sample2.json",
+						"folderPath": "devopsinput",
+						"fileSystem": "synapseroot"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"AirID": {
+							"type": "integer"
+						},
+						"ComponentName": {
+							"type": "string"
+						},
+						"Version": {
+							"type": "string"
+						},
+						"Environment": {
+							"type": "array"
+						},
+						"Endpoints": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						"Platform": {
+							"type": "string"
+						},
+						"Dependencies": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"version": {
+										"type": "string"
+									},
+									"type": {
+										"type": "string"
+									},
+									"sourceType": {
+										"type": "string"
+									},
+									"source": {
+										"type": "string"
+									},
+									"collectionSource": {
+										"type": "string"
+									},
+									"meta": {
+										"type": "object"
+									},
+									"custom": {
+										"type": "object",
+										"properties": {
+											"Name": {
+												"type": "string"
+											},
+											"Endpoints": {
+												"type": "array",
+												"items": {
+													"type": "string"
+												}
+											},
+											"InUse[Yes/No]": {
+												"type": "boolean"
+											}
+										}
+									}
+								}
+							}
+						},
+						"BuilderMeta": {
+							"type": "object",
+							"properties": {
+								"MetadataBuilder": {
+									"type": "object",
+									"properties": {
+										"version": {
+											"type": "string"
+										},
+										"updated": {
+											"type": "string"
+										}
+									}
+								},
+								"DateTime": {
+									"type": "string"
+								},
+								"VSTS": {
+									"type": "object",
+									"properties": {
+										"Build": {
+											"type": "object",
+											"properties": {
+												"BUILD_REPOSITORY_URI": {
+													"type": "string"
+												},
+												"BUILD_SOURCEBRANCHNAME": {
+													"type": "string"
+												},
+												"BUILD_ARTIFACTSTAGINGDIRECTORY": {
+													"type": "string"
+												},
+												"BUILD_BUILDID": {
+													"type": "string"
+												},
+												"BUILD_BUILDNUMBER": {
+													"type": "string"
+												},
+												"BUILD_BUILDURI": {
+													"type": "string"
+												},
+												"BUILD_BINARIESDIRECTORY": {
+													"type": "string"
+												},
+												"BUILD_DEFINITIONNAME": {
+													"type": "string"
+												},
+												"BUILD_DEFINITIONVERSION": {
+													"type": "string"
+												},
+												"BUILD_REASON": {
+													"type": "string"
+												},
+												"BUILD_REPOSITORY_CLEAN": {
+													"type": "string"
+												},
+												"BUILD_REPOSITORY_LOCALPATH": {
+													"type": "string"
+												},
+												"BUILD_REPOSITORY_ID": {
+													"type": "string"
+												},
+												"BUILD_REPOSITORY_NAME": {
+													"type": "string"
+												},
+												"BUILD_REPOSITORY_PROVIDER": {
+													"type": "string"
+												}
+											}
+										},
+										"Agent": {
+											"type": "object",
+											"properties": {
+												"AGENT_BUILDDIRECTORY": {
+													"type": "string"
+												},
+												"AGENT_HOMEDIRECTORY": {
+													"type": "string"
+												},
+												"AGENT_ID": {
+													"type": "string"
+												},
+												"AGENT_JOBNAME": {
+													"type": "string"
+												},
+												"AGENT_JOBSTATUS": {
+													"type": "string"
+												},
+												"AGENT_MACHINENAME": {
+													"type": "string"
+												},
+												"AGENT_NAME": {
+													"type": "string"
+												},
+												"AGENT_OS": {
+													"type": "string"
+												},
+												"AGENT_OSARCHITECTURE": {
+													"type": "string"
+												},
+												"AGENT_TOOLSDIRECTORY": {
+													"type": "string"
+												},
+												"AGENT_WORKFOLDER": {
+													"type": "string"
+												}
+											}
+										},
+										"System": {
+											"type": "object",
+											"properties": {
+												"PIPELINE_WORKSPACE": {
+													"type": "string"
+												},
+												"SYSTEM_COLLECTIONID": {
+													"type": "string"
+												},
+												"SYSTEM_DEFAULTWORKINGDIRECTORY": {
+													"type": "string"
+												},
+												"SYSTEM_DEFINITIONID": {
+													"type": "string"
+												},
+												"SYSTEM_HOSTTYPE": {
+													"type": "string"
+												},
+												"SYSTEM_PULLREQUEST_ISFORK": {
+													"type": "string"
+												},
+												"SYSTEM_PULLREQUEST_PULLREQUESTID": {
+													"type": "null"
+												},
+												"SYSTEM_PULLREQUEST_PULLREQUESTNUMBER": {
+													"type": "null"
+												},
+												"SYSTEM_PULLREQUEST_SOURCEBRANCH": {
+													"type": "null"
+												},
+												"SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI": {
+													"type": "null"
+												},
+												"SYSTEM_PULLREQUEST_TARGETBRANCH": {
+													"type": "null"
+												},
+												"SYSTEM_TASKDEFINITIONSURI": {
+													"type": "string"
+												},
+												"SYSTEM_TASKDISPLAYNAME": {
+													"type": "string"
+												},
+												"SYSTEM_TASKINSTANCEID": {
+													"type": "string"
+												},
+												"SYSTEM_TASKINSTANCENAME": {
+													"type": "string"
+												},
+												"SYSTEM_TEAMFOUNDATIONCOLLECTIONURI": {
+													"type": "string"
+												},
+												"SYSTEM_TEAMPROJECT": {
+													"type": "string"
+												},
+												"SYSTEM_TEAMPROJECTID": {
+													"type": "string"
+												},
+												"TASK_DISPLAYNAME": {
+													"type": "string"
+												}
+											}
+										}
+									}
+								}
+							}
+						},
+						"Eso": {
+							"type": "array"
+						},
+						"Services": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"Name": {
+										"type": "string"
+									},
+									"Version": {
+										"type": "string"
+									},
+									"InUse": {
+										"type": "boolean"
+									},
+									"collectionSource": {
+										"type": "string"
+									}
+								}
+							}
+						},
+						"Templates": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"Name": {
+										"type": "string"
+									},
+									"Version": {
+										"type": "string"
+									},
+									"InUse": {
+										"type": "boolean"
+									},
+									"collectionSource": {
+										"type": "string"
+									}
+								}
+							}
+						},
+						"MRDR": {
+							"type": "array"
+						},
+						"UnsupportedFiles": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						"Errors": {
+							"type": "object",
+							"properties": {
+								"CRITICAL": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"Source": {
+												"type": "string"
+											},
+											"Time": {
+												"type": "string"
+											},
+											"Message": {
+												"type": "string"
+											}
+										}
+									}
+								},
+								"ERROR": {
+									"type": "array"
+								},
+								"WARNING": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"Source": {
+												"type": "string"
+											},
+											"Time": {
+												"type": "string"
+											},
+											"Message": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							}
+						},
+						"FilteredData": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						"DataSource": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/bbaccsynapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/JsonOutput')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "devopsoutput",
+						"fileSystem": "synapseroot"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"AirID": {
+							"type": "string"
+						},
+						"ComponentName": {
+							"type": "string"
+						},
+						"Version": {
+							"type": "string"
+						},
+						"Platform": {
+							"type": "string"
+						},
+						"Source": {
+							"type": "string"
+						},
+						"Time": {
+							"type": "string"
+						},
+						"Message": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/bbaccsynapse-WorkspaceDefaultStorage')]"
 			]
 		},
 		{
@@ -1798,7 +2266,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "13456-2020.03.23.2-Sample2.json",
+						"fileName": "13456-2020.03.23.2-Sample3.json",
 						"folderPath": "devopsinput",
 						"fileSystem": "synapseroot"
 					}
@@ -2152,6 +2620,55 @@
 							"items": {
 								"type": "string"
 							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/bbaccsynapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/devopsoutput')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "devopsoutput",
+						"fileSystem": "synapseroot"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"AirID": {
+							"type": "string"
+						},
+						"ComponentName": {
+							"type": "string"
+						},
+						"Version": {
+							"type": "string"
+						},
+						"Platform": {
+							"type": "string"
+						},
+						"Source": {
+							"type": "string"
+						},
+						"Time": {
+							"type": "string"
+						},
+						"Message": {
+							"type": "string"
 						}
 					}
 				}
