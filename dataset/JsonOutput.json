@@ -1,0 +1,44 @@
+{
+	"name": "JsonOutput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "devopsoutput",
+				"fileSystem": "synapseroot"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"AirID": {
+					"type": "string"
+				},
+				"ComponentName": {
+					"type": "string"
+				},
+				"Version": {
+					"type": "string"
+				},
+				"Platform": {
+					"type": "string"
+				},
+				"Source": {
+					"type": "string"
+				},
+				"Time": {
+					"type": "string"
+				},
+				"Message": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}
