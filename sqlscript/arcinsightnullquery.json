@@ -2,13 +2,13 @@
 	"name": "arcinsightnullquery",
 	"properties": {
 		"content": {
-			"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/arcinsight/serverless---71310---Evergreen_AwsLambdaSample---20201215.2---2020-12-15 16_49_35.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/arcinsight/*.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]",
+			"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/arcinsight/serverless---71310---Evergreen_AwsLambdaSample---20201215.2---2020-12-15 16_49_35.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/arcinsight/*.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n\n\nCreate database arcinsight;\n\nuse arcinsight;\n-- 1st View\n-- Timed out after 30 min\n\nDROP VIEW iacAwsView;\n\nCREATE VIEW iacAwsView AS\nSELECT *\nFROM OPENROWSET\n(\n    BULK 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/arcinsight/*.parquet',\n    FORMAT = 'PARQUET'\n)\nWITH (\n  [name] VARCHAR(100) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n  [stage] VARCHAR(100) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n  [runtime] VARCHAR(100) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n  [region] VARCHAR(100) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n  [airid] VARCHAR(200) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n  [environment] VARCHAR(100) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n  [securityGroupIds] VARCHAR(8000) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n  [subnetIds] VARCHAR(8000) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n  [resname] VARCHAR(100) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n  [restype] VARCHAR(2000) COLLATE Latin1_General_100_CI_AI_SC_UTF8\n) AS iacAws;\nGO\n\nSelect * from iacAwsView;\n\nDrop View iacAwsView;\n\nCREATE VIEW iacAwsView AS\nSELECT *\nFROM OPENROWSET\n(\n    BULK 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/arcinsight/*.parquet',\n    FORMAT = 'PARQUET'\n)\nWITH (\n  [name] VARCHAR(100),\n  [stage] VARCHAR(100),\n  [runtime] VARCHAR(100),\n  [region] VARCHAR(100),\n  [airid] VARCHAR(200),\n  [environment] VARCHAR(100),\n  [securityGroupIds] VARCHAR(8000),\n  [subnetIds] VARCHAR(8000),\n  [resname] VARCHAR(100),\n  [restype] VARCHAR(2000)\n) AS iacAws;\nGO\n\nSelect * from iacAwsView;\n\nDrop View iacAwsView;\n\nCREATE VIEW iacAwsView AS\nSELECT *\nFROM OPENROWSET\n(\n    BULK 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/arcinsight/*.parquet',\n    FORMAT = 'PARQUET'\n) AS iacAws;\nGO\n\nSelect * from iacAwsView;",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
 				"poolName": "Built-in",
-				"databaseName": "master"
+				"databaseName": "arcinsight"
 			}
 		},
 		"type": "SqlQuery"
