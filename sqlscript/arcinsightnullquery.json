@@ -1,0 +1,16 @@
+{
+	"name": "arcinsightnullquery",
+	"properties": {
+		"content": {
+			"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/arcinsight/serverless---71310---Evergreen_AwsLambdaSample---20201215.2---2020-12-15 16_49_35.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/arcinsight/*.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "master"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
