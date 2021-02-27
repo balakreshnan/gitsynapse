@@ -43,11 +43,13 @@
 						}
 					},
 					"enableStaging": false,
+					"parallelCopies": 32,
 					"enableSkipIncompatibleRow": false,
 					"skipErrorFile": {
 						"fileMissing": true
 					},
-					"validateDataConsistency": false
+					"validateDataConsistency": false,
+					"dataIntegrationUnits": 32
 				},
 				"inputs": [
 					{
