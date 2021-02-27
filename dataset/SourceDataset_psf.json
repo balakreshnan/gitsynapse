@@ -1,0 +1,17 @@
+{
+	"name": "SourceDataset_psf",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "tpchinput",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "tpchsf10000"
+			}
+		}
+	}
+}
