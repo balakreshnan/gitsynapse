@@ -1,0 +1,435 @@
+{
+	"name": "tftest1",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "accsparkpools",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "112g",
+			"driverCores": 16,
+			"executorMemory": "112g",
+			"executorCores": 16,
+			"numExecutors": 3,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "3",
+				"spark.dynamicAllocation.maxExecutors": "3"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+				"name": "accsparkpools",
+				"type": "Spark",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 16,
+				"memory": 112,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"# Import TensorFlow and TensorFlow Datasets\r\n",
+					"\r\n",
+					"#import tensorflow_datasets as tfds\r\n",
+					"import tensorflow as tf\r\n",
+					"\r\n",
+					"import os"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"print(tf.__version__)"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"import os\r\n",
+					"import sys\r\n",
+					"\r\n",
+					"import numpy as np\r\n",
+					"import pandas as pd\r\n",
+					"import matplotlib.pyplot as plt\r\n",
+					"from IPython.display import clear_output\r\n",
+					"from six.moves import urllib"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"import tensorflow.compat.v2.feature_column as fc\r\n",
+					"\r\n",
+					"import tensorflow as tf"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"# Load dataset.\r\n",
+					"dftrain = pd.read_csv('https://storage.googleapis.com/tf-datasets/titanic/train.csv')\r\n",
+					"dfeval = pd.read_csv('https://storage.googleapis.com/tf-datasets/titanic/eval.csv')\r\n",
+					"y_train = dftrain.pop('survived')\r\n",
+					"y_eval = dfeval.pop('survived')"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"dftrain.head()"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"dftrain.describe()"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"dftrain.shape[0], dfeval.shape[0]"
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"dftrain.age.hist(bins=20)"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"dftrain.sex.value_counts().plot(kind='barh')"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"dftrain['class'].value_counts().plot(kind='barh')"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"pd.concat([dftrain, y_train], axis=1).groupby('sex').survived.mean().plot(kind='barh').set_xlabel('% survive')"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"CATEGORICAL_COLUMNS = ['sex', 'n_siblings_spouses', 'parch', 'class', 'deck',\r\n",
+					"                       'embark_town', 'alone']\r\n",
+					"NUMERIC_COLUMNS = ['age', 'fare']\r\n",
+					"\r\n",
+					"feature_columns = []\r\n",
+					"for feature_name in CATEGORICAL_COLUMNS:\r\n",
+					"  vocabulary = dftrain[feature_name].unique()\r\n",
+					"  feature_columns.append(tf.feature_column.categorical_column_with_vocabulary_list(feature_name, vocabulary))\r\n",
+					"\r\n",
+					"for feature_name in NUMERIC_COLUMNS:\r\n",
+					"  feature_columns.append(tf.feature_column.numeric_column(feature_name, dtype=tf.float32))"
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"def make_input_fn(data_df, label_df, num_epochs=10, shuffle=True, batch_size=32):\r\n",
+					"  def input_function():\r\n",
+					"    ds = tf.data.Dataset.from_tensor_slices((dict(data_df), label_df))\r\n",
+					"    if shuffle:\r\n",
+					"      ds = ds.shuffle(1000)\r\n",
+					"    ds = ds.batch(batch_size).repeat(num_epochs)\r\n",
+					"    return ds\r\n",
+					"  return input_function\r\n",
+					"\r\n",
+					"train_input_fn = make_input_fn(dftrain, y_train)\r\n",
+					"eval_input_fn = make_input_fn(dfeval, y_eval, num_epochs=1, shuffle=False)"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"ds = make_input_fn(dftrain, y_train, batch_size=10)()\r\n",
+					"for feature_batch, label_batch in ds.take(1):\r\n",
+					"  print('Some feature keys:', list(feature_batch.keys()))\r\n",
+					"  print()\r\n",
+					"  print('A batch of class:', feature_batch['class'].numpy())\r\n",
+					"  print()\r\n",
+					"  print('A batch of Labels:', label_batch.numpy())"
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"age_column = feature_columns[7]\r\n",
+					"tf.keras.layers.DenseFeatures([age_column])(feature_batch).numpy()"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"gender_column = feature_columns[0]\r\n",
+					"tf.keras.layers.DenseFeatures([tf.feature_column.indicator_column(gender_column)])(feature_batch).numpy()"
+				],
+				"execution_count": 19
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"linear_est = tf.estimator.LinearClassifier(feature_columns=feature_columns)\r\n",
+					"linear_est.train(train_input_fn)\r\n",
+					"result = linear_est.evaluate(eval_input_fn)\r\n",
+					"\r\n",
+					"clear_output()\r\n",
+					"print(result)"
+				],
+				"execution_count": 21
+			}
+		]
+	}
+}
