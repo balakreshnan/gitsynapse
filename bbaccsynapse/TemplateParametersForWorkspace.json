@@ -29,6 +29,9 @@
 		"serverlesssqlsvr_connectionString": {
 			"value": ""
 		},
+		"tpchinput_connectionString": {
+			"value": ""
+		},
 		"Keyvaultacc_properties_typeProperties_baseUrl": {
 			"value": "https://accvault1.vault.azure.net/"
 		},

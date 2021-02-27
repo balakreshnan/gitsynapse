@@ -39,6 +39,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'serverlesssqlsvr'"
 		},
+		"tpchinput_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'tpchinput'"
+		},
 		"Keyvaultacc_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://accvault1.vault.azure.net/"
@@ -969,6 +973,84 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/cp_tpchdata')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_psf",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "tpchsf10000//"
+							},
+							{
+								"name": "Destination",
+								"value": "synapseroot/tpchdata/"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*"
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings",
+									"maxConcurrentConnections": 5
+								}
+							},
+							"enableStaging": false,
+							"parallelCopies": 32,
+							"enableSkipIncompatibleRow": false,
+							"skipErrorFile": {
+								"fileMissing": true
+							},
+							"validateDataConsistency": false,
+							"dataIntegrationUnits": 32
+						},
+						"inputs": [
+							{
+								"referenceName": "SourceDataset_psf",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_psf",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/SourceDataset_psf')]",
+				"[concat(variables('workspaceId'), '/datasets/DestinationDataset_psf')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/devopsmt')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -1134,6 +1216,29 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/notebooks/test1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DestinationDataset_psf')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "tpchdata",
+						"fileSystem": "synapseroot"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/bbaccsynapse-WorkspaceDefaultStorage')]"
 			]
 		},
 		{
@@ -1702,6 +1807,28 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/bbaccsynapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SourceDataset_psf')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "tpchinput",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "tpchsf10000"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/tpchinput')]"
 			]
 		},
 		{
@@ -3578,6 +3705,25 @@
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
 					"connectionString": "[parameters('serverlesssqlsvr_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/tpchinput')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('tpchinput_connectionString')]"
 				},
 				"connectVia": {
 					"referenceName": "AutoResolveIntegrationRuntime",
@@ -13254,6 +13400,758 @@
 						],
 						"outputs": [],
 						"execution_count": 3
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/tftest')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "accsparkpools",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "112g",
+					"driverCores": 16,
+					"executorMemory": "112g",
+					"executorCores": 16,
+					"numExecutors": 3,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "3",
+						"spark.dynamicAllocation.maxExecutors": "3"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+						"name": "accsparkpools",
+						"type": "Spark",
+						"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 16,
+						"memory": 112
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"import tensorflow as tf; \r\n",
+							"print(tf.__version__)"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"mnist = tf.keras.datasets.mnist\r\n",
+							"\r\n",
+							"(x_train, y_train), (x_test, y_test) = mnist.load_data()\r\n",
+							"x_train, x_test = x_train / 255.0, x_test / 255.0"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"model = tf.keras.models.Sequential([\r\n",
+							"  tf.keras.layers.Flatten(input_shape=(28, 28)),\r\n",
+							"  tf.keras.layers.Dense(128, activation='relu'),\r\n",
+							"  tf.keras.layers.Dropout(0.2),\r\n",
+							"  tf.keras.layers.Dense(10)\r\n",
+							"])"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"predictions = model(x_train[:1]).numpy()\r\n",
+							"predictions"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"tf.nn.softmax(predictions).numpy()"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"loss_fn(y_train[:1], predictions).numpy()"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"model.compile(optimizer='adam',\r\n",
+							"              loss=loss_fn,\r\n",
+							"              metrics=['accuracy'])"
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"model.fit(x_train, y_train, epochs=5)"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"model.evaluate(x_test,  y_test, verbose=2)"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"probability_model = tf.keras.Sequential([\r\n",
+							"  model,\r\n",
+							"  tf.keras.layers.Softmax()\r\n",
+							"])"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"probability_model(x_test[:5])"
+						],
+						"outputs": [],
+						"execution_count": 12
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/tftest1')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "accsparkpools",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "112g",
+					"driverCores": 16,
+					"executorMemory": "112g",
+					"executorCores": 16,
+					"numExecutors": 3,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "3",
+						"spark.dynamicAllocation.maxExecutors": "3"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+						"name": "accsparkpools",
+						"type": "Spark",
+						"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 16,
+						"memory": 112
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"# Import TensorFlow and TensorFlow Datasets\r\n",
+							"\r\n",
+							"#import tensorflow_datasets as tfds\r\n",
+							"import tensorflow as tf\r\n",
+							"\r\n",
+							"import os"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"print(tf.__version__)"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"import os\r\n",
+							"import sys\r\n",
+							"\r\n",
+							"import numpy as np\r\n",
+							"import pandas as pd\r\n",
+							"import matplotlib.pyplot as plt\r\n",
+							"from IPython.display import clear_output\r\n",
+							"from six.moves import urllib"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"import tensorflow.compat.v2.feature_column as fc\r\n",
+							"\r\n",
+							"import tensorflow as tf"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"# Load dataset.\r\n",
+							"dftrain = pd.read_csv('https://storage.googleapis.com/tf-datasets/titanic/train.csv')\r\n",
+							"dfeval = pd.read_csv('https://storage.googleapis.com/tf-datasets/titanic/eval.csv')\r\n",
+							"y_train = dftrain.pop('survived')\r\n",
+							"y_eval = dfeval.pop('survived')"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"dftrain.head()"
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"dftrain.describe()"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"dftrain.shape[0], dfeval.shape[0]"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"dftrain.age.hist(bins=20)"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"dftrain.sex.value_counts().plot(kind='barh')"
+						],
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"dftrain['class'].value_counts().plot(kind='barh')"
+						],
+						"outputs": [],
+						"execution_count": 13
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"pd.concat([dftrain, y_train], axis=1).groupby('sex').survived.mean().plot(kind='barh').set_xlabel('% survive')"
+						],
+						"outputs": [],
+						"execution_count": 14
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"CATEGORICAL_COLUMNS = ['sex', 'n_siblings_spouses', 'parch', 'class', 'deck',\r\n",
+							"                       'embark_town', 'alone']\r\n",
+							"NUMERIC_COLUMNS = ['age', 'fare']\r\n",
+							"\r\n",
+							"feature_columns = []\r\n",
+							"for feature_name in CATEGORICAL_COLUMNS:\r\n",
+							"  vocabulary = dftrain[feature_name].unique()\r\n",
+							"  feature_columns.append(tf.feature_column.categorical_column_with_vocabulary_list(feature_name, vocabulary))\r\n",
+							"\r\n",
+							"for feature_name in NUMERIC_COLUMNS:\r\n",
+							"  feature_columns.append(tf.feature_column.numeric_column(feature_name, dtype=tf.float32))"
+						],
+						"outputs": [],
+						"execution_count": 15
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"def make_input_fn(data_df, label_df, num_epochs=10, shuffle=True, batch_size=32):\r\n",
+							"  def input_function():\r\n",
+							"    ds = tf.data.Dataset.from_tensor_slices((dict(data_df), label_df))\r\n",
+							"    if shuffle:\r\n",
+							"      ds = ds.shuffle(1000)\r\n",
+							"    ds = ds.batch(batch_size).repeat(num_epochs)\r\n",
+							"    return ds\r\n",
+							"  return input_function\r\n",
+							"\r\n",
+							"train_input_fn = make_input_fn(dftrain, y_train)\r\n",
+							"eval_input_fn = make_input_fn(dfeval, y_eval, num_epochs=1, shuffle=False)"
+						],
+						"outputs": [],
+						"execution_count": 16
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"ds = make_input_fn(dftrain, y_train, batch_size=10)()\r\n",
+							"for feature_batch, label_batch in ds.take(1):\r\n",
+							"  print('Some feature keys:', list(feature_batch.keys()))\r\n",
+							"  print()\r\n",
+							"  print('A batch of class:', feature_batch['class'].numpy())\r\n",
+							"  print()\r\n",
+							"  print('A batch of Labels:', label_batch.numpy())"
+						],
+						"outputs": [],
+						"execution_count": 17
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"age_column = feature_columns[7]\r\n",
+							"tf.keras.layers.DenseFeatures([age_column])(feature_batch).numpy()"
+						],
+						"outputs": [],
+						"execution_count": 18
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"gender_column = feature_columns[0]\r\n",
+							"tf.keras.layers.DenseFeatures([tf.feature_column.indicator_column(gender_column)])(feature_batch).numpy()"
+						],
+						"outputs": [],
+						"execution_count": 19
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": true
+						},
+						"source": [
+							"linear_est = tf.estimator.LinearClassifier(feature_columns=feature_columns)\r\n",
+							"linear_est.train(train_input_fn)\r\n",
+							"result = linear_est.evaluate(eval_input_fn)\r\n",
+							"\r\n",
+							"clear_output()\r\n",
+							"print(result)"
+						],
+						"outputs": [],
+						"execution_count": 21
 					}
 				]
 			},
