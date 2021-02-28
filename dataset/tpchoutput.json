@@ -1,0 +1,20 @@
+{
+	"name": "tpchoutput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "tpchoutput",
+				"fileSystem": "synapseroot"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

@@ -1,0 +1,102 @@
+{
+	"name": "tpchdataflow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "customerinput",
+						"type": "DatasetReference"
+					},
+					"name": "customer"
+				},
+				{
+					"dataset": {
+						"referenceName": "lineiteminput",
+						"type": "DatasetReference"
+					},
+					"name": "lineitem"
+				},
+				{
+					"dataset": {
+						"referenceName": "nationinput",
+						"type": "DatasetReference"
+					},
+					"name": "nation"
+				},
+				{
+					"dataset": {
+						"referenceName": "orderinput",
+						"type": "DatasetReference"
+					},
+					"name": "orders"
+				},
+				{
+					"dataset": {
+						"referenceName": "partinput",
+						"type": "DatasetReference"
+					},
+					"name": "part"
+				},
+				{
+					"dataset": {
+						"referenceName": "partsuppinput",
+						"type": "DatasetReference"
+					},
+					"name": "partsupp"
+				},
+				{
+					"dataset": {
+						"referenceName": "regioninput",
+						"type": "DatasetReference"
+					},
+					"name": "region"
+				},
+				{
+					"dataset": {
+						"referenceName": "supplierinput",
+						"type": "DatasetReference"
+					},
+					"name": "supplier"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tpchoutput",
+						"type": "DatasetReference"
+					},
+					"name": "tpchoutput"
+				}
+			],
+			"transformations": [
+				{
+					"name": "lineitemorder"
+				},
+				{
+					"name": "customerorders"
+				},
+				{
+					"name": "lineitempartsupp"
+				},
+				{
+					"name": "partsuppsupplierpart"
+				},
+				{
+					"name": "partsuppsupplier"
+				},
+				{
+					"name": "nationregion"
+				},
+				{
+					"name": "nationcustomer"
+				},
+				{
+					"name": "linitemordercustomer"
+				}
+			],
+			"script": "source(output(\n\t\tC_CUSTKEY as decimal(9,0),\n\t\tC_NAME as string,\n\t\tC_ADDRESS as string,\n\t\tC_NATIONKEY as decimal(38,0),\n\t\tC_PHONE as string,\n\t\tC_ACCTBAL as decimal(9,2),\n\t\tC_MKTSEGMENT as string,\n\t\tC_COMMENT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> customer\nsource(output(\n\t\tL_ORDERKEY as decimal(18,0),\n\t\tL_PARTKEY as decimal(9,0),\n\t\tL_SUPPKEY as decimal(9,0),\n\t\tL_LINENUMBER as decimal(38,0),\n\t\tL_QUANTITY as decimal(4,2),\n\t\tL_EXTENDEDPRICE as decimal(9,2),\n\t\tL_DISCOUNT as decimal(12,2),\n\t\tL_TAX as decimal(12,2),\n\t\tL_RETURNFLAG as string,\n\t\tL_LINESTATUS as string,\n\t\tL_SHIPDATE as date,\n\t\tL_COMMITDATE as date,\n\t\tL_RECEIPTDATE as date,\n\t\tL_SHIPINSTRUCT as string,\n\t\tL_SHIPMODE as string,\n\t\tL_COMMENT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> lineitem\nsource(output(\n\t\tN_NATIONKEY as decimal(38,0),\n\t\tN_NAME as string,\n\t\tN_REGIONKEY as decimal(38,0),\n\t\tN_COMMENT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> nation\nsource(output(\n\t\tO_ORDERKEY as decimal(18,0),\n\t\tO_CUSTKEY as decimal(9,0),\n\t\tO_ORDERSTATUS as string,\n\t\tO_TOTALPRICE as decimal(9,2),\n\t\tO_ORDERDATE as date,\n\t\tO_ORDERPRIORITY as string,\n\t\tO_CLERK as string,\n\t\tO_SHIPPRIORITY as decimal(38,0),\n\t\tO_COMMENT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> orders\nsource(output(\n\t\tP_PARTKEY as decimal(9,0),\n\t\tP_NAME as string,\n\t\tP_MFGR as string,\n\t\tP_BRAND as string,\n\t\tP_TYPE as string,\n\t\tP_SIZE as decimal(38,0),\n\t\tP_CONTAINER as string,\n\t\tP_RETAILPRICE as decimal(9,2),\n\t\tP_COMMENT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> part\nsource(output(\n\t\tPS_PARTKEY as decimal(9,0),\n\t\tPS_SUPPKEY as decimal(9,0),\n\t\tPS_AVAILQTY as decimal(4,0),\n\t\tPS_SUPPLYCOST as decimal(9,2),\n\t\tPS_COMMENT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> partsupp\nsource(output(\n\t\tR_REGIONKEY as decimal(38,0),\n\t\tR_NAME as string,\n\t\tR_COMMENT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> region\nsource(output(\n\t\tS_SUPPKEY as decimal(9,0),\n\t\tS_NAME as string,\n\t\tS_ADDRESS as string,\n\t\tS_NATIONKEY as decimal(38,0),\n\t\tS_PHONE as string,\n\t\tS_ACCTBAL as decimal(9,2),\n\t\tS_COMMENT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> supplier\nlineitempartsupp, orders join(L_ORDERKEY == O_ORDERKEY,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> lineitemorder\ncustomer, orders join(C_CUSTKEY == O_CUSTKEY,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> customerorders\nlineitem, partsupp join(L_SUPPKEY == PS_SUPPKEY,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> lineitempartsupp\npartsuppsupplier, part join(PS_PARTKEY == P_PARTKEY,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> partsuppsupplierpart\npartsupp, supplier join(PS_SUPPKEY == S_SUPPKEY,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> partsuppsupplier\nregion, nation join(R_REGIONKEY == N_REGIONKEY,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> nationregion\nnation, customer join(N_NATIONKEY == C_NATIONKEY,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> nationcustomer\nlineitemorder, customer join(O_CUSTKEY == C_CUSTKEY,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> linitemordercustomer\nlinitemordercustomer sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> tpchoutput"
+		}
+	}
+}

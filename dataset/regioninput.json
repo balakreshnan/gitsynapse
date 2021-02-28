@@ -1,0 +1,35 @@
+{
+	"name": "regioninput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "accinput",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "REGION",
+				"fileSystem": "tpchdata"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "R_REGIONKEY",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "R_NAME",
+				"type": "UTF8"
+			},
+			{
+				"name": "R_COMMENT",
+				"type": "UTF8"
+			}
+		]
+	}
+}

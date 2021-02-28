@@ -1,0 +1,63 @@
+{
+	"name": "partinput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "accinput",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "PART",
+				"fileSystem": "tpchdata"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "P_PARTKEY",
+				"type": "DECIMAL",
+				"precision": 9,
+				"scale": 0
+			},
+			{
+				"name": "P_NAME",
+				"type": "UTF8"
+			},
+			{
+				"name": "P_MFGR",
+				"type": "UTF8"
+			},
+			{
+				"name": "P_BRAND",
+				"type": "UTF8"
+			},
+			{
+				"name": "P_TYPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "P_SIZE",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "P_CONTAINER",
+				"type": "UTF8"
+			},
+			{
+				"name": "P_RETAILPRICE",
+				"type": "DECIMAL",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "P_COMMENT",
+				"type": "UTF8"
+			}
+		]
+	}
+}

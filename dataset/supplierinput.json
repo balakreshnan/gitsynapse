@@ -1,0 +1,55 @@
+{
+	"name": "supplierinput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "accinput",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "SUPPLIER",
+				"fileSystem": "tpchdata"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "S_SUPPKEY",
+				"type": "DECIMAL",
+				"precision": 9,
+				"scale": 0
+			},
+			{
+				"name": "S_NAME",
+				"type": "UTF8"
+			},
+			{
+				"name": "S_ADDRESS",
+				"type": "UTF8"
+			},
+			{
+				"name": "S_NATIONKEY",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "S_PHONE",
+				"type": "UTF8"
+			},
+			{
+				"name": "S_ACCTBAL",
+				"type": "DECIMAL",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "S_COMMENT",
+				"type": "UTF8"
+			}
+		]
+	}
+}
