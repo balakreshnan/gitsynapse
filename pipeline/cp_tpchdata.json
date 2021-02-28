@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy_psf",
+				"name": "Copy_tpch",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
