@@ -24,7 +24,7 @@
 			},
 			"kernelspec": {
 				"name": "synapse_spark",
-				"display_name": "scala"
+				"display_name": "Synapse Spark"
 			},
 			"language_info": {
 				"name": "scala"
@@ -84,7 +84,7 @@
 					"val keyVaultName = \"accvault1\";\r\n",
 					"val secretName = \"blobacckey\";"
 				],
-				"execution_count": 3
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -142,7 +142,7 @@
 				"source": [
 					" val secret = mssparkutils.credentials.getSecret(keyVaultName, secretName)"
 				],
-				"execution_count": 4
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
