@@ -1,6 +1,8 @@
 {
-	"name": "tpchtest1",
+	"name": "tftest",
 	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
 		"bigDataPool": {
 			"referenceName": "accsparkpools",
 			"type": "BigDataPoolReference"
@@ -23,11 +25,11 @@
 				"version": "0.1"
 			},
 			"kernelspec": {
-				"name": "synapse_spark",
-				"display_name": "Synapse Spark"
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
 			},
 			"language_info": {
-				"name": "scala"
+				"name": "python"
 			},
 			"a365ComputeOptions": {
 				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
@@ -49,79 +51,9 @@
 		"cells": [
 			{
 				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
 				"source": [
-					"TokenLibrary.help()"
-				],
-				"execution_count": 8
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"val keyVaultName = \"accvault1\";\r\n",
-					"val secretName = \"blobacckey\";"
-				],
-				"execution_count": 3
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					" import com.microsoft.azure.synapse.tokenlibrary.TokenLibrary\r\n",
-					" val secret = TokenLibrary.getSecret(keyVaultName, secretName)"
-				],
-				"execution_count": 15
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"mssparkutils.credentials.help()"
+					"import tensorflow as tf; \r\n",
+					"print(tf.__version__)"
 				],
 				"execution_count": 1
 			},
@@ -140,7 +72,54 @@
 					"collapsed": true
 				},
 				"source": [
-					" val secret = mssparkutils.credentials.getSecret(keyVaultName, secretName)"
+					"mnist = tf.keras.datasets.mnist\r\n",
+					"\r\n",
+					"(x_train, y_train), (x_test, y_test) = mnist.load_data()\r\n",
+					"x_train, x_test = x_train / 255.0, x_test / 255.0"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"model = tf.keras.models.Sequential([\r\n",
+					"  tf.keras.layers.Flatten(input_shape=(28, 28)),\r\n",
+					"  tf.keras.layers.Dense(128, activation='relu'),\r\n",
+					"  tf.keras.layers.Dropout(0.2),\r\n",
+					"  tf.keras.layers.Dense(10)\r\n",
+					"])"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"predictions = model(x_train[:1]).numpy()\r\n",
+					"predictions"
 				],
 				"execution_count": 4
 			},
@@ -159,15 +138,9 @@
 					"collapsed": true
 				},
 				"source": [
-					"val sc = spark.sparkContext\r\n",
-					"spark.conf.set(\"spark.storage.synapse.linkedServiceName\", \"accbbstore\")\r\n",
-					"spark.conf.set(\"fs.azure.account.oauth.provider.type\", \"com.microsoft.azure.synapse.tokenlibrary.LinkedServiceBasedTokenProvider\")\r\n",
-					"\r\n",
-					"val df = spark.read.csv(\"abfss://tpchdata@accbbstore.dfs.core.windows.net/CUSTOMER/*.parquet\")\r\n",
-					"\r\n",
-					"display(df.limit(10))"
+					"tf.nn.softmax(predictions).numpy()"
 				],
-				"execution_count": 12
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -184,11 +157,9 @@
 					"collapsed": true
 				},
 				"source": [
-					"spark.conf.set(\r\n",
-					"  \"fs.azure.account.key.accbbstore.blob.core.windows.net\",\r\n",
-					"  blobacckey)"
+					"loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)"
 				],
-				"execution_count": 4
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -205,7 +176,7 @@
 					"collapsed": true
 				},
 				"source": [
-					"val customer = spark.read.parquet(\"wasbs://tpchdata@accbbstore.dfs.core.windows.net/CUSTOMER/*.parquet\")"
+					"loss_fn(y_train[:1], predictions).numpy()"
 				],
 				"execution_count": 7
 			},
@@ -224,9 +195,90 @@
 					"collapsed": true
 				},
 				"source": [
-					""
+					"model.compile(optimizer='adam',\r\n",
+					"              loss=loss_fn,\r\n",
+					"              metrics=['accuracy'])"
 				],
-				"execution_count": null
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"model.fit(x_train, y_train, epochs=5)"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"model.evaluate(x_test,  y_test, verbose=2)"
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"probability_model = tf.keras.Sequential([\r\n",
+					"  model,\r\n",
+					"  tf.keras.layers.Softmax()\r\n",
+					"])"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"probability_model(x_test[:5])"
+				],
+				"execution_count": 12
 			}
 		]
 	}
