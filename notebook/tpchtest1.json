@@ -10728,9 +10728,17 @@
 					"join part e on d.PS_PARTKEY = e.P_PARTKEY\r\n",
 					"join supplier f on d.PS_SUPPKEY = f.S_SUPPKEY\r\n",
 					"join nation g on f.S_NATIONKEY = g.N_NATIONKEY\r\n",
-					"join region h on g.N_REGIONKEY = h.R_REGIONKEY"
+					"join region h on g.N_REGIONKEY = h.R_REGIONKEY\r\n",
+					" where\r\n",
+					"       a.l_shipdate <= date_add(to_date('1998-12-01'), -90)\r\n",
+					" group by\r\n",
+					"       a.l_returnflag,\r\n",
+					"       a.l_linestatus\r\n",
+					" order by\r\n",
+					"       a.l_returnflag,\r\n",
+					"       a.l_linestatus"
 				],
-				"execution_count": 46
+				"execution_count": 50
 			}
 		]
 	}
