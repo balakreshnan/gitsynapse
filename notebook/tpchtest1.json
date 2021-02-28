@@ -64,28 +64,6 @@
 					"collapsed": true
 				},
 				"source": [
-					"import com.microsoft.azure.synapse.tokenlibrary.TokenLibrary\r\n",
-					"\r\n",
-					"val blobacckey: String = TokenLibrary.getSecret(\"accvault1\", \"blobacckey\")\r\n",
-					"println(blobacckey)"
-				],
-				"execution_count": 5
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
 					"TokenLibrary.help()"
 				],
 				"execution_count": 8
@@ -105,16 +83,55 @@
 					"collapsed": true
 				},
 				"source": [
+					"val keyVaultName = \"accvault1\";\r\n",
+					"val secretName = \"blobacckey\";"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					" import com.microsoft.azure.synapse.tokenlibrary.TokenLibrary\r\n",
+					" val secret = TokenLibrary.getSecret(keyVaultName, secretName)"
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
 					"val sc = spark.sparkContext\r\n",
 					"spark.conf.set(\"spark.storage.synapse.linkedServiceName\", \"accbbstore\")\r\n",
-					"spark.conf.set(\"fs.azure.account.auth.type\", \"SAS\")\r\n",
-					"spark.conf.set(\"fs.azure.sas.token.provider.type\", \"com.microsoft.azure.synapse.tokenlibrary.LinkedServiceBasedSASProvider\")\r\n",
+					"spark.conf.set(\"fs.azure.account.oauth.provider.type\", \"com.microsoft.azure.synapse.tokenlibrary.LinkedServiceBasedTokenProvider\")\r\n",
 					"\r\n",
 					"val df = spark.read.csv(\"abfss://tpchdata@accbbstore.dfs.core.windows.net/CUSTOMER/*.parquet\")\r\n",
 					"\r\n",
 					"display(df.limit(10))"
 				],
-				"execution_count": 11
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
