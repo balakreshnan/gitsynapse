@@ -1,0 +1,41 @@
+{
+	"name": "nationinput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "accinput",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "NATION",
+				"fileSystem": "tpchdata"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "N_NATIONKEY",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "N_NAME",
+				"type": "UTF8"
+			},
+			{
+				"name": "N_REGIONKEY",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "N_COMMENT",
+				"type": "UTF8"
+			}
+		]
+	}
+}

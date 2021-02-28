@@ -1,0 +1,49 @@
+{
+	"name": "partsuppinput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "accinput",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "PARTSUPP",
+				"fileSystem": "tpchdata"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "PS_PARTKEY",
+				"type": "DECIMAL",
+				"precision": 9,
+				"scale": 0
+			},
+			{
+				"name": "PS_SUPPKEY",
+				"type": "DECIMAL",
+				"precision": 9,
+				"scale": 0
+			},
+			{
+				"name": "PS_AVAILQTY",
+				"type": "DECIMAL",
+				"precision": 4,
+				"scale": 0
+			},
+			{
+				"name": "PS_SUPPLYCOST",
+				"type": "DECIMAL",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "PS_COMMENT",
+				"type": "UTF8"
+			}
+		]
+	}
+}
