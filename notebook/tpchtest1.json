@@ -613,7 +613,7 @@
 					"microsoft": {
 						"language": "sparksql"
 					},
-					"collapsed": true
+					"collapsed": false
 				},
 				"source": [
 					"%%sql\r\n",
