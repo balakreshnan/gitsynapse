@@ -174,7 +174,7 @@
 					"import org.apache.spark.eventhubs._\r\n",
 					"import com.microsoft.azure.eventhubs._"
 				],
-				"execution_count": 10
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
