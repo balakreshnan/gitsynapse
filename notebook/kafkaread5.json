@@ -194,6 +194,26 @@
 					"import org.apache.spark.eventhubs.ConnectionStringBuilder"
 				],
 				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"import org.apache.spark.eventhubs._\r\n",
+					"import org.apache.spark.sql.SparkSession"
+				],
+				"execution_count": 1
 			}
 		]
 	}
