@@ -2,13 +2,13 @@
 	"name": "tpchsql11",
 	"properties": {
 		"content": {
-			"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accbbstore.dfs.core.windows.net/tpchdata/CUSTOMER/*.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n",
+			"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accbbstore.dfs.core.windows.net/tpchdata/CUSTOMER/*.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n\nCREATE DATABASE tpchdb COLLATE Latin1_General_100_CI_AI_SC_UTF8;\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://integraadls.dfs.core.windows.net/rawdata/CUSTOMER/data_0_0_0.snappy.parquet',\n        FORMAT='PARQUET',\n        DATAFILETYPE = 'WIDEchar'\n    ) \n AS [r]\n",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
 				"poolName": "Built-in",
-				"databaseName": "master"
+				"databaseName": "tpchdb"
 			}
 		},
 		"type": "SqlQuery"
