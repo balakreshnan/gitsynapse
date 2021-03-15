@@ -2,7 +2,7 @@
 	"name": "tpchsql11",
 	"properties": {
 		"content": {
-			"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accbbstore.dfs.core.windows.net/tpchdata/CUSTOMER/*.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n\nCREATE DATABASE tpchdb COLLATE Latin1_General_100_CI_AI_SC_UTF8;\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://integraadls.dfs.core.windows.net/rawdata/CUSTOMER/data_0_0_0.snappy.parquet',\n        FORMAT='PARQUET',\n        DATAFILETYPE = 'WIDEchar'\n    ) \n AS [r]\n",
+			"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accbbstore.dfs.core.windows.net/tpchdata/CUSTOMER/*.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n\nCREATE DATABASE tpchdb COLLATE Latin1_General_100_CI_AI_SC_UTF8;\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://integraadls.dfs.core.windows.net/rawdata/CUSTOMER/data_0_0_0.snappy.parquet',\n        FORMAT='PARQUET',\n        DATAFILETYPE = 'WIDEchar'\n    ) \n AS [r]\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://integraadls.dfs.core.windows.net/rawdata/CUSTOMER/*.snappy.parquet',\n        FORMAT='PARQUET'\n    ) \n    WITH (\n    [C_COMMENT] VARCHAR (4000) ,\n    C_MKTSEGMENT VARCHAR(4000),\n    C_PHONE VARCHAR (4000),\n    C_ADDRESS VARCHAR (4000),\n    C_NAME VARCHAR (4000),\n    C_custkey varchar(100),\n    C_NATIONKEY varchar(100)\n    )\nAS [r]\nORDER BY C_NATIONKEY DESC\n",
 			"metadata": {
 				"language": "sql"
 			},
