@@ -2,7 +2,7 @@
 	"name": "sqlmisetup",
 	"properties": {
 		"content": {
-			"query": "CREATE USER [accadf1] FROM EXTERNAL PROVIDER;\n\nALTER ROLE db_datareader ADD MEMBER [accadf1]\nALTER ROLE db_owner ADD MEMBER [accadf1]",
+			"query": "CREATE USER [accadf1] FROM EXTERNAL PROVIDER;\n\nALTER ROLE db_datareader ADD MEMBER [accadf1]\nALTER ROLE db_owner ADD MEMBER [accadf1]\n\n\nCREATE EXTERNAL DATA SOURCE gcpnestedoutut\nWITH ( LOCATION = 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/gcpnestedoutput/')\n\nCREATE EXTERNAL FILE FORMAT ParquetFormat WITH (  FORMAT_TYPE = PARQUET );\n\n\nUSE [arcinsight];\nGO\nCREATE EXTERNAL TABLE gcpnestedinput\n(\n    [sys_id] VARCHAR (1000),\n    [assigned] VARCHAR (1000),\n    [company] VARCHAR(8000),\n    [assigned_to] VARCHAR(8000)\n)\nWITH (\n    LOCATION = '*.parquet',\n    DATA_SOURCE = gcpnestedoutut,\n    FILE_FORMAT = ParquetFormat\n);\n\nselect * from dbo.gcpnestedinput",
 			"metadata": {
 				"language": "sql"
 			},
