@@ -8,8 +8,9 @@
 			},
 			"currentConnection": {
 				"poolName": "Built-in",
-				"databaseName": "coviddb"
-			}
+				"databaseName": "arcinsight"
+			},
+			"resultLimit": 5000
 		},
 		"type": "SqlQuery"
 	}
