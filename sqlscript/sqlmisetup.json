@@ -1,0 +1,17 @@
+{
+	"name": "sqlmisetup",
+	"properties": {
+		"content": {
+			"query": "CREATE USER [accadf1] FROM EXTERNAL PROVIDER;\n\nALTER ROLE db_datareader ADD MEMBER [accadf1]\nALTER ROLE db_owner ADD MEMBER [accadf1]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "arcinsight"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
