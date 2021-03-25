@@ -1,0 +1,16 @@
+{
+	"name": "percept1",
+	"properties": {
+		"content": {
+			"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/santacruz/incoming/2021/03/07/378287953_0d07aab0c9684f86b66d69e15e8f6aa0_1.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/santacruz/incoming/*/*/*/*.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n\ncreate VIEW percept1 AS \nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/santacruz/incoming/*/*/*/*.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n\nSelect * from percept1;\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "coviddb"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,16 @@
+{
+	"name": "MIsqlpool",
+	"properties": {
+		"content": {
+			"query": "CREATE USER [accpurview] FROM EXTERNAL PROVIDER\nGO\n\nEXEC sp_addrolemember 'db_owner', [accpurview]\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "master"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

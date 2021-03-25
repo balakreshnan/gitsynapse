@@ -1,9 +1,9 @@
 {
-	"name": "AMLtest1",
+	"name": "paramtest",
 	"properties": {
 		"activities": [
 			{
-				"name": "AMLTest1",
+				"name": "paramtest",
 				"type": "SynapseNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -16,16 +16,24 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebook": {
-						"referenceName": "AMLtest1",
+						"referenceName": "paramtest",
 						"type": "NotebookReference"
+					},
+					"parameters": {
+						"param_name": {
+							"value": {
+								"value": "@pipeline().parameters.param_name",
+								"type": "Expression"
+							}
+						}
 					}
 				}
 			}
 		],
 		"parameters": {
-			"devopstestparam": {
+			"param_name": {
 				"type": "string",
-				"defaultValue": "sample1"
+				"defaultValue": "fromintegrate"
 			}
 		},
 		"annotations": []
