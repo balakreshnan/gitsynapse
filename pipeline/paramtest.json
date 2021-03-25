@@ -24,7 +24,8 @@
 							"value": {
 								"value": "@pipeline().parameters.param_name",
 								"type": "Expression"
-							}
+							},
+							"type": "string"
 						}
 					}
 				}
@@ -34,6 +35,12 @@
 			"param_name": {
 				"type": "string",
 				"defaultValue": "fromintegrate"
+			}
+		},
+		"variables": {
+			"param_name": {
+				"type": "String",
+				"defaultValue": "fromvariable"
 			}
 		},
 		"annotations": []
