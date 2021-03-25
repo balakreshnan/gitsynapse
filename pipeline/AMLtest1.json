@@ -22,6 +22,12 @@
 				}
 			}
 		],
+		"parameters": {
+			"devopstestparam": {
+				"type": "string",
+				"defaultValue": "sample1"
+			}
+		},
 		"annotations": []
 	}
 }
