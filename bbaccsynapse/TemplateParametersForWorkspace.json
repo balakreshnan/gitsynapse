@@ -5,6 +5,9 @@
 		"workspaceName": {
 			"value": "bbaccsynapse"
 		},
+		"accbbstore_accountKey": {
+			"value": ""
+		},
 		"accinput_accountKey": {
 			"value": ""
 		},
@@ -23,6 +26,9 @@
 		"bbaccsynapse-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
 		},
+		"bbaccsynapsesqlpool_connectionString": {
+			"value": ""
+		},
 		"iiotdata_accountKey": {
 			"value": ""
 		},
@@ -34,6 +40,9 @@
 		},
 		"Keyvaultacc_properties_typeProperties_baseUrl": {
 			"value": "https://accvault1.vault.azure.net/"
+		},
+		"accbbstore_properties_typeProperties_url": {
+			"value": "https://accbbstore.dfs.core.windows.net"
 		},
 		"accinput_properties_typeProperties_url": {
 			"value": "https://accbbstore.dfs.core.windows.net"
