@@ -1,0 +1,17 @@
+{
+	"name": "adbsqlmi",
+	"properties": {
+		"content": {
+			"query": "use master;\nCreate login [abdtest1] FROM EXTERNAL PROVIDER;\n\nGRANT CREATE ANY DATABASE to [abdtest1];\n\nDROP login [abdtest1];\n\nCREATE USER [abdtest1] FROM EXTERNAL PROVIDER;\n\nALTER ROLE db_datareader ADD MEMBER [abdtest1]\nALTER ROLE db_owner ADD MEMBER [abdtest1]\n\nDROP user [abdtest1];",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "tpchdb"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
