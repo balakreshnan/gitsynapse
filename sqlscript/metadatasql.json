@@ -1,0 +1,17 @@
+{
+	"name": "metadatasql",
+	"properties": {
+		"content": {
+			"query": "use tpchdb;\nSELECT * FROM sys.views;\n;\nselect a.name, a.database_id, b.name, b.object_id, c.name, c.column_id, d.name \nfrom sys.databases a \njoin sys.tables b on a.database_id = b.schema_id \njoin sys.columns c on b.object_id = c.object_id \njoin sys.types d on c.system_type_id = d.system_type_id;\n\nselect a.name, a.database_id, b.name, b.object_id, c.name, c.column_id, d.name \nfrom sys.databases a \njoin sys.views b on a.database_id = b.schema_id \njoin sys.columns c on b.object_id = c.object_id \njoin sys.types d on c.system_type_id = d.system_type_id;",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "tpchdb"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
