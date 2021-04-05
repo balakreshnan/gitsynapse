@@ -1,0 +1,111 @@
+{
+	"name": "anomalytestsvc",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "accsparkpools",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "112g",
+			"driverCores": 16,
+			"executorMemory": "112g",
+			"executorCores": 16,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+				"name": "accsparkpools",
+				"type": "Spark",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 16,
+				"memory": 112,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"import mmlspark\n",
+					"\n",
+					"if mmlspark.__spark_package_version__ < \"1.0.0-rc3\":\n",
+					"    raise Exception(\"This notebook is not compatible with the current version of mmlspark: {}. Please upgrade to 1.0.0-rc3 or higher.\".format(\n",
+					"        mmlspark.__spark_package_version__))"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"timestamp"
+							],
+							"values": [
+								"value"
+							],
+							"yLabel": "value",
+							"xLabel": "timestamp",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"value\":{\"1972-01-01T00:00:00Z\":826,\"1972-02-01T00:00:00Z\":799,\"1972-03-01T00:00:00Z\":890,\"1972-04-01T00:00:00Z\":900,\"1972-05-01T00:00:00Z\":766,\"1972-06-01T00:00:00Z\":805,\"1972-07-01T00:00:00Z\":821,\"1972-08-01T00:00:00Z\":20000,\"1972-09-01T00:00:00Z\":883,\"1972-10-01T00:00:00Z\":898}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"from mmlspark.cognitive import *\n",
+					"from notebookutils import mssparkutils\n",
+					"\n",
+					"# Fetch the subscription key (or a general Cognitive Service key) from Azure Key Vault\n",
+					"service_key = mssparkutils.credentials.getSecret(\"accvault1\", \"anomalysecret\", \"accvault1\")\n",
+					"\n",
+					"# Load the data into a Spark DataFrame\n",
+					"df = spark.sql(\"SELECT * FROM default.anomaly_detector_testing_data\")\n",
+					"\n",
+					"anomalyDetector = (SimpleDetectAnomalies()\n",
+					"    .setLocation(\"centralus\")\n",
+					"    .setSubscriptionKey(service_key)\n",
+					"    .setOutputCol(\"output\")\n",
+					"    .setErrorCol(\"error\")\n",
+					"    .setGranularity(\"monthly\")\n",
+					"    .setTimestampCol(\"timestamp\")\n",
+					"    .setValueCol(\"value\")\n",
+					"    .setGroupbyCol(\"group\"))\n",
+					"\n",
+					"results = anomalyDetector.transform(df)\n",
+					"\n",
+					"# Show the results\n",
+					"display(results.select(\"timestamp\", \"value\", \"group\", \"output.*\", \"error\").limit(10))"
+				],
+				"execution_count": 2
+			}
+		]
+	}
+}
