@@ -2,7 +2,7 @@
 	"name": "accsvctest",
 	"properties": {
 		"content": {
-			"query": "use master;\nCreate login [accsvcuser] FROM EXTERNAL PROVIDER;\n\nGRANT CREATE ANY DATABASE to [accsvcuser];\n\nDROP login [accsvcuser];\n\nCREATE USER [accsvcuser] FROM EXTERNAL PROVIDER;\n\nALTER ROLE db_datareader ADD MEMBER [accsvcuser]\nALTER ROLE db_owner ADD MEMBER [accsvcuser]\n\nDROP user [accsvcuser];\n\nselect * from dbo.customer;",
+			"query": "use master;\nCreate login [accsvcuser] FROM EXTERNAL PROVIDER;\n\nGRANT CREATE ANY DATABASE to [accsvcuser];\n\nDROP login [accsvcuser];\n\nCREATE USER [accsvcuser] FROM EXTERNAL PROVIDER;\n\nALTER ROLE db_datareader ADD MEMBER [accsvcuser]\nALTER ROLE db_owner ADD MEMBER [accsvcuser]\n\nDROP user [accsvcuser];\n\nselect * from dbo.customer;\n\nselect * from dbo.region",
 			"metadata": {
 				"language": "sql"
 			},
