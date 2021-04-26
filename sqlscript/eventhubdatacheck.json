@@ -1,0 +1,17 @@
+{
+	"name": "eventhubdatacheck",
+	"properties": {
+		"content": {
+			"query": "SELECT count(*)\n FROM [default].[dbo].[eventhubdata]\n\nSelect top 300 * from dbo.eventhubdata;",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "default"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
