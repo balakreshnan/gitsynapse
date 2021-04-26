@@ -2,7 +2,7 @@
 	"name": "eventhubdatacheck",
 	"properties": {
 		"content": {
-			"query": "SELECT count(*)\n FROM [default].[dbo].[eventhubdata]\n\nSelect top 300 * from dbo.eventhubdata;",
+			"query": "SELECT count(*)\n FROM [default].[dbo].[eventhubdata]\n\nSelect top 300 * from dbo.eventhubdata order by enqueuedTime DESC;",
 			"metadata": {
 				"language": "sql"
 			},
