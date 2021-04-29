@@ -1,0 +1,17 @@
+{
+	"name": "titanicsql",
+	"properties": {
+		"content": {
+			"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/titanic/Titanic.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0'\n    ) AS [result];\n\nCREATE MASTER KEY ENCRYPTION BY PASSWORD = '`T2$)bt!8[(ys~kw' ;\n\n--Create database scoped credential with **IDENTITY = 'Managed Service Identity'**\n\n-- CREATE DATABASE SCOPED CREDENTIAL msi_cred WITH IDENTITY = 'bbaccsynapse';\nCREATE DATABASE SCOPED CREDENTIAL WorkspaceIdentity WITH IDENTITY = 'bbaccsynapse';\n\n--Create external data source with abfss:// scheme for connecting to your Azure Data Lake Store Gen2 account\n\nCREATE EXTERNAL DATA SOURCE ext_datasource_with_abfss \nWITH \n  ( TYPE = HADOOP , \n    LOCATION = 'abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/synapseroot/titanic/Titanic.csv' , \n    CREDENTIAL = msi_cred \n  ) ;",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "default"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
