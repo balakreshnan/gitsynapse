@@ -49,24 +49,7 @@
 			},
 			{
 				"cell_type": "code",
-				"source": [
-					"import datetime  \n",
-					"from azureml.core import Workspace, LinkedService, SynapseWorkspaceLinkedServiceConfiguration\n",
-					"\n",
-					"# Azure Machine Learning workspace\n",
-					"ws = Workspace.from_config()\n",
-					"\n",
-					"#link configuration \n",
-					"synapse_link_config = SynapseWorkspaceLinkedServiceConfiguration(\n",
-					"    subscription_id=ws.subscription_id,\n",
-					"    resource_group= 'mlops',\n",
-					"    name='mlopsdev')\n",
-					"\n",
-					"# Link workspaces and register Synapse workspace in Azure Machine Learning\n",
-					"linked_service = LinkedService.register(workspace = ws,              \n",
-					"                                            name = 'mlopsdev',    \n",
-					"                                            linked_service_config = synapse_link_config)"
-				],
+				"source": [],
 				"execution_count": null
 			}
 		]
