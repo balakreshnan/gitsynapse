@@ -260,7 +260,43 @@
 				"source": [
 					"display(dfnew.where(dfnew[\"_c43\"] == \"CLOSED\").groupby(\"_c12\").sum(\"TotalTimeSecs\"))"
 				],
-				"execution_count": 29
+				"execution_count": 30
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 2,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"_c19"
+							],
+							"values": [
+								"count"
+							],
+							"yLabel": "count",
+							"xLabel": "_c19",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"count\":{\"ABRASIVE\":2308,\"AIR QUALITY\":2025,\"ASSEMBLY\":5230,\"CALIBRATE\":1514,\"CLEANING\":1740,\"COMPRESSOR\":1209,\"COMPUTER\":21,\"CONVEYOR\":1207,\"CRANES\":1910,\"CUTTING\":8087,\"E H S\":111,\"FACILITY\":454,\"FILTER\":409,\"FORMING\":1799,\"HAND TOOL\":41,\"HEAT TREATMENT\":3746,\"HVAC\":2171,\"MACHINE TOOL\":844,\"MARKING\":1311,\"MATERIAL HANDLING\":3868,\"MATERIALS\":493,\"MIX-BLEND\":215,\"MOLD\":46,\"MOTOR\":287,\"NULL\":580,\"PACKAGING\":1128,\"PAINT\":132,\"POWER\":242,\"PRESS\":2336,\"PROCESS\":7032,\"PUMP\":752,\"STORAGE\":393,\"TEST\":7920,\"TOOLING\":28,\"VEHICLE\":556,\"WASTE\":103,\"WELDING\":2287,\"WINDING\":1965,\"WORK AREA\":10195}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(df.where(df[\"_c43\"] == \"CLOSED\").groupby([\"_c18\", \"_c19\", \"_c20\", \"_c21\", \"_c22\", \"_c23\"]).count())"
+				],
+				"execution_count": 33
+			},
+			{
+				"cell_type": "code",
+				"source": [],
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
