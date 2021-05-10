@@ -235,7 +235,7 @@
 				"cell_type": "code",
 				"metadata": {
 					"diagram": {
-						"activateDiagramType": 1,
+						"activateDiagramType": 2,
 						"chartConfig": {
 							"category": "bar",
 							"keys": [
