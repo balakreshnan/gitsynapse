@@ -107,14 +107,35 @@
 				"source": [
 					"display(df.head(100))"
 				],
-				"execution_count": 8
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"df.describe()"
 				],
-				"execution_count": 2
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from pyspark.sql.functions import mean as _mean, stddev as _stddev, col\n",
+					"\n",
+					"df.mean()"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df.median()"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [],
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -445,27 +466,37 @@
 			},
 			{
 				"cell_type": "code",
-				"source": [],
+				"source": [
+					""
+				],
 				"execution_count": null
 			},
 			{
 				"cell_type": "code",
-				"source": [],
+				"source": [
+					""
+				],
 				"execution_count": null
 			},
 			{
 				"cell_type": "code",
-				"source": [],
+				"source": [
+					""
+				],
 				"execution_count": null
 			},
 			{
 				"cell_type": "code",
-				"source": [],
+				"source": [
+					""
+				],
 				"execution_count": null
 			},
 			{
 				"cell_type": "code",
-				"source": [],
+				"source": [
+					""
+				],
 				"execution_count": null
 			}
 		]
