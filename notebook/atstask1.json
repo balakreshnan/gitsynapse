@@ -81,9 +81,48 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"new_column_name_list = [\"CPKPlaceId,tenant_id,place_id,currency,global_name,name,repair_center,PlaceStatus,Site,modified_dttm,time_zone_info_id,CPKEquipmentId,model_id,EquipmentGroup,AssetNum,AssetDesc,SerialNum,Criticality,SubLocation,EquipmentType,EquipmentSubType,OEM,EquipmentCategory,ControlType,Status,ManufacturedDate,InstalledDate,SublocationPM,CPKTaskId,CPKRequestId,WoId,TaskId,task_template_id,TaskTemplateDescription,WoPriority,EquipCriticality,TaskPriority,PlannedTaskDurationSeconds,EstimatedTaskSeconds,PlanedInAdvanceSeconds,PmComplianceOutOfWindowDays,PmCompletionOutOfWindowDays,WoType,WoStatus,WoSubStatus,TaskType,TaskStatus,status_reason,CPKTeamId,TaskCategory,ReasonForVarianceCode,IsBreakDown,IsVendorContract,IsChangeOver,IsAssetImprovement,IsOperatorPM,IsCostSavings,IsOutOfScope,IsNADT,IsSafety,HasComplianceExpired,HasCompletionExpired,IsScheduled,IsScheduleCompliant,IsPlanned,IsWaitingOnMaterials,IsRegulatory,PMComplianceWindowEndDate,PMCompletionWindowEndDate,TaskCompletedDate,TaskCreatedDate,WorkOrderCreatedOn,IsProactiveOverride,IsProactive,planned_status_datetime,TimeToPlanSeconds,PlannedStartDateTimeLocal,PlannedEndDateTimeLocal,TaskOpenDays,TotalTaskLaborHours,MalfuctionId,OperatingStatus_Id,MalfuctionStart,MalfuctionStop,MalfuctionStartLocal,MalfunctionStopLocal,MalfuctionDuration,DaysSinceLastMalfunction,ObjectCode,SymptomCode,ProblemCode,ResolutionCode,TotalDownTimeHours,ObjctDesc,ProblemDesc,ResolutionDesc,SymptomDesc\"]"
+					"#columns = [CPKPlaceId,tenant_id,place_id,currency,global_name,name,repair_center,PlaceStatus,Site,modified_dttm,time_zone_info_id,CPKEquipmentId,model_id,EquipmentGroup,AssetNum,AssetDesc,SerialNum,Criticality,SubLocation,EquipmentType,EquipmentSubType,OEM,EquipmentCategory,ControlType,Status,ManufacturedDate,InstalledDate,SublocationPM,CPKTaskId,CPKRequestId,WoId,TaskId,task_template_id,TaskTemplateDescription,WoPriority,EquipCriticality,TaskPriority,PlannedTaskDurationSeconds,EstimatedTaskSeconds,PlanedInAdvanceSeconds,PmComplianceOutOfWindowDays,PmCompletionOutOfWindowDays,WoType,WoStatus,WoSubStatus,TaskType,TaskStatus,status_reason,CPKTeamId,TaskCategory,ReasonForVarianceCode,IsBreakDown,IsVendorContract,IsChangeOver,IsAssetImprovement,IsOperatorPM,IsCostSavings,IsOutOfScope,IsNADT,IsSafety,HasComplianceExpired,HasCompletionExpired,IsScheduled,IsScheduleCompliant,IsPlanned,IsWaitingOnMaterials,IsRegulatory,PMComplianceWindowEndDate,PMCompletionWindowEndDate,TaskCompletedDate,TaskCreatedDate,WorkOrderCreatedOn,IsProactiveOverride,IsProactive,planned_status_datetime,TimeToPlanSeconds,PlannedStartDateTimeLocal,PlannedEndDateTimeLocal,TaskOpenDays,TotalTaskLaborHours,MalfuctionId,OperatingStatus_Id,MalfuctionStart,MalfuctionStop,MalfuctionStartLocal,MalfunctionStopLocal,MalfuctionDuration,DaysSinceLastMalfunction,ObjectCode,SymptomCode,ProblemCode,ResolutionCode,TotalDownTimeHours,ObjctDesc,ProblemDesc,ResolutionDesc,SymptomDesc]\n",
+					"columns = ['CPKPlaceId','tenant_id','place_id','currency','global_name','name','repair_center','PlaceStatus','Site','modified_dttm','time_zone_info_id','CPKEquipmentId','model_id','EquipmentGroup','AssetNum','AssetDesc','SerialNum','Criticality','SubLocation','EquipmentType','EquipmentSubType','OEM','EquipmentCategory','ControlType','Status','ManufacturedDate','InstalledDate','SublocationPM','CPKTaskId','CPKRequestId','WoId','TaskId','task_template_id','TaskTemplateDescription','WoPriority','EquipCriticality','TaskPriority','PlannedTaskDurationSeconds','EstimatedTaskSeconds','PlanedInAdvanceSeconds','PmComplianceOutOfWindowDays','PmCompletionOutOfWindowDays','WoType','WoStatus','WoSubStatus','TaskType','TaskStatus','status_reason','CPKTeamId','TaskCategory','ReasonForVarianceCode','IsBreakDown','IsVendorContract','IsChangeOver','IsAssetImprovement','IsOperatorPM','IsCostSavings','IsOutOfScope','IsNADT','IsSafety','HasComplianceExpired','HasCompletionExpired','IsScheduled','IsScheduleCompliant','IsPlanned','IsWaitingOnMaterials','IsRegulatory','PMComplianceWindowEndDate','PMCompletionWindowEndDate','TaskCompletedDate','TaskCreatedDate','WorkOrderCreatedOn','IsProactiveOverride','IsProactive','planned_status_datetime','TimeToPlanSeconds','PlannedStartDateTimeLocal','PlannedEndDateTimeLocal','TaskOpenDays','TotalTaskLaborHours','MalfuctionId','OperatingStatus_Id','MalfuctionStart','MalfuctionStop','MalfuctionStartLocal','MalfunctionStopLocal','MalfuctionDuration','DaysSinceLastMalfunction','ObjectCode','SymptomCode','ProblemCode','ResolutionCode','TotalDownTimeHours','ObjctDesc','ProblemDesc','ResolutionDesc','SymptomDesc']"
 				],
-				"execution_count": 10
+				"execution_count": 17
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"CPKPlaceId"
+							],
+							"values": [
+								"CPKPlaceId"
+							],
+							"yLabel": "CPKPlaceId",
+							"xLabel": "CPKPlaceId",
+							"aggregation": "COUNT",
+							"aggByBackend": false
+						},
+						"aggData": "{\"CPKPlaceId\":{\"1-ST0000104090\":1,\"1-ST90000436\":1000}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"from pyspark.sql.functions import col\n",
+					"\n",
+					" ##columns is list from hack chat\n",
+					" ##df_orig is a spark dataframe read from orig csv\n",
+					"\n",
+					"col_rename = {f'_c{i}':columns[i] for i in range(0,len(columns))}\n",
+					"df_with_col_renamed = df.select([col(c).alias(col_rename.get(c,c)) for c in df.columns])\n",
+					"display(df_with_col_renamed)"
+				],
+				"execution_count": 18
 			},
 			{
 				"cell_type": "code",
