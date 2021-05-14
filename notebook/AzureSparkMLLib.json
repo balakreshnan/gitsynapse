@@ -12,11 +12,11 @@
 			"driverCores": 16,
 			"executorMemory": "112g",
 			"executorCores": 16,
-			"numExecutors": 2,
+			"numExecutors": 3,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
-				"spark.dynamicAllocation.minExecutors": "2",
-				"spark.dynamicAllocation.maxExecutors": "2"
+				"spark.dynamicAllocation.minExecutors": "3",
+				"spark.dynamicAllocation.maxExecutors": "3"
 			}
 		},
 		"metadata": {
@@ -119,6 +119,28 @@
 							"deleting": false
 						}
 					},
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"vendorID"
+							],
+							"values": [
+								"tpepPickupDateTime"
+							],
+							"yLabel": "tpepPickupDateTime",
+							"xLabel": "vendorID",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"tpepPickupDateTime\":{\"1\":0,\"2\":0}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					},
 					"collapsed": false
 				},
 				"source": [
@@ -204,7 +226,7 @@
 					"                                              )\\\r\n",
 					"                                       .filter((taxi_df.tripTimeSecs >= 30) & (taxi_df.tripTimeSecs <= 7200))"
 				],
-				"execution_count": 7
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
@@ -230,7 +252,7 @@
 					"# Create a new dataframe that has had the encodings applied\r\n",
 					"encoded_final_df = Pipeline(stages=[sI1, en1, sI2, en2]).fit(taxi_featurised_df).transform(taxi_featurised_df)"
 				],
-				"execution_count": 8
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -255,7 +277,7 @@
 					"# Split the dataframe into test and training dataframes\r\n",
 					"train_data_df, test_data_df = encoded_final_df.randomSplit([trainingFraction, testingFraction], seed=seed)"
 				],
-				"execution_count": 9
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -293,7 +315,7 @@
 					"metrics = BinaryClassificationMetrics(predictionAndLabels)\r\n",
 					"print(\"Area under ROC = %s\" % metrics.areaUnderROC)"
 				],
-				"execution_count": 10
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -320,7 +342,7 @@
 					"plt.ylabel('True Positive Rate')\r\n",
 					"plt.show()"
 				],
-				"execution_count": 11
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
