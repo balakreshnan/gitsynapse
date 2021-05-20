@@ -27,9 +27,12 @@
 				},
 				{
 					"name": "DerivedColumn1"
+				},
+				{
+					"name": "Parse1"
 				}
 			],
-			"script": "source(output(\n\t\tSequenceNumber as long,\n\t\tOffset as string,\n\t\tEnqueuedTimeUtc as string,\n\t\tSystemProperties as string,\n\t\tProperties as string,\n\t\tBody as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 select(mapColumn(\n\t\tSequenceNumber,\n\t\tOffset,\n\t\tEnqueuedTimeUtc,\n\t\tSystemProperties,\n\t\tProperties,\n\t\tBody\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 derive(BodyNew = toString(Body)) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['outputavro.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+			"script": "source(output(\n\t\tSequenceNumber as long,\n\t\tOffset as string,\n\t\tEnqueuedTimeUtc as string,\n\t\tSystemProperties as string,\n\t\tProperties as string,\n\t\tBody as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 select(mapColumn(\n\t\tSequenceNumber,\n\t\tOffset,\n\t\tEnqueuedTimeUtc,\n\t\tSystemProperties,\n\t\tProperties,\n\t\tBody\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 derive(BodyNew = toString(Body)) ~> DerivedColumn1\nDerivedColumn1 parse(MapBody = mapIf(BodyNew),\n\tformat: 'json',\n\tdocumentForm: 'documentPerLine') ~> Parse1\nParse1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['outputavro.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
 		}
 	}
 }
