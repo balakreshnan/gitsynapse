@@ -1,0 +1,17 @@
+{
+	"name": "serverlessdbroles",
+	"properties": {
+		"content": {
+			"query": "SELECT DP1.name AS DatabaseRoleName, \n    isnull (DP2.name, 'No members') AS DatabaseUserName \n  FROM sys.database_role_members AS DRM \n  RIGHT OUTER JOIN sys.database_principals AS DP1 \n    ON DRM.role_principal_id = DP1.principal_id \n  LEFT OUTER JOIN sys.database_principals AS DP2 \n    ON DRM.member_principal_id = DP2.principal_id \n WHERE DP1.type = 'R' \n  AND DP1.Name in ('db_datawriter', 'db_owner', 'db_datareader', 'db_ddladmin') \n ORDER BY DP1.name;\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "master"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
