@@ -4,7 +4,7 @@
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
-			"referenceName": "accsparkpools",
+			"referenceName": "mlspark3",
 			"type": "BigDataPoolReference"
 		},
 		"sessionProperties": {
@@ -29,15 +29,15 @@
 				"name": "python"
 			},
 			"a365ComputeOptions": {
-				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
-				"name": "accsparkpools",
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/mlspark3",
+				"name": "mlspark3",
 				"type": "Spark",
-				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/mlspark3",
 				"auth": {
 					"type": "AAD",
 					"authResource": "https://dev.azuresynapse.net"
 				},
-				"sparkVersion": "2.4",
+				"sparkVersion": "3.0",
 				"nodeCount": 10,
 				"cores": 16,
 				"memory": 112,
@@ -226,7 +226,7 @@
 					"                                              )\\\r\n",
 					"                                       .filter((taxi_df.tripTimeSecs >= 30) & (taxi_df.tripTimeSecs <= 7200))"
 				],
-				"execution_count": 8
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -252,7 +252,7 @@
 					"# Create a new dataframe that has had the encodings applied\r\n",
 					"encoded_final_df = Pipeline(stages=[sI1, en1, sI2, en2]).fit(taxi_featurised_df).transform(taxi_featurised_df)"
 				],
-				"execution_count": 9
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
@@ -277,7 +277,7 @@
 					"# Split the dataframe into test and training dataframes\r\n",
 					"train_data_df, test_data_df = encoded_final_df.randomSplit([trainingFraction, testingFraction], seed=seed)"
 				],
-				"execution_count": 10
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -315,7 +315,7 @@
 					"metrics = BinaryClassificationMetrics(predictionAndLabels)\r\n",
 					"print(\"Area under ROC = %s\" % metrics.areaUnderROC)"
 				],
-				"execution_count": 11
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -342,7 +342,7 @@
 					"plt.ylabel('True Positive Rate')\r\n",
 					"plt.show()"
 				],
-				"execution_count": 12
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
