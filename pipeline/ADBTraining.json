@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/babal@microsoft.com/ML/pytorch-single-node"
+					"notebookPath": "/Users/babal@microsoft.com/ML/mlflowexp"
 				},
 				"linkedServiceName": {
 					"referenceName": "adbtest1",
