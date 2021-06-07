@@ -258,7 +258,7 @@
 					"\n",
 					"# mlflow.set_tracking_uri(\"azureml\")\n",
 					"# mlflow.set_tracking_uri(\"sqlite:////tmp/mlruns.db\")\n",
-					"mlflow.set_tracking_uri(\"file:///tmp/my_tracking\")\n",
+					"# mlflow.set_tracking_uri(\"file:///tmp/my_tracking\")\n",
 					"experiment_name = \"/Shared/wine_experiment/\"\n",
 					"mlflow.set_experiment(experiment_name)\n",
 					"# mlflow.start_run creates a new MLflow run to track the performance of this model. \n",
@@ -289,14 +289,14 @@
 					"    )\n",
 					"  mlflow.pyfunc.log_model(\"random_forest_model\", python_model=wrappedModel, conda_env=conda_env, signature=signature)"
 				],
-				"execution_count": 41
+				"execution_count": 54
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"mlflow.end_run()"
 				],
-				"execution_count": 39
+				"execution_count": 53
 			},
 			{
 				"cell_type": "code",
@@ -304,35 +304,21 @@
 					"feature_importances = pd.DataFrame(model.feature_importances_, index=X_train.columns.tolist(), columns=['importance'])\n",
 					"feature_importances.sort_values('importance', ascending=False)"
 				],
-				"execution_count": 42
+				"execution_count": 55
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"run_id = mlflow.search_runs(filter_string='tags.mlflow.runName = \"untuned_random_forest\"').iloc[0].run_id"
 				],
-				"execution_count": 43
+				"execution_count": 56
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"print(run_id)"
 				],
-				"execution_count": 44
-			},
-			{
-				"cell_type": "code",
-				"source": [
-					"import mlflow\n",
-					"\n",
-					"with mlflow.start_run() as run:\n",
-					"    mlflow.log_param(\"p\", 0)\n",
-					"\n",
-					"run_id = run.info.run_id\n",
-					"print(\"run_id: {}; lifecycle_stage: {}\".format(run_id,\n",
-					"    mlflow.get_run(run_id).info.lifecycle_stage))"
-				],
-				"execution_count": 25
+				"execution_count": 57
 			},
 			{
 				"cell_type": "code",
@@ -340,7 +326,7 @@
 					"tracking_uri = mlflow.get_tracking_uri()\n",
 					"print(\"Current tracking uri: {}\".format(tracking_uri))"
 				],
-				"execution_count": 45
+				"execution_count": 58
 			},
 			{
 				"cell_type": "code",
@@ -348,23 +334,23 @@
 					"artifact_uri = mlflow.get_artifact_uri()\n",
 					"print(\"Artifact uri: {}\".format(artifact_uri))"
 				],
-				"execution_count": 46
+				"execution_count": 59
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"print(run_id)"
 				],
-				"execution_count": 49
+				"execution_count": 60
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"model_name = \"wine_quality\"\n",
-					"model_version = mlflow.register_model(\"runs:/{run_id}/RandomForestClassifier\", model_name)\n",
+					"model_version = mlflow.register_model(\"runs:/{}/sklearn-model\".format(run_id), model_name)\n",
 					"# model_version = mlflow.register_model(artifact_uri, model_name)"
 				],
-				"execution_count": 52
+				"execution_count": 62
 			},
 			{
 				"cell_type": "code",
