@@ -79,14 +79,14 @@
 					")\n",
 					"display(red_winedf.limit(10))"
 				],
-				"execution_count": 11
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"import cloudpickle"
 				],
-				"execution_count": 12
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -122,7 +122,7 @@
 					")\n",
 					"display(white_winedf.limit(10))"
 				],
-				"execution_count": 13
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -130,12 +130,14 @@
 					"red_wine = red_winedf.select(\"*\").toPandas()\n",
 					"white_wine = white_winedf.select(\"*\").toPandas()"
 				],
-				"execution_count": 14
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
-				"source": [],
-				"execution_count": null
+				"source": [
+					"import pandas as pd"
+				],
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -143,7 +145,7 @@
 					"red_wine['is_red'] = 1\n",
 					"white_wine['is_red'] = 0"
 				],
-				"execution_count": 15
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
@@ -153,14 +155,14 @@
 					"# Remove spaces from column names\n",
 					"data.rename(columns=lambda x: x.replace(' ', '_'), inplace=True)"
 				],
-				"execution_count": 16
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"data.head()"
 				],
-				"execution_count": 17
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -168,14 +170,14 @@
 					"import seaborn as sns\n",
 					"sns.histplot(data.quality, kde=False)"
 				],
-				"execution_count": 20
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"data.info()"
 				],
-				"execution_count": 30
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -183,7 +185,7 @@
 					"high_quality = (data.quality.astype(int) >= 7).astype(int)\n",
 					"data.quality = high_quality"
 				],
-				"execution_count": 31
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
@@ -203,14 +205,14 @@
 					"    axis_i += 1\n",
 					"    axis_j = 0"
 				],
-				"execution_count": 32
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"data.isna().any()"
 				],
-				"execution_count": 33
+				"execution_count": 15
 			},
 			{
 				"cell_type": "code",
@@ -223,7 +225,12 @@
 					"y_train = train.quality\n",
 					"y_test = test.quality"
 				],
-				"execution_count": 34
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"source": [],
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -249,6 +256,9 @@
 					"  def predict(self, context, model_input):\n",
 					"    return self.model.predict_proba(model_input)[:,1]\n",
 					"\n",
+					"# mlflow.set_tracking_uri(\"azureml\")\n",
+					"# mlflow.set_tracking_uri(\"sqlite:////tmp/mlruns.db\")\n",
+					"mlflow.set_tracking_uri(\"file:///tmp/my_tracking\")\n",
 					"experiment_name = \"/Shared/wine_experiment/\"\n",
 					"mlflow.set_experiment(experiment_name)\n",
 					"# mlflow.start_run creates a new MLflow run to track the performance of this model. \n",
@@ -279,7 +289,14 @@
 					"    )\n",
 					"  mlflow.pyfunc.log_model(\"random_forest_model\", python_model=wrappedModel, conda_env=conda_env, signature=signature)"
 				],
-				"execution_count": 35
+				"execution_count": 41
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"mlflow.end_run()"
+				],
+				"execution_count": 39
 			},
 			{
 				"cell_type": "code",
@@ -287,22 +304,66 @@
 					"feature_importances = pd.DataFrame(model.feature_importances_, index=X_train.columns.tolist(), columns=['importance'])\n",
 					"feature_importances.sort_values('importance', ascending=False)"
 				],
-				"execution_count": 36
+				"execution_count": 42
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"run_id = mlflow.search_runs(filter_string='tags.mlflow.runName = \"untuned_random_forest\"').iloc[0].run_id"
 				],
-				"execution_count": 37
+				"execution_count": 43
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"print(run_id)"
+				],
+				"execution_count": 44
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import mlflow\n",
+					"\n",
+					"with mlflow.start_run() as run:\n",
+					"    mlflow.log_param(\"p\", 0)\n",
+					"\n",
+					"run_id = run.info.run_id\n",
+					"print(\"run_id: {}; lifecycle_stage: {}\".format(run_id,\n",
+					"    mlflow.get_run(run_id).info.lifecycle_stage))"
+				],
+				"execution_count": 25
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"tracking_uri = mlflow.get_tracking_uri()\n",
+					"print(\"Current tracking uri: {}\".format(tracking_uri))"
+				],
+				"execution_count": 45
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"artifact_uri = mlflow.get_artifact_uri()\n",
+					"print(\"Artifact uri: {}\".format(artifact_uri))"
+				],
+				"execution_count": 46
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"print(run_id)"
+				],
+				"execution_count": 49
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"model_name = \"wine_quality\"\n",
-					"model_version = mlflow.register_model(f\"runs:/{run_id}/random_forest_model\", model_name)"
+					"model_version = mlflow.register_model(\"runs:/{run_id}/RandomForestClassifier\", model_name)"
 				],
-				"execution_count": 39
+				"execution_count": 50
 			},
 			{
 				"cell_type": "code",
