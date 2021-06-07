@@ -1,6 +1,9 @@
 {
 	"name": "nydatacopy",
 	"properties": {
+		"folder": {
+			"name": "General"
+		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {

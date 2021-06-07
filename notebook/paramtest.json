@@ -1,6 +1,9 @@
 {
 	"name": "paramtest",
 	"properties": {
+		"folder": {
+			"name": "General"
+		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
@@ -43,10 +46,8 @@
 				"sparkVersion": "2.4",
 				"nodeCount": 10,
 				"cores": 16,
-				"memory": 112,
-				"automaticScaleJobs": false
-			},
-			"sessionKeepAliveTimeout": 30
+				"memory": 112
+			}
 		},
 		"cells": [
 			{

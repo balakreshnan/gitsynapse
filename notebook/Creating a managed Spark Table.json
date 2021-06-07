@@ -1,6 +1,9 @@
 {
 	"name": "Creating a managed Spark Table",
 	"properties": {
+		"folder": {
+			"name": "General"
+		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
@@ -40,10 +43,8 @@
 				"sparkVersion": "2.4",
 				"nodeCount": 10,
 				"cores": 16,
-				"memory": 112,
-				"automaticScaleJobs": false
-			},
-			"sessionKeepAliveTimeout": 30
+				"memory": 112
+			}
 		},
 		"cells": [
 			{
@@ -72,7 +73,11 @@
 						"aggData": "\"{}\"",
 						"isSummary": false,
 						"previewData": {
-							"filter": null
+							"filter": null,
+							"table": {
+								"rows": [],
+								"schema": {}
+							}
 						},
 						"isSql": true
 					},
@@ -100,7 +105,11 @@
 						"aggData": "\"{}\"",
 						"isSummary": false,
 						"previewData": {
-							"filter": null
+							"filter": null,
+							"table": {
+								"rows": [],
+								"schema": {}
+							}
 						},
 						"isSql": true
 					},
@@ -137,7 +146,11 @@
 						"aggData": "\"{}\"",
 						"isSummary": false,
 						"previewData": {
-							"filter": null
+							"filter": null,
+							"table": {
+								"rows": [],
+								"schema": {}
+							}
 						},
 						"isSql": true
 					},
@@ -176,7 +189,11 @@
 						"aggData": "\"{\\\"population\\\":{\\\"Bangalore\\\":10540000,\\\"Beijing\\\":21540000,\\\"San Francisco\\\":881549,\\\"Seattle\\\":730400}}\"",
 						"isSummary": false,
 						"previewData": {
-							"filter": null
+							"filter": null,
+							"table": {
+								"rows": [],
+								"schema": {}
+							}
 						},
 						"isSql": true
 					},
@@ -211,7 +228,11 @@
 						"aggData": "\"{}\"",
 						"isSummary": false,
 						"previewData": {
-							"filter": null
+							"filter": null,
+							"table": {
+								"rows": [],
+								"schema": {}
+							}
 						},
 						"isSql": true
 					},
