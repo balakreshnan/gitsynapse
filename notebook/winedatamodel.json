@@ -1,0 +1,325 @@
+{
+	"name": "winedatamodel",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "mlspark3xlarge",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "112g",
+			"driverCores": 16,
+			"executorMemory": "112g",
+			"executorCores": 16,
+			"numExecutors": 5,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "5",
+				"spark.dynamicAllocation.maxExecutors": "5"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/mlspark3xlarge",
+				"name": "mlspark3xlarge",
+				"type": "Spark",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/mlspark3xlarge",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.0",
+				"nodeCount": 10,
+				"cores": 64,
+				"memory": 400,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"fixed acidity"
+							],
+							"values": [
+								"fixed acidity"
+							],
+							"yLabel": "fixed acidity",
+							"xLabel": "fixed acidity",
+							"aggregation": "COUNT",
+							"aggByBackend": false
+						},
+						"aggData": "{\"fixed acidity\":{\"11.2\":1,\"7.3\":1,\"7.4\":3,\"7.5\":1,\"7.8\":3,\"7.9\":1}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"%%pyspark\n",
+					"red_winedf = spark.read.option(\"delimiter\", \";\").option(\"header\",\"true\").load('abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/winedata/winequality-red.csv', format='csv'\n",
+					"## If header exists uncomment line below\n",
+					"##, header=True\n",
+					")\n",
+					"display(red_winedf.limit(10))"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import cloudpickle"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"fixed acidity"
+							],
+							"values": [
+								"fixed acidity"
+							],
+							"yLabel": "fixed acidity",
+							"xLabel": "fixed acidity",
+							"aggregation": "COUNT",
+							"aggByBackend": false
+						},
+						"aggData": "{\"fixed acidity\":{\"7\":2,\"6.2\":1,\"6.3\":2,\"7.2\":2,\"8.1\":3}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"%%pyspark\n",
+					"white_winedf = spark.read.option(\"delimiter\", \";\").option(\"header\",\"true\").load('abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/winedata/winequality-white.csv', format='csv'\n",
+					"## If header exists uncomment line below\n",
+					"##, header=True\n",
+					")\n",
+					"display(white_winedf.limit(10))"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"red_wine = red_winedf.select(\"*\").toPandas()\n",
+					"white_wine = white_winedf.select(\"*\").toPandas()"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"source": [],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"red_wine['is_red'] = 1\n",
+					"white_wine['is_red'] = 0"
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"data = pd.concat([red_wine, white_wine], axis=0)\n",
+					"\n",
+					"# Remove spaces from column names\n",
+					"data.rename(columns=lambda x: x.replace(' ', '_'), inplace=True)"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"data.head()"
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import seaborn as sns\n",
+					"sns.histplot(data.quality, kde=False)"
+				],
+				"execution_count": 20
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"data.info()"
+				],
+				"execution_count": 30
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"high_quality = (data.quality.astype(int) >= 7).astype(int)\n",
+					"data.quality = high_quality"
+				],
+				"execution_count": 31
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import matplotlib.pyplot as plt\n",
+					"\n",
+					"dims = (3, 4)\n",
+					"\n",
+					"f, axes = plt.subplots(dims[0], dims[1], figsize=(25, 15))\n",
+					"axis_i, axis_j = 0, 0\n",
+					"for col in data.columns:\n",
+					"  if col == 'is_red' or col == 'quality':\n",
+					"    continue # Box plots cannot be used on indicator variables\n",
+					"  sns.boxplot(x=high_quality, y=data[col], ax=axes[axis_i, axis_j])\n",
+					"  axis_j += 1\n",
+					"  if axis_j == dims[1]:\n",
+					"    axis_i += 1\n",
+					"    axis_j = 0"
+				],
+				"execution_count": 32
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"data.isna().any()"
+				],
+				"execution_count": 33
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from sklearn.model_selection import train_test_split\n",
+					"\n",
+					"train, test = train_test_split(data, random_state=123)\n",
+					"X_train = train.drop([\"quality\"], axis=1)\n",
+					"X_test = test.drop([\"quality\"], axis=1)\n",
+					"y_train = train.quality\n",
+					"y_test = test.quality"
+				],
+				"execution_count": 34
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import mlflow\n",
+					"import mlflow.pyfunc\n",
+					"import mlflow.sklearn\n",
+					"import numpy as np\n",
+					"import sklearn\n",
+					"from sklearn.ensemble import RandomForestClassifier\n",
+					"from sklearn.metrics import roc_auc_score\n",
+					"from mlflow.models.signature import infer_signature\n",
+					"from mlflow.utils.environment import _mlflow_conda_env\n",
+					"\n",
+					"# The predict method of sklearn's RandomForestClassifier returns a binary classification (0 or 1). \n",
+					"# The following code creates a wrapper function, SklearnModelWrapper, that uses \n",
+					"# the predict_proba method to return the probability that the observation belongs to each class. \n",
+					"\n",
+					"class SklearnModelWrapper(mlflow.pyfunc.PythonModel):\n",
+					"  def __init__(self, model):\n",
+					"    self.model = model\n",
+					"    \n",
+					"  def predict(self, context, model_input):\n",
+					"    return self.model.predict_proba(model_input)[:,1]\n",
+					"\n",
+					"experiment_name = \"/Shared/wine_experiment/\"\n",
+					"mlflow.set_experiment(experiment_name)\n",
+					"# mlflow.start_run creates a new MLflow run to track the performance of this model. \n",
+					"# Within the context, you call mlflow.log_param to keep track of the parameters used, and\n",
+					"# mlflow.log_metric to record metrics like accuracy.\n",
+					"with mlflow.start_run(run_name='untuned_random_forest'):\n",
+					"  n_estimators = 10\n",
+					"  model = RandomForestClassifier(n_estimators=n_estimators, random_state=np.random.RandomState(123))\n",
+					"  model.fit(X_train, y_train)\n",
+					"\n",
+					"  # predict_proba returns [prob_negative, prob_positive], so slice the output with [:, 1]\n",
+					"  predictions_test = model.predict_proba(X_test)[:,1]\n",
+					"  auc_score = roc_auc_score(y_test, predictions_test)\n",
+					"  mlflow.log_param('n_estimators', n_estimators)\n",
+					"  # Use the area under the ROC curve as a metric.\n",
+					"  mlflow.log_metric('auc', auc_score)\n",
+					"  wrappedModel = SklearnModelWrapper(model)\n",
+					"  # Log the model with a signature that defines the schema of the model's inputs and outputs. \n",
+					"  # When the model is deployed, this signature will be used to validate inputs.\n",
+					"  signature = infer_signature(X_train, wrappedModel.predict(None, X_train))\n",
+					"  \n",
+					"  # MLflow contains utilities to create a conda environment used to serve models.\n",
+					"  # The necessary dependencies are added to a conda.yaml file which is logged along with the model.\n",
+					"  conda_env =  _mlflow_conda_env(\n",
+					"        additional_conda_deps=None,\n",
+					"        additional_pip_deps=[\"cloudpickle=={}\".format(cloudpickle.__version__), \"scikit-learn=={}\".format(sklearn.__version__)],\n",
+					"        additional_conda_channels=None,\n",
+					"    )\n",
+					"  mlflow.pyfunc.log_model(\"random_forest_model\", python_model=wrappedModel, conda_env=conda_env, signature=signature)"
+				],
+				"execution_count": 35
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"feature_importances = pd.DataFrame(model.feature_importances_, index=X_train.columns.tolist(), columns=['importance'])\n",
+					"feature_importances.sort_values('importance', ascending=False)"
+				],
+				"execution_count": 36
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"run_id = mlflow.search_runs(filter_string='tags.mlflow.runName = \"untuned_random_forest\"').iloc[0].run_id"
+				],
+				"execution_count": 37
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"model_name = \"wine_quality\"\n",
+					"model_version = mlflow.register_model(f\"runs:/{run_id}/random_forest_model\", model_name)"
+				],
+				"execution_count": 39
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from mlflow.tracking import MlflowClient\n",
+					"\n",
+					"client = MlflowClient()\n",
+					"client.transition_model_version_stage(\n",
+					"  name=model_name,\n",
+					"  version=model_version.version,\n",
+					"  stage=\"Production\",\n",
+					")"
+				],
+				"execution_count": 40
+			},
+			{
+				"cell_type": "code",
+				"source": [],
+				"execution_count": null
+			}
+		]
+	}
+}
