@@ -1,0 +1,17 @@
+{
+	"name": "titanicsql",
+	"properties": {
+		"content": {
+			"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/titanic/Titanic.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0'\n    ) AS [result];\n\nCREATE MASTER KEY ENCRYPTION BY PASSWORD = '`T2$)bt!8[(ys~kw' ;\n\n--Create database scoped credential with **IDENTITY = 'Managed Service Identity'**\n\nuse coviddb;\nCREATE DATABASE SCOPED CREDENTIAL WorkspaceIdentity WITH IDENTITY = 'Managed Identity';\n\nCREATE EXTERNAL DATA SOURCE DateLakeDS1 WITH (\n    LOCATION = 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/titanic',\n    CREDENTIAL = WorkspaceIdentity\n);\nGO\n\n--Create external data source with abfss:// scheme for connecting to your Azure Data Lake Store Gen2 account\nALTER VIEW titanicview1 AS\n(\n    SELECT\n     *\n    FROM\n        OPENROWSET(\n            BULK 'Titanic.csv',\n            FORMAT = 'CSV',\n            HEADER_ROW = True,\n            PARSER_VERSION='2.0', DATA_SOURCE = 'DateLakeDS1'\n        ) AS [result]\n)\n\nSelect * from titanicview1;\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "coviddb"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

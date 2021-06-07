@@ -1,0 +1,195 @@
+{
+	"name": "navistartproductcatalog",
+	"properties": {
+		"folder": {
+			"name": "General"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "accsparkpools",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "112g",
+			"driverCores": 16,
+			"executorMemory": "112g",
+			"executorCores": 16,
+			"numExecutors": 3,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "3",
+				"spark.dynamicAllocation.maxExecutors": "3"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
+				"name": "accsparkpools",
+				"type": "Spark",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 16,
+				"memory": 112
+			}
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"_c0"
+							],
+							"values": [
+								"_c0"
+							],
+							"yLabel": "_c0",
+							"xLabel": "_c0",
+							"aggregation": "COUNT",
+							"aggByBackend": false
+						},
+						"aggData": "{\"_c0\":{\"FR6042301\":20,\"FR6042306\":2,\"FR6042801\":3,\"FR6043701\":20,\"FR6043706\":2,\"FR6043904\":2,\"FR6043909\":2,\"FR6044101\":2,\"FR6044601\":5,\"FR6045001\":7,\"FR6045501\":1,\"FR6045704\":2,\"FR6045902\":16,\"FR6046005\":2,\"FR6046203\":2,\"FR6046401\":4,\"FR6046703\":2,\"FR6046901\":6}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"%%pyspark\n",
+					"df = spark.read.load('abfss://navistaros@accbbstore.dfs.core.windows.net/000000_0.csv', format='csv'\n",
+					"## If header exists uncomment line below\n",
+					"##, header=True\n",
+					")\n",
+					"display(df.limit(100))"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"_c0"
+							],
+							"values": [
+								"_c0"
+							],
+							"yLabel": "_c0",
+							"xLabel": "_c0",
+							"aggregation": "COUNT",
+							"aggByBackend": false
+						},
+						"aggData": "{\"_c0\":{\"FR5757101\":18,\"FR5757601\":3,\"FR5758001\":2,\"FR5758501\":3,\"FR5758902\":9,\"FR5758907\":2,\"FR5759401\":3,\"FR5759604\":1,\"FR5759901\":3,\"FR5760201\":9,\"FR5760503\":4,\"FR5760701\":9,\"FR5760904\":2,\"FR5761101\":4,\"FR5761304\":28}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(df.limit(100))"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df.columns"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"columns = [ \"sh_ship_no\",\"sh_ship_typ_cd\",\"sh_ord_pnt_cd\",\"sh_ship_whs_cd\",\"sh_bill_whs_cd\",\"sh_ship_cust_no\",\"sh_bill_cust_no\",\"sh_cust_key\",\"sh_cust_typ_cd\",\"sh_ship_to_nam\",\"sh_ship_1_addr\",\"sh_ship_2_addr\",\"sh_ship_3_addr\",\"sh_ship_to_city\",\"sh_ship_to_st_cd\",\"sh_ship_to_zip\",\"sh_ship_ctry_cd\",\"sh_prce_cls_cd\",\"sh_invce_md\",\"sh_mop_cd\",\"sh_trm_cd\",\"sh_sta_cd\",\"sh_trg_vat_cd\",\"sh_lng_cd\",\"sh_sls_rep_cd\",\"sh_bko_flg\",\"sh_opr_cd\",\"sh_org_cd\",\"sh_cust_po\",\"sh_ship_cd\",\"sh_fob_cd\",\"sh_opr_md\",\"sh_tot_wght\",\"sh_ord_dte\",\"sh_tck_dte\",\"sh_ship_dte\",\"sh_invce_dte\",\"sh_rqst_dlvry_dte\",\"sh_proms_dte\",\"sh_ord_typ_cd\",\"sh_cncl_rsn_cd\",\"sh_geo_loc_cd\",\"sh_bol_no\",\"sh_recmd_carr\",\"sh_load_no\",\"sh_carr_refr\",\"sh_cust_prty\",\"sh_vol_prty\",\"sh_pick_prty\",\"sh_pack_zone\",\"sh_pack_loc\",\"sh_pick_flg\",\"sh_pack_flg\",\"sh_dcrpcy_flg\",\"sh_pack_id\",\"sh_pick_dte\",\"sh_pack_dte\",\"sh_rcpt_zone\",\"sh_pick_fmly\",\"sh_dlvry_instr\",\"sh_frst_pack_no\",\"sh_lst_pack_no\",\"sh_days_wait\",\"sh_est_pack\",\"sh_est_pallet\",\"sh_tot_est_wght\",\"sh_tot_est_vol\",\"sh_lst_prcs_flg\",\"sh_geo_cd\",\"sh_ord_typ_prty\",\"sh_hzd_flg\",\"sh_dm_cust\",\"sh_dm_campgn\",\"sh_dm_source\",\"sh_dm_typ_cd\",\"sh_ord_tim\",\"sh_ups_insur\",\"sh_pp_insur\",\"sh_emrg_24_flg\",\"sh_exp_ord_flg\",\"sh_cid_cd\",\"sh_com_cd\",\"sh_cust_loc_cd\",\"sh_trlr_id\",\"sh_small_pack_cd\",\"sh_carr_consol\",\"sh_dcn_cd\",\"sh_prc_lvl\",\"sh_blnk_po_no\",\"sh_man_blnk_flg\",\"sh_wms_pack_notif\",\"sh_reg_specl_stat\",\"sh_sub_flg\",\"sh_cust_itm_flg\",\"sh_tar_cd\",\"sh_min_val_flg\",\"sh_dia_cust_flg\",\"sh_dia_ord_flg\",\"sh_dia_dlr_lvl\",\"sh_dia_4_flg\",\"sh_cross_dock\",\"sh_prg_pre_flg\",\"sh_specl_addr\",\"sh_cty_lim_flg\",\"sh_us_ship_cd\",\"sh_hzd_source\",\"sh_edi_supl_key\",\"sh_pro_bill_no\",\"sh_after_hrs_ship\",\"sh_exps_frght_00\",\"sh_exps_frght_01\",\"sh_creat_ts\",\"sd_add_lot_flg\",\"sd_add_pack_id\",\"sd_alloc_po\",\"sd_back_load_qty\",\"sd_back_ord_qty\",\"sd_bill_lad\",\"sd_bin_loc\",\"sd_bko_flg\",\"sd_blk_no\",\"sd_carr_consol\",\"sd_cnl_rsn_cd\",\"sd_cor_00_flg\",\"sd_cor_01_flg\",\"sd_cor_02_flg\",\"sd_creat_ts\",\"sd_crncy_cd\",\"sd_crty_of_org\",\"sd_cty_lim_flg\",\"sd_cust_dtl_no\",\"sd_cust_po\",\"sd_cust_prod_id\",\"sd_dest_bin_loc\",\"sd_det_00_flg\",\"sd_det_00_typ\",\"sd_det_01_flg\",\"sd_det_01_typ\",\"sd_det_02_flg\",\"sd_det_02_typ\",\"sd_det_03_flg\",\"sd_det_03_typ\",\"sd_det_04_flg\",\"sd_det_04_typ\",\"sd_det_05_flg\",\"sd_det_05_typ\",\"sd_det_06_flg\",\"sd_det_06_typ\",\"sd_det_07_flg\",\"sd_det_07_typ\",\"sd_det_08_flg\",\"sd_det_08_typ\",\"sd_det_09_flg\",\"sd_det_09_typ\",\"sd_det_10_flg\",\"sd_det_11_flg\",\"sd_det_12_flg\",\"sd_det_13_flg\",\"sd_det_14_flg\",\"sd_det_15_flg\",\"sd_dia_3_flg\",\"sd_dia_4_flg\",\"sd_dia_cust_flg\",\"sd_dia_ord_flg\",\"sd_dsc_00_schd_cd\",\"sd_dsc_01_schd_cd\",\"sd_dsc_ca_sh_cd\",\"sd_dtl_no\",\"sd_dtl_sufx_no\",\"sd_est_pack\",\"sd_est_pallet\",\"sd_exc_00_flg\",\"sd_exc_01_flg\",\"sd_exc_02_flg\",\"sd_exc_03_flg\",\"sd_exc_04_flg\",\"sd_exc_05_flg\",\"sd_exc_06_flg\",\"sd_exc_07_flg\",\"sd_exc_08_flg\",\"sd_exc_09_flg\",\"sd_exc_10_flg\",\"sd_exc_11_flg\",\"sd_exc_12_flg\",\"sd_exc_13_flg\",\"sd_exc_14_flg\",\"sd_exc_15_flg\",\"sd_exc_16_flg\",\"sd_exc_17_flg\",\"sd_exc_18_flg\",\"sd_exc_19_flg\",\"sd_exc_20_flg\",\"sd_exc_21_flg\",\"sd_exc_22_flg\",\"sd_exc_23_flg\",\"sd_exc_24_flg\",\"sd_exc_25_flg\",\"sd_exc_26_flg\",\"sd_extn_desc\",\"sd_fob_cd\",\"sd_geo_cd\",\"sd_in_prgrs_qty\",\"sd_in_prgrs_qty2\",\"sd_invce_no\",\"sd_jrn_sum\",\"sd_lne_type\",\"sd_lot_no\",\"sd_lot_qty\",\"sd_mrtx_seq\",\"sd_msg_text\",\"sd_ord_qty\",\"sd_pack_dmensn\",\"sd_pack_id\",\"sd_part_ownr\",\"sd_pkge_qty\",\"sd_prm_dlvry_dte\",\"sd_prm_ship_dte\",\"sd_pro_consol\",\"sd_prod_desc\",\"sd_prod_id\",\"sd_prod_serial_no\",\"sd_pst_empl_id\",\"sd_pwr_plus_flg\",\"sd_rcpt_log_no\",\"sd_rqst_dlvry_dte\",\"sd_schd_ship_qty\",\"sd_ship_no\",\"sd_ship_qty\",\"sd_ship_to_dte_qty\",\"sd_ship_whs_cd\",\"sd_small_pack_cd\",\"sd_small_scac_wght\",\"sd_tar_cd\",\"sd_tax_cd\",\"sd_tax_flg\",\"sd_tck_dte\",\"sd_tot_est_vol\", \"sd_tot_est_wght\",\"sd_trak_no\",\"sd_unit_of_measure\",\"sd_unit_wght\",\"sd_uom_conv\",\"sd_vndr_buy_no\",\"sd_wpf_00_flg\",\"sd_wpf_01_flg\",\"sd_wpf_02_flg\",\"sd_wpf_03_flg\",\"sd_wpf_04_flg\",\"sd_wpf_05_flg\",\"sd_wpf_06_flg\",\"sd_wpf_07_flg\",\"sd_wpf_08_flg\",\"sd_wpf_09_flg\",\"sd_wpf_10_flg\",\"sd_wpf_11_flg\",\"sd_wpf_12_flg\",\"sd_wpf_13_flg\",\"sd_wpf_14_flg\",\"sd_wpf_15_flg\" ]"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"columns = [ \"sh_ship_no\",\"sh_ship_typ_cd\",\"sh_ord_pnt_cd\",\"sh_ship_whs_cd\",\"sh_bill_whs_cd\",\"sh_ship_cust_no\",\"sh_bill_cust_no\",\"sh_cust_key\",\"sh_cust_typ_cd\",\"sh_ship_to_nam\",\"sh_ship_1_addr\",\"sh_ship_2_addr\",\"sh_ship_3_addr\",\"sh_ship_to_city\",\"sh_ship_to_st_cd\",\"sh_ship_to_zip\",\"sh_ship_ctry_cd\",\"sh_prce_cls_cd\",\"sh_invce_md\",\"sh_mop_cd\",\"sh_trm_cd\",\"sh_sta_cd\",\"sh_trg_vat_cd\",\"sh_lng_cd\",\"sh_sls_rep_cd\",\"sh_bko_flg\",\"sh_opr_cd\",\"sh_org_cd\",\"sh_cust_po\",\"sh_ship_cd\",\"sh_fob_cd\",\"sh_opr_md\",\"sh_tot_wght\",\"sh_ord_dte\",\"sh_tck_dte\",\"sh_ship_dte\",\"sh_invce_dte\",\"sh_rqst_dlvry_dte\",\"sh_proms_dte\",\"sh_ord_typ_cd\",\"sh_cncl_rsn_cd\",\"sh_geo_loc_cd\",\"sh_bol_no\",\"sh_recmd_carr\",\"sh_load_no\",\"sh_carr_refr\",\"sh_cust_prty\",\"sh_vol_prty\",\"sh_pick_prty\",\"sh_pack_zone\",\"sh_pack_loc\",\"sh_pick_flg\",\"sh_pack_flg\",\"sh_dcrpcy_flg\",\"sh_pack_id\",\"sh_pick_dte\",\"sh_pack_dte\",\"sh_rcpt_zone\",\"sh_pick_fmly\",\"sh_dlvry_instr\",\"sh_frst_pack_no\",\"sh_lst_pack_no\",\"sh_days_wait\",\"sh_est_pack\",\"sh_est_pallet\",\"sh_tot_est_wght\",\"sh_tot_est_vol\",\"sh_lst_prcs_flg\",\"sh_geo_cd\",\"sh_ord_typ_prty\",\"sh_hzd_flg\",\"sh_dm_cust\",\"sh_dm_campgn\",\"sh_dm_source\",\"sh_dm_typ_cd\",\"sh_ord_tim\",\"sh_ups_insur\",\"sh_pp_insur\",\"sh_emrg_24_flg\",\"sh_exp_ord_flg\",\"sh_cid_cd\",\"sh_com_cd\",\"sh_cust_loc_cd\",\"sh_trlr_id\",\"sh_small_pack_cd\",\"sh_carr_consol\",\"sh_dcn_cd\",\"sh_prc_lvl\",\"sh_blnk_po_no\",\"sh_man_blnk_flg\",\"sh_wms_pack_notif\",\"sh_reg_specl_stat\",\"sh_sub_flg\",\"sh_cust_itm_flg\",\"sh_tar_cd\",\"sh_min_val_flg\",\"sh_dia_cust_flg\",\"sh_dia_ord_flg\",\"sh_dia_dlr_lvl\",\"sh_dia_4_flg\",\"sh_cross_dock\",\"sh_prg_pre_flg\",\"sh_specl_addr\",\"sh_cty_lim_flg\",\"sh_us_ship_cd\",\"sh_hzd_source\",\"sh_edi_supl_key\",\"sh_pro_bill_no\",\"sh_after_hrs_ship\",\"sh_exps_frght_00\",\"sh_exps_frght_01\",\"sh_creat_ts\",\"sd_add_lot_flg\",\"sd_add_pack_id\",\"sd_alloc_po\",\"sd_back_load_qty\",\"sd_back_ord_qty\",\"sd_bill_lad\",\"sd_bin_loc\",\"sd_bko_flg\",\"sd_blk_no\",\"sd_carr_consol\",\"sd_cnl_rsn_cd\",\"sd_cor_00_flg\",\"sd_cor_01_flg\",\"sd_cor_02_flg\",\"sd_creat_ts\",\"sd_crncy_cd\",\"sd_crty_of_org\",\"sd_cty_lim_flg\",\"sd_cust_dtl_no\",\"sd_cust_po\",\"sd_cust_prod_id\",\"sd_dest_bin_loc\",\"sd_det_00_flg\",\"sd_det_00_typ\",\"sd_det_01_flg\",\"sd_det_01_typ\",\"sd_det_02_flg\",\"sd_det_02_typ\",\"sd_det_03_flg\",\"sd_det_03_typ\",\"sd_det_04_flg\",\"sd_det_04_typ\",\"sd_det_05_flg\",\"sd_det_05_typ\",\"sd_det_06_flg\",\"sd_det_06_typ\",\"sd_det_07_flg\",\"sd_det_07_typ\",\"sd_det_08_flg\",\"sd_det_08_typ\",\"sd_det_09_flg\",\"sd_det_09_typ\",\"sd_det_10_flg\",\"sd_det_11_flg\",\"sd_det_12_flg\",\"sd_det_13_flg\",\"sd_det_14_flg\",\"sd_det_15_flg\",\"sd_dia_3_flg\",\"sd_dia_4_flg\",\"sd_dia_cust_flg\",\"sd_dia_ord_flg\",\"sd_dsc_00_schd_cd\",\"sd_dsc_01_schd_cd\",\"sd_dsc_cash_cd\",\"sd_dtl_no\",\"sd_dtl_sufx_no\",\"sd_est_pack\",\"sd_est_pallet\",\"sd_exc_00_flg\",\"sd_exc_01_flg\",\"sd_exc_02_flg\",\"sd_exc_03_flg\",\"sd_exc_04_flg\",\"sd_exc_05_flg\",\"sd_exc_06_flg\",\"sd_exc_07_flg\",\"sd_exc_08_flg\",\"sd_exc_09_flg\",\"sd_exc_10_flg\",\"sd_exc_11_flg\",\"sd_exc_12_flg\",\"sd_exc_13_flg\",\"sd_exc_14_flg\",\"sd_exc_15_flg\",\"sd_exc_16_flg\",\"sd_exc_17_flg\",\"sd_exc_18_flg\",\"sd_exc_19_flg\",\"sd_exc_20_flg\",\"sd_exc_21_flg\",\"sd_exc_22_flg\",\"sd_exc_23_flg\",\"sd_exc_24_flg\",\"sd_exc_25_flg\",\"sd_exc_26_flg\",\"sd_extn_desc\",\"sd_fob_cd\",\"sd_geo_cd\",\"sd_in_prgrs_qty\",\"sd_in_prgrs_qty2\",\"sd_invce_no\",\"sd_jrn_sum\",\"sd_lne_type\",\"sd_lot_no\",\"sd_lot_qty\",\"sd_mrtx_seq\",\"sd_msg_text\",\"sd_ord_qty\",\"sd_pack_dmensn\",\"sd_pack_id\",\"sd_part_ownr\",\"sd_pkge_qty\",\"sd_prm_dlvry_dte\",\"sd_prm_ship_dte\",\"sd_pro_consol\",\"sd_prod_desc\",\"sd_prod_id\",\"sd_prod_serial_no\",\"sd_pst_empl_id\",\"sd_pwr_plus_flg\",\"sd_rcpt_log_no\",\"sd_rqst_dlvry_dte\",\"sd_schd_ship_qty\",\"sd_ship_no\",\"sd_ship_qty\",\"sd_ship_to_dte_qty\",\"sd_ship_whs_cd\",\"sd_small_pack_cd\",\"sd_small_scac_wght\",\"sd_tar_cd\",\"sd_tax_cd\",\"sd_tax_flg\",\"sd_tck_dte\",\"sd_tot_est_vol\", \"sd_tot_est_wght\",\"sd_trak_no\",\"sd_unit_of_measure\",\"sd_unit_wght\",\"sd_uom_conv\",\"sd_vndr_buy_no\",\"sd_wpf_00_flg\",\"sd_wpf_01_flg\",\"sd_wpf_02_flg\",\"sd_wpf_03_flg\",\"sd_wpf_04_flg\",\"sd_wpf_05_flg\",\"sd_wpf_06_flg\",\"sd_wpf_07_flg\",\"sd_wpf_08_flg\",\"sd_wpf_09_flg\",\"sd_wpf_10_flg\",\"sd_wpf_11_flg\",\"sd_wpf_12_flg\",\"sd_wpf_13_flg\",\"sd_wpf_14_flg\",\"sd_wpf_15_flg\" ]"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df.columns = columns"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"_c0"
+							],
+							"values": [
+								"_c0"
+							],
+							"yLabel": "_c0",
+							"xLabel": "_c0",
+							"aggregation": "COUNT",
+							"aggByBackend": false
+						},
+						"aggData": "{\"_c0\":{\"FR5757101\":18,\"FR5757601\":3,\"FR5758001\":2,\"FR5758501\":3,\"FR5758902\":9,\"FR5758907\":2,\"FR5759401\":3,\"FR5759604\":1,\"FR5759901\":3,\"FR5760201\":9,\"FR5760503\":4,\"FR5760701\":9,\"FR5760904\":2,\"FR5761101\":4,\"FR5761304\":40,\"FR5761403\":2,\"FR5761502\":5,\"FR5761601\":3,\"FR5761606\":2,\"FR5761804\":2,\"FR5761903\":30,\"FR5762001\":14,\"FR5762204\":2,\"FR5762303\":2,\"FR5762501\":3,\"FR5762704\":2,\"FR5762902\":2,\"FR5763401\":5,\"FR5763703\":8,\"FR5763901\":2,\"FR5764202\":3,\"FR5764301\":22,\"FR5764702\":4,\"FR5764801\":6,\"FR5765102\":5,\"FR5765201\":6,\"FR5765404\":2,\"FR5765602\":2,\"FR5765701\":5,\"FR5765805\":2,\"FR5766101\":16,\"FR5766304\":2,\"FR5766601\":12,\"FR5767001\":6,\"FR5767006\":3,\"FR5767501\":3,\"FR5767902\":2,\"FR5768703\":2,\"FR5768901\":19,\"FR5769603\":2,\"FR5769702\":3,\"FR5770101\":10,\"FR5770502\":7,\"FR5770601\":10,\"FR5771001\":3,\"FR5771402\":2,\"FR5771501\":6,\"FR5771803\":3,\"FR5772401\":23,\"FR5772901\":10,\"FR5773301\":22,\"FR5773702\":3,\"FR5773801\":4,\"FR5773806\":3,\"FR5774201\":21,\"FR5774404\":14,\"FR5774602\":26,\"FR5774701\":20,\"FR5775002\":2,\"FR5775101\":6,\"FR5775502\":2,\"FR5775601\":12,\"FR5775903\":2,\"FR5776001\":4,\"FR5776303\":2,\"FR5776402\":5,\"FR5776501\":24,\"FR5776803\":2,\"FR5777401\":19,\"FR5777703\":21,\"FR5777901\":6,\"FR5778202\":2,\"FR5778301\":11,\"FR5778801\":7,\"FR5779201\":3,\"FR5779503\":2,\"FR5779602\":8,\"FR5779701\":8,\"FR5780001\":7,\"FR5780501\":5,\"FR5780506\":2,\"FR5781302\":16,\"FR5781401\":10,\"FR5781703\":2,\"FR5781802\":3,\"FR5782103\":4,\"FR5782202\":37,\"FR5782301\":3,\"FR5782702\":3,\"FR5782801\":6,\"FR5783102\":2,\"FR5783201\":4,\"FR5783602\":3,\"FR5783701\":6,\"FR5783904\":2,\"FR5784101\":15,\"FR5784502\":9,\"FR5784601\":23,\"FR5785001\":3,\"FR5785501\":24,\"FR5785803\":2,\"FR5785902\":2,\"FR5786401\":12,\"FR5786802\":6,\"FR5786901\":2,\"FR5787202\":5,\"FR5787301\":4,\"FR5787702\":2,\"FR5787801\":23,\"FR5788102\":12,\"FR5788201\":21,\"FR5788503\":2,\"FR5788701\":13,\"FR5789101\":3,\"FR5789601\":10,\"FR5790302\":2,\"FR5790401\":3,\"FR5790604\":2,\"FR5790703\":7,\"FR5790901\":2,\"FR5791301\":12,\"FR5791801\":7}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(df)"
+				],
+				"execution_count": 28
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df1 = df.toDF(columns)"
+				],
+				"execution_count": 21
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df1.columns"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				],
+				"execution_count": null
+			}
+		]
+	}
+}

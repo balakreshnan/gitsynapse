@@ -1,0 +1,29 @@
+{
+	"name": "AzureMLPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Titanic_Pipeline_Notebook",
+				"type": "AzureMLExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"experimentName": "Titanic_Pipeline_Notebook",
+					"mlPipelineId": "ddba840b-f94a-4faa-a658-9cb5e838f586"
+				},
+				"linkedServiceName": {
+					"referenceName": "mlopsdev",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": []
+	}
+}

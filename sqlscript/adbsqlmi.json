@@ -1,0 +1,17 @@
+{
+	"name": "adbsqlmi",
+	"properties": {
+		"content": {
+			"query": "use master;\nCreate login [abdtest1] FROM EXTERNAL PROVIDER;\n\nGRANT CREATE ANY DATABASE to [abdtest1];\n\nDROP login [abdtest1];\n\nCREATE USER [abdtest1] FROM EXTERNAL PROVIDER;\n\nALTER ROLE db_datareader ADD MEMBER [abdtest1]\nALTER ROLE db_owner ADD MEMBER [abdtest1]\n\nDROP user [abdtest1];\n\n\nuse master;\nCreate login [accpurview] FROM EXTERNAL PROVIDER;\n\nGRANT CREATE ANY DATABASE to [accpurview];\n\nDROP login [accpurview];\n\nCREATE USER [accpurview] FROM EXTERNAL PROVIDER;\n\nALTER ROLE db_datareader ADD MEMBER [accpurview]\nALTER ROLE db_owner ADD MEMBER [accpurview]\n\nDROP user [accpurview];\n\nselect * from sys.databases;\n\nALTER DATABASE [nyctaxi] MODIFY NAME = [nyctaxiold]\n\nRENAME OBJECT nyctaxi TO nyctaxiold;\nRENAME DATABASE nyctaxi to nyctaxiold;\n\nCreate Database WideWorldImporters;",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "master"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,6 +1,9 @@
 {
 	"name": "paramtest",
 	"properties": {
+		"folder": {
+			"name": "General"
+		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
@@ -43,15 +46,15 @@
 				"sparkVersion": "2.4",
 				"nodeCount": 10,
 				"cores": 16,
-				"memory": 112,
-				"automaticScaleJobs": false
-			},
-			"sessionKeepAliveTimeout": 30
+				"memory": 112
+			}
 		},
 		"cells": [
 			{
 				"cell_type": "code",
 				"source": [
+					"from notebookutils import mssparkutils\r\n",
+					"\r\n",
 					"workspace_name = mssparkutils.env.getWorkspaceName()"
 				],
 				"execution_count": 1
@@ -74,9 +77,9 @@
 					]
 				},
 				"source": [
-					"param_name = \"samples\""
+					"param_name = \"\""
 				],
-				"execution_count": 4
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -114,7 +117,7 @@
 				"source": [
 					"print(param_name)"
 				],
-				"execution_count": 5
+				"execution_count": 4
 			}
 		]
 	}

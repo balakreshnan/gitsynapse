@@ -1,6 +1,9 @@
 {
 	"name": "04 Analyze data with Scala",
 	"properties": {
+		"folder": {
+			"name": "General"
+		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {

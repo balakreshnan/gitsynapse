@@ -1,0 +1,56 @@
+{
+	"name": "pythonversioncheck",
+	"properties": {
+		"folder": {
+			"name": "General"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "mlspark",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "400g",
+			"driverCores": 64,
+			"executorMemory": "400g",
+			"executorCores": 64,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/mlspark",
+				"name": "mlspark",
+				"type": "Spark",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/mlspark",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 64,
+				"memory": 400
+			}
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"import sys\n",
+					"print(sys.version)"
+				],
+				"execution_count": 1
+			}
+		]
+	}
+}
