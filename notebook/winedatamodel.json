@@ -303,6 +303,9 @@
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"inputCollapsed": true
+				},
 				"source": [
 					"from mlflow.tracking import MlflowClient\n",
 					"\n",
