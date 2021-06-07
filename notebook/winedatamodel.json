@@ -361,9 +361,10 @@
 				"cell_type": "code",
 				"source": [
 					"model_name = \"wine_quality\"\n",
-					"model_version = mlflow.register_model(\"runs:/{run_id}/RandomForestClassifier\", model_name)"
+					"model_version = mlflow.register_model(\"runs:/{run_id}/RandomForestClassifier\", model_name)\n",
+					"# model_version = mlflow.register_model(artifact_uri, model_name)"
 				],
-				"execution_count": 50
+				"execution_count": 52
 			},
 			{
 				"cell_type": "code",
