@@ -2,7 +2,7 @@
 	"name": "deltatest",
 	"properties": {
 		"content": {
-			"query": "\nselect top 100 *\nfrom openrowset(\n    bulk 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/delta/delta-table-2939450/',\n    format = 'delta') as rows\n\nselect top 100 *\nfrom openrowset(\n    bulk 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/delta/delta-table-136072/',\n    format = 'delta') as rows\n\n\nselect top 1000 *\nfrom openrowset(\n    bulk 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/nycdelta/yellowweather/',\n    format = 'delta') as rows",
+			"query": "\nselect top 100 *\nfrom openrowset(\n    bulk 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/delta/delta-table-2939450/',\n    format = 'delta') as rows\n\nselect top 100 *\nfrom openrowset(\n    bulk 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/delta/delta-table-136072/',\n    format = 'delta') as rows\n\n\nselect top 1000 *\nfrom openrowset(\n    bulk 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/nycdelta/yellowweather/',\n    format = 'delta') as rows\n\nselect count(*)\nfrom openrowset(\n    bulk 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/nycdelta/yellowweather/',\n    format = 'delta') as row\n\n",
 			"metadata": {
 				"language": "sql"
 			},
