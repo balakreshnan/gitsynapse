@@ -1,0 +1,17 @@
+{
+	"name": "deltatest",
+	"properties": {
+		"content": {
+			"query": "\nselect top 100 *\nfrom openrowset(\n    bulk 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/delta/delta-table-2939450/',\n    format = 'delta') as rows\n\nselect top 100 *\nfrom openrowset(\n    bulk 'https://accsynapsestorage.dfs.core.windows.net/synapseroot/delta/delta-table-136072/',\n    format = 'delta') as rows",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "master"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
