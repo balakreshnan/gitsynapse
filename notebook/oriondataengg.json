@@ -1,0 +1,133 @@
+{
+	"name": "oriondataengg",
+	"properties": {
+		"folder": {
+			"name": "AzureML"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "mlspark3",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "112g",
+			"driverCores": 16,
+			"executorMemory": "112g",
+			"executorCores": 16,
+			"numExecutors": 3,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "3",
+				"spark.dynamicAllocation.maxExecutors": "3"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/mlspark3",
+				"name": "mlspark3",
+				"type": "Spark",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/mlspark3",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.0",
+				"nodeCount": 10,
+				"cores": 16,
+				"memory": 112,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"import os\n",
+					"import uuid\n",
+					"import shutil\n",
+					"import pandas as pd\n",
+					"\n",
+					"from mlflow.tracking import MlflowClient"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import sys\n",
+					"from pyspark.sql import SparkSession\n",
+					"\n",
+					"sc = SparkSession.builder.getOrCreate()\n",
+					"token_library = sc._jvm.com.microsoft.azure.synapse.tokenlibrary.TokenLibrary\n",
+					"\n",
+					"oriondskey = token_library.getSecret(\"accvault1\", \"oriondskey\", \"accvault1\")\n",
+					"print(oriondskey)"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"spark.conf.set(\n",
+					"  \"fs.azure.account.key.orionstoreds.blob.core.windows.net\",\n",
+					"  oriondskey)"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"webeventsdf = spark.read.option(\"header\",\"true\").option(\"inferSchema\", \"true\").csv(\"wasbs://dsppsample@orionstoreds.blob.core.windows.net/DSPP/webevent.csv\")"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"WebEventRequestKey"
+							],
+							"values": [
+								"WebEventKey"
+							],
+							"yLabel": "WebEventKey",
+							"xLabel": "WebEventRequestKey",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"WebEventKey\":{\"-9223372036820178000\":-9223372036822151000,\"-9223372036824223000\":-774763251093409800000,\"-9223372036824224000\":-239807672957485060000,\"-9223372036824292000\":-322818021288911040000,\"-9223372036824293000\":-239807672957483060000,\"-9223372036824408000\":-461168601841316500000,\"-9223372036824543000\":-83010348331434820000,\"-9223372036824799000\":-1.5679732462605133e+21,\"-9223372036824821000\":-64563604257785260000,\"-9223372036824822000\":-2.213609288838356e+21,\"-9223372036824984000\":-654859414614690100000,\"-9223372036825097000\":-92233720368266660000,\"-9223372036825290000\":-83010348331442320000,\"-9223372036825296000\":-1.3835058055240478e+21,\"-9223372036825381000\":-267477789067983000000,\"-9223372036825491000\":-36893488147308230000,\"-9223372036825538000\":-83010348331445850000,\"-9223372036825795000\":-55340232220964930000,\"-9223372036825796000\":-599519182393786500000}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(webeventsdf)"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"source": [],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [],
+				"execution_count": null
+			}
+		]
+	}
+}
