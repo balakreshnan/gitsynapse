@@ -2,14 +2,15 @@
 	"name": "NYCYellow",
 	"properties": {
 		"content": {
-			"query": "use nyctaxi\nGO\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK     'https://accsynapsestorage.blob.core.windows.net/synapseroot/nyctaxiyellow/*',\n        FORMAT = 'parquet'\n    ) AS [result];\n\nSELECT\n    PuYear, PuMonth, sum(FareAmount) as FareAmount, sum(TotalAmount) as TotalAmount\nFROM\n    OPENROWSET(\n        BULK     'https://accsynapsestorage.blob.core.windows.net/synapseroot/nyctaxiyellow/*',\n        FORMAT = 'parquet'\n    ) AS [result] \n    Group by PuYear, PuMonth\n    Order by PuYear, PuMonth;\n",
+			"query": "use nyctaxi\nGO\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK     'https://accsynapsestorage.blob.core.windows.net/synapseroot/nyctaxiyellow/*',\n        FORMAT = 'parquet'\n    ) AS [result];\n\nSELECT\n    PuYear, PuMonth, sum(FareAmount) as FareAmount, sum(TotalAmount) as TotalAmount\nFROM\n    OPENROWSET(\n        BULK     'https://accsynapsestorage.blob.core.windows.net/synapseroot/nyctaxiyellow/*',\n        FORMAT = 'parquet'\n    ) AS [result] \n    Group by PuYear, PuMonth\n    Order by PuYear, PuMonth;\n\nselect count(*) \nFROM\n    OPENROWSET(\n        BULK     'https://accsynapsestorage.blob.core.windows.net/synapseroot/nyctaxiyellow/*',\n        FORMAT = 'parquet'\n    ) AS [result] ",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"name": "nyctaxi",
-				"type": "SqlOnDemand"
-			}
+				"poolName": "Built-in",
+				"databaseName": "nyctaxiold"
+			},
+			"resultLimit": 5000
 		},
 		"type": "SqlQuery"
 	}
