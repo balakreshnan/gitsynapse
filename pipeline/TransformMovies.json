@@ -33,7 +33,7 @@
 		"parameters": {
 			"coreCount": {
 				"type": "int",
-				"defaultValue": 8
+				"defaultValue": 16
 			}
 		},
 		"annotations": []
