@@ -7,7 +7,7 @@
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
-			"referenceName": "accsparkpools",
+			"referenceName": "mlspark3",
 			"type": "BigDataPoolReference"
 		},
 		"sessionProperties": {
@@ -15,11 +15,11 @@
 			"driverCores": 16,
 			"executorMemory": "112g",
 			"executorCores": 16,
-			"numExecutors": 6,
+			"numExecutors": 3,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
-				"spark.dynamicAllocation.minExecutors": "6",
-				"spark.dynamicAllocation.maxExecutors": "6"
+				"spark.dynamicAllocation.minExecutors": "3",
+				"spark.dynamicAllocation.maxExecutors": "3"
 			}
 		},
 		"metadata": {
@@ -32,19 +32,21 @@
 				"name": "scala"
 			},
 			"a365ComputeOptions": {
-				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/accsparkpools",
-				"name": "accsparkpools",
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/mlspark3",
+				"name": "mlspark3",
 				"type": "Spark",
-				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/accsparkpools",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/mlspark3",
 				"auth": {
 					"type": "AAD",
 					"authResource": "https://dev.azuresynapse.net"
 				},
-				"sparkVersion": "2.4",
+				"sparkVersion": "3.0",
 				"nodeCount": 10,
 				"cores": 16,
-				"memory": 112
-			}
+				"memory": 112,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
 			{
