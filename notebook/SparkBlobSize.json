@@ -139,7 +139,7 @@
 				"source": [
 					"display(data_df.groupBy(\"Container\").sum(\"Content-LengthInt\"))"
 				],
-				"execution_count": 19
+				"execution_count": 22
 			},
 			{
 				"cell_type": "code",
