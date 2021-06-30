@@ -1,0 +1,156 @@
+{
+	"name": "SparkBlobSize",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "mlspark3",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 4,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "4",
+				"spark.dynamicAllocation.maxExecutors": "4"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/mlspark3",
+				"name": "mlspark3",
+				"type": "Spark",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/mlspark3",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.0",
+				"nodeCount": 10,
+				"cores": 16,
+				"memory": 112,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"Name"
+							],
+							"values": [
+								"Name"
+							],
+							"yLabel": "Name",
+							"xLabel": "Name",
+							"aggregation": "COUNT",
+							"aggByBackend": false
+						},
+						"aggData": "{\"Name\":{\"adventureworkslt/2020\":1,\"adventureworkslt/2020/12\":1,\"adventureworkslt/2020/12/29\":1,\"adventureworkslt/2020/12/29/SalesLT_Address_20201229.parquet\":1,\"adventureworkslt/2020/12/29/SalesLT_CustomerAddress_20201229.parquet\":1,\"adventureworkslt/2020/12/29/SalesLT_Customer_20201229.parquet\":1,\"adventureworkslt/2020/12/29/SalesLT_ProductCategory_20201229.parquet\":1,\"adventureworkslt/2020/12/29/SalesLT_ProductDescription_20201229.parquet\":1,\"adventureworkslt/2020/12/29/SalesLT_ProductModelProductDescription_20201229.parquet\":1,\"adventureworkslt/2020/12/29/SalesLT_ProductModel_20201229.parquet\":1}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"%%pyspark\n",
+					"df = spark.read.load('abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/2021/06/17/20-28-55/DefaultRule-AllBlobs.csv', format='csv'\n",
+					"## If header exists uncomment line below\n",
+					", header=True\n",
+					")\n",
+					"display(df.limit(10))"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df.printSchema()"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from pyspark.sql.types import IntegerType\n",
+					"data_df = df.withColumn(\"Content-LengthInt\", df[\"Content-Length\"].cast(IntegerType()))"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"data_df.printSchema()"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import pyspark.sql.functions\n",
+					"\n",
+					"split_col = pyspark.sql.functions.split(df['Name'], '/')\n",
+					"data_df = data_df.withColumn('Container', split_col.getItem(0))"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"Container"
+							],
+							"values": [
+								"sum(Content-LengthInt)"
+							],
+							"yLabel": "sum(Content-LengthInt)",
+							"xLabel": "Container",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"sum(Content-LengthInt)\":{\"adventureworkslt\":803450,\"anonymize\":249109,\"coviddata\":8273180,\"coviddata19\":3219878,\"covidoutput\":1748419,\"curateddata\":1468,\"eventhubdata\":3800,\"nyctaxi\":118745754405,\"nyctaxiyellow\":0,\"rawdata\":238288026,\"synapseroot\":61150937829,\"taximodel\":298176,\"tripsdatascore\":175856,\"uspopulation\":16799469}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(data_df.groupBy(\"Container\").sum(\"Content-LengthInt\"))"
+				],
+				"execution_count": 22
+			},
+			{
+				"cell_type": "code",
+				"source": [],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [],
+				"execution_count": null
+			}
+		]
+	}
+}
