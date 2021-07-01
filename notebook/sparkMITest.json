@@ -95,7 +95,7 @@
 					"from pyspark.sql.types import IntegerType\n",
 					"data_df = df.withColumn(\"Content-LengthInt\", df[\"Content-Length\"].cast(IntegerType()))"
 				],
-				"execution_count": null
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -105,14 +105,38 @@
 					"split_col = pyspark.sql.functions.split(df['Name'], '/')\n",
 					"data_df = data_df.withColumn('Container', split_col.getItem(0))"
 				],
-				"execution_count": null
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"Container"
+							],
+							"values": [
+								"sum(Content-LengthInt)"
+							],
+							"yLabel": "sum(Content-LengthInt)",
+							"xLabel": "Container",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"sum(Content-LengthInt)\":{\"adventureworkslt\":803450,\"anonymize\":249109,\"coviddata\":8273180,\"coviddata19\":3219878,\"covidoutput\":1748419,\"curateddata\":1468,\"eventhubdata\":3800,\"nyctaxi\":118745754405,\"nyctaxiyellow\":0,\"rawdata\":238288026,\"synapseroot\":61150937829,\"taximodel\":298176,\"tripsdatascore\":175856,\"uspopulation\":16799469}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
 				"source": [
 					"display(data_df.groupBy(\"Container\").sum(\"Content-LengthInt\"))"
 				],
-				"execution_count": null
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
