@@ -52,7 +52,8 @@
 					"# Python code\n",
 					"spark.conf.set(\"spark.storage.synapse.linkedServiceName\", \"ADLSgen2MI\")\n",
 					"spark.conf.set(\"fs.azure.account.oauth.provider.type\", \"com.microsoft.azure.synapse.tokenlibrary.LinkedServiceBasedTokenProvider\")\n",
-					"\n",
+					"#sc.hadoopConfiguration.set(\"spark.storage.synapse.linkedServiceName\", \"ADLSgen2MI\")\n",
+					"#sc.hadoopConfiguration.set(\"fs.azure.account.oauth.provider.type\", \"com.microsoft.azure.synapse.tokenlibrary.LinkedServiceBasedTokenProvider\")\n",
 					"#df = spark.read.load('abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/2021/06/17/20-28-55/DefaultRule-AllBlobs.csv', format='csv'\n",
 					"## If header exists uncomment line below\n",
 					"#, header=True\n",
@@ -62,7 +63,7 @@
 					"\n",
 					"df.show()"
 				],
-				"execution_count": 4
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
