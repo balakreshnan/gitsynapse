@@ -20,6 +20,9 @@
 		"accsqlsvr_connectionString": {
 			"value": ""
 		},
+		"adbtest1_accessToken": {
+			"value": ""
+		},
 		"advenworkLT_connectionString": {
 			"value": ""
 		},
@@ -29,7 +32,13 @@
 		"bbaccsynapsesqlpool_connectionString": {
 			"value": ""
 		},
+		"evtavroinput_accountKey": {
+			"value": ""
+		},
 		"iiotdata_accountKey": {
+			"value": ""
+		},
+		"iiotstoragebb_accountKey": {
 			"value": ""
 		},
 		"serverlesssqlsvr_connectionString": {
@@ -38,14 +47,35 @@
 		"tpchinput_connectionString": {
 			"value": ""
 		},
+		"PauseDedicatedPools_properties_0_typeProperties": {
+			"value": {}
+		},
+		"Resume_properties_0_typeProperties": {
+			"value": {}
+		},
+		"ADLSgen2MI_properties_typeProperties_url": {
+			"value": "https://accsynapsestorage.dfs.core.windows.net"
+		},
 		"Keyvaultacc_properties_typeProperties_baseUrl": {
 			"value": "https://accvault1.vault.azure.net/"
+		},
+		"PowerBIWorkspace1_properties_typeProperties_workspaceID": {
+			"value": "9c096ec7-b70d-4df1-8b46-03d52259986d"
+		},
+		"PowerBIWorkspace1_properties_typeProperties_tenantID": {
+			"value": "72f988bf-86f1-41af-91ab-2d7cd011db47"
 		},
 		"accbbstore_properties_typeProperties_url": {
 			"value": "https://accbbstore.dfs.core.windows.net"
 		},
+		"accbbstore_properties_typeProperties_accountKey": {
+			"value": ""
+		},
 		"accinput_properties_typeProperties_url": {
 			"value": "https://accbbstore.dfs.core.windows.net"
+		},
+		"accinput_properties_typeProperties_accountKey": {
+			"value": ""
 		},
 		"accml_properties_typeProperties_subscriptionId": {
 			"value": "c46a9435-c957-4e6c-a0f4-b9a597984773"
@@ -53,8 +83,14 @@
 		"accml_properties_typeProperties_resourceGroupName": {
 			"value": "accenture"
 		},
+		"accml_properties_typeProperties_mlWorkspaceName": {
+			"value": "accml"
+		},
 		"accml_properties_typeProperties_servicePrincipalId": {
 			"value": "8a3ddafe-6dd6-48af-867e-d745232a1833"
+		},
+		"accml_properties_typeProperties_servicePrincipalKey": {
+			"value": ""
 		},
 		"accml_properties_typeProperties_tenant": {
 			"value": "72f988bf-86f1-41af-91ab-2d7cd011db47"
@@ -65,11 +101,20 @@
 		"accml1_properties_typeProperties_resourceGroupName": {
 			"value": "accenture"
 		},
+		"accml1_properties_typeProperties_mlWorkspaceName": {
+			"value": "accml"
+		},
 		"accml1_properties_typeProperties_servicePrincipalId": {
 			"value": "8a3ddafe-6dd6-48af-867e-d745232a1833"
 		},
+		"accml1_properties_typeProperties_servicePrincipalKey": {
+			"value": ""
+		},
 		"accml1_properties_typeProperties_tenant": {
 			"value": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+		},
+		"accsqlsvr_properties_typeProperties_connectionString": {
+			"value": ""
 		},
 		"accvault1_properties_typeProperties_baseUrl": {
 			"value": "https://accvault1.vault.azure.net/"
@@ -77,17 +122,56 @@
 		"accvault1bb_properties_typeProperties_baseUrl": {
 			"value": "https://accvault1.vault.azure.net/"
 		},
+		"adbtest1_properties_typeProperties_domain": {
+			"value": "https://adb-4433353838071267.7.azuredatabricks.net"
+		},
+		"adbtest1_properties_typeProperties_accessToken": {
+			"value": ""
+		},
+		"adbtest1_properties_typeProperties_existingClusterId": {
+			"value": "0527-180754-mogul636"
+		},
+		"advenworkLT_properties_typeProperties_connectionString": {
+			"value": ""
+		},
+		"bbaccsynapse-WorkspaceDefaultSqlServer_properties_typeProperties_connectionString": {
+			"value": ""
+		},
 		"bbaccsynapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://accsynapsestorage.dfs.core.windows.net"
 		},
-		"bing-covid-19-data_sasUri": {
+		"bbaccsynapsesqlpool_properties_typeProperties_connectionString": {
 			"value": ""
 		},
-		"covid-tracking_sasUri": {
+		"bing-covid-19-data_properties_typeProperties_sasUri": {
+			"value": "https://pandemicdatalake.blob.core.windows.net/public/curated/covid-19/bing_covid-19_data/latest/bing_covid-19_data.parquet?**********"
+		},
+		"cdmmfglogical_properties_typeProperties_url": {
+			"value": "https://accsynapsestorage.dfs.core.windows.net"
+		},
+		"cdmmfgphysical_properties_typeProperties_url": {
+			"value": "https://accsynapsestorage.dfs.core.windows.net"
+		},
+		"covid-tracking_properties_typeProperties_sasUri": {
+			"value": "https://pandemicdatalake.blob.core.windows.net/public/curated/covid-19/covid_tracking/latest/covid_tracking.parquet?\"\"?**********"
+		},
+		"evtavroinput_properties_typeProperties_url": {
+			"value": "https://iiotstoragebb.dfs.core.windows.net"
+		},
+		"evtavroinput_properties_typeProperties_accountKey": {
 			"value": ""
 		},
 		"iiotdata_properties_typeProperties_url": {
 			"value": "https://iitostore.dfs.core.windows.net"
+		},
+		"iiotdata_properties_typeProperties_accountKey": {
+			"value": ""
+		},
+		"iiotstoragebb_properties_typeProperties_url": {
+			"value": "https://iiotstoragebb.dfs.core.windows.net"
+		},
+		"iiotstoragebb_properties_typeProperties_accountKey": {
+			"value": ""
 		},
 		"mlopsdev_properties_typeProperties_subscriptionId": {
 			"value": "c46a9435-c957-4e6c-a0f4-b9a597984773"
@@ -95,23 +179,424 @@
 		"mlopsdev_properties_typeProperties_resourceGroupName": {
 			"value": "mlops"
 		},
+		"mlopsdev_properties_typeProperties_mlWorkspaceName": {
+			"value": "mlopsdev"
+		},
 		"mlopsdev_properties_typeProperties_servicePrincipalId": {
 			"value": "8a3ddafe-6dd6-48af-867e-d745232a1833"
+		},
+		"mlopsdev_properties_typeProperties_servicePrincipalKey": {
+			"value": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "accvault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "scvpsecret"
+			}
 		},
 		"mlopsdev_properties_typeProperties_tenant": {
 			"value": "72f988bf-86f1-41af-91ab-2d7cd011db47"
 		},
-		"nyc_tlc_green_sasUri": {
+		"nyc_tlc_green_properties_typeProperties_sasUri": {
+			"value": "https://azureopendatastorage.blob.core.windows.net/nyctlc/green?**********"
+		},
+		"nyc_tlc_yellow_properties_typeProperties_sasUri": {
+			"value": "https://azureopendatastorage.blob.core.windows.net/nyctlc/yellow?**********"
+		},
+		"sample-diabetes_properties_typeProperties_sasUri": {
+			"value": "https://azureopendatastorage.blob.core.windows.net/mlsamples/diabetes?\"\"?**********"
+		},
+		"serverlesssqlsvr_properties_typeProperties_connectionString": {
 			"value": ""
 		},
-		"nyc_tlc_yellow_sasUri": {
+		"tpchinput_properties_typeProperties_connectionString": {
 			"value": ""
 		},
-		"sample-diabetes_sasUri": {
+		"us-decennial-census-county_properties_typeProperties_sasUri": {
+			"value": "https://azureopendatastorage.blob.core.windows.net/censusdatacontainer/release/us_population_county/?**********"
+		},
+		"AutoResolveIntegrationRuntime_properties_typeProperties_computeProperties": {
+			"value": {
+				"location": "AutoResolve",
+				"dataFlowProperties": {
+					"computeType": "General",
+					"coreCount": 8,
+					"timeToLive": 0
+				}
+			}
+		},
+		"00 CREATE WWI TABLES_properties_content_currentConnection_name": {
 			"value": ""
 		},
-		"us-decennial-census-county_sasUri": {
+		"00 CREATE WWI TABLES_properties_content_currentConnection_type": {
 			"value": ""
+		},
+		"01 COPY INTO WWI TABLES_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"01 COPY INTO WWI TABLES_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"01 Create Trips Table_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"01 Create Trips Table_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"02 Create Models Table_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"02 Create Models Table_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"02 Set up RLS DDM_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"02 Set up RLS DDM_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"03 Example run for RLS DDM_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"03 Example run for RLS DDM_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"03 Register Model in SQL Pool_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"03 Register Model in SQL Pool_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"04 Load Trips table with data_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"04 Load Trips table with data_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"05 Data Exploration with SQLOD_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"05 Data Exploration with SQLOD_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"05 PREDICT In-Engine ML Scoring_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"05 PREDICT In-Engine ML Scoring_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"CDC_Synapseserverless_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"CDC_Synapseserverless_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"MIsqlpool_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"MIsqlpool_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"NYCYellow_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"NYCYellow_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"SQL script 1_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"SQL script 1_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"SQL script 2_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"SQL script 2_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"SQL script 3_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"SQL script 3_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"accsvctest_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"accsvctest_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"adbsqlmi_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"adbsqlmi_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"arcinsightnullquery_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"arcinsightnullquery_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"blobsizes_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"blobsizes_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"coviddata_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"coviddata_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"covidsql1_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"covidsql1_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"dailaggrsql_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"dailaggrsql_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"dailyaggr_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"dailyaggr_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"deltatest_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"deltatest_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"eventhubdatacheck_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"eventhubdatacheck_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"gcpnested_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"gcpnested_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"metadatasql_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"metadatasql_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"navistarsql_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"navistarsql_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"nycdata_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"nycdata_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"nyctaxisql_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"nyctaxisql_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"percept1_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"percept1_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"serverlesscovid19sql_properties_content_currentConnection_name": {
+			"value": ""
+		},
+		"serverlesscovid19sql_properties_content_currentConnection_type": {
+			"value": ""
+		},
+		"serverlessdbroles_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"serverlessdbroles_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"sqlmisetup_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"sqlmisetup_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"titanicsql_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"titanicsql_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"tpchschemaview_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"tpchschemaview_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"tpchsql11_properties_content_currentConnection_poolName": {
+			"value": ""
+		},
+		"tpchsql11_properties_content_currentConnection_databaseName": {
+			"value": ""
+		},
+		"03 Training NYC Taxi ONNX model_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"04 Analyze data with Scala_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"AMLtest1_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"AzureMLRun_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"AzureMLSynapse_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"AzureMLTips_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"AzureMLtest_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"AzureSparkMLLib_properties_bigDataPool_referenceName": {
+			"value": "mlspark3"
+		},
+		"Bankruptcy Prediction with LightGBM Classifier_properties_bigDataPool_referenceName": {
+			"value": "mlspark3"
+		},
+		"Covid19AutoMLSpark_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"Covid19AutoMLSparkOnnx_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"Creating a managed Spark Table_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"Data Exploration and ML Modeling - NYC taxi predict using Spark MLlib_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"Data Exploration and ML Modeling_properties_bigDataPool_referenceName": {
+			"value": "mlspark3xlarge"
+		},
+		"Getting Started with Delta Lake_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"Hyperspace Indexing_properties_bigDataPool_referenceName": {
+			"value": "mlspark"
+		},
+		"NYC_holidays_Scala_properties_bigDataPool_referenceName": {
+			"value": "mlspark3"
+		},
+		"ScalaSample1_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"SparkBlobSize_properties_bigDataPool_referenceName": {
+			"value": "mlspark3"
+		},
+		"SparkMLLib_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"Synapse_delta_properties_bigDataPool_referenceName": {
+			"value": "mlspark3"
+		},
+		"TextCogTest_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"Using Azure Open Datasets in Synapse_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"advlttest1_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"advtablecreationparquet_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"anomalytestsvc_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"atstask1_properties_bigDataPool_referenceName": {
+			"value": "mlspark"
+		},
+		"blobread_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"coviddatasave_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"csharpdeltalake_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"diabetessample_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"eventhubtest_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"eventhubwrite_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"kafkaread5_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"navistartproductcatalog_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"nycyellow_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"nydatacopy_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"oriondataengg_properties_bigDataPool_referenceName": {
+			"value": "mlspark3"
+		},
+		"paramtest_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"percept1_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"prepare_anomaly_detector_data_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"pythonversioncheck_properties_bigDataPool_referenceName": {
+			"value": "mlspark"
+		},
+		"sparkMITest_properties_bigDataPool_referenceName": {
+			"value": "mlspark3"
+		},
+		"test1_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"tftest_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"tftest1_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"tpchtest1_properties_bigDataPool_referenceName": {
+			"value": "accsparkpools"
+		},
+		"winedatamodel_properties_bigDataPool_referenceName": {
+			"value": "mlspark3xlarge"
 		}
 	}
 }
