@@ -1,0 +1,99 @@
+{
+	"name": "sparkMITest",
+	"properties": {
+		"folder": {
+			"name": "General"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "mlspark3",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "112g",
+			"driverCores": 16,
+			"executorMemory": "112g",
+			"executorCores": 16,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/mlspark3",
+				"name": "mlspark3",
+				"type": "Spark",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/mlspark3",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.0",
+				"nodeCount": 10,
+				"cores": 16,
+				"memory": 112,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"%%pyspark\n",
+					"# Python code\n",
+					"spark.conf.set(\"spark.storage.synapse.linkedServiceName\", \"ADLSgen2MI\")\n",
+					"spark.conf.set(\"fs.azure.account.oauth.provider.type\", \"com.microsoft.azure.synapse.tokenlibrary.LinkedServiceBasedTokenProvider\")\n",
+					"\n",
+					"#df = spark.read.load('abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/2021/06/17/20-28-55/DefaultRule-AllBlobs.csv', format='csv'\n",
+					"## If header exists uncomment line below\n",
+					"#, header=True\n",
+					"#)\n",
+					"#display(df.limit(10))\n",
+					"df = spark.read.csv('abfss://synapseroot@accsynapsestorage.dfs.core.windows.net/2021/06/17/20-28-55/DefaultRule-AllBlobs.csv')\n",
+					"\n",
+					"df.show()"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from pyspark.sql.types import IntegerType\n",
+					"data_df = df.withColumn(\"Content-LengthInt\", df[\"Content-Length\"].cast(IntegerType()))"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import pyspark.sql.functions\n",
+					"\n",
+					"split_col = pyspark.sql.functions.split(df['Name'], '/')\n",
+					"data_df = data_df.withColumn('Container', split_col.getItem(0))"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"display(data_df.groupBy(\"Container\").sum(\"Content-LengthInt\"))"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [],
+				"execution_count": null
+			}
+		]
+	}
+}
