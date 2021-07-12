@@ -1,0 +1,36 @@
+{
+	"name": "arcinsightjsonin",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "MetricStreams-cs-StreamTest-xmyQbAU8-2-2021-05-11-17-56-36-e767b8ec-d386-44fb-9551-251af9d2eded",
+				"folderPath": "arcinsightin",
+				"fileSystem": "synapseroot"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"ticker_symbol": {
+					"type": "string"
+				},
+				"sector": {
+					"type": "string"
+				},
+				"change": {
+					"type": "number"
+				},
+				"price": {
+					"type": "number"
+				}
+			}
+		}
+	}
+}

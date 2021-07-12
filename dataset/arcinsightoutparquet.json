@@ -1,0 +1,20 @@
+{
+	"name": "arcinsightoutparquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "bbaccsynapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "arcinsightoutput",
+				"fileSystem": "synapseroot"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
