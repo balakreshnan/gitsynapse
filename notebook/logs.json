@@ -1,0 +1,103 @@
+{
+	"name": "logs",
+	"properties": {
+		"folder": {
+			"name": "General"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "mlspark3",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "112g",
+			"driverCores": 16,
+			"executorMemory": "112g",
+			"executorCores": 16,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/c46a9435-c957-4e6c-a0f4-b9a597984773/resourceGroups/accenture/providers/Microsoft.Synapse/workspaces/bbaccsynapse/bigDataPools/mlspark3",
+				"name": "mlspark3",
+				"type": "Spark",
+				"endpoint": "https://bbaccsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/mlspark3",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.0",
+				"nodeCount": 10,
+				"cores": 16,
+				"memory": 112,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"2.0;2021-07-13T13:21:20.0000119Z;GetFileProperties;OAuthSuccess;200;25;25;bearer;accsynapsestorage;accsynapsestorage;blob;\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/sparkpoolinstances\";\"/accsynapsestorage/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/sparkpoolinstances\";bcdd9e45-301f-002f-73e9-77f525000000;0;10.0.0.11;;1648;0;352;0;0;;;;Tuesday"
+							],
+							"values": [
+								"2.0;2021-07-13T13:21:20.0000119Z;GetFileProperties;OAuthSuccess;200;25;25;bearer;accsynapsestorage;accsynapsestorage;blob;\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/sparkpoolinstances\";\"/accsynapsestorage/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/sparkpoolinstances\";bcdd9e45-301f-002f-73e9-77f525000000;0;10.0.0.11;;1648;0;352;0;0;;;;Tuesday"
+							],
+							"yLabel": "2.0;2021-07-13T13:21:20.0000119Z;GetFileProperties;OAuthSuccess;200;25;25;bearer;accsynapsestorage;accsynapsestorage;blob;\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/sparkpoolinstances\";\"/accsynapsestorage/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/sparkpoolinstances\";bcdd9e45-301f-002f-73e9-77f525000000;0;10.0.0.11;;1648;0;352;0;0;;;;Tuesday",
+							"xLabel": "2.0;2021-07-13T13:21:20.0000119Z;GetFileProperties;OAuthSuccess;200;25;25;bearer;accsynapsestorage;accsynapsestorage;blob;\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/sparkpoolinstances\";\"/accsynapsestorage/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/sparkpoolinstances\";bcdd9e45-301f-002f-73e9-77f525000000;0;10.0.0.11;;1648;0;352;0;0;;;;Tuesday",
+							"aggregation": "COUNT",
+							"aggByBackend": false
+						},
+						"aggData": "{\"2.0;2021-07-13T13:21:20.0000119Z;GetFileProperties;OAuthSuccess;200;25;25;bearer;accsynapsestorage;accsynapsestorage;blob;\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/sparkpoolinstances\\\";\\\"/accsynapsestorage/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/sparkpoolinstances\\\";bcdd9e45-301f-002f-73e9-77f525000000;0;10.0.0.11;;1648;0;352;0;0;;;;Tuesday\":{\"2.0;2021-07-13T13:21:20.0000119Z;GetFileProperties;OAuthSuccess;200;26;25;bearer;accsynapsestorage;accsynapsestorage;blob;\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/warehouse\\\";\\\"/accsynapsestorage/synapseroot/synapse/workspaces/bbaccsynapse/warehouse\\\";634d7d5a-b01f-0058-20e9-777064000000;0;10.0.0.11;;1619;0;352;0;0;;;;Thursday\":1,\"2.0;2021-07-13T13:21:20.0000181Z;GetFileProperties;OAuthSuccess;200;8;8;bearer;accsynapsestorage;accsynapsestorage;blob;\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries\\\";\\\"/accsynapsestorage/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries\\\";634d7d5b-b01f-0058-21e9-777064000000;0;10.0.0.11;;1619;0;352;0;0;;;;Tuesday\":1,\"2.0;2021-07-13T13:21:20.0000245Z;GetFileProperties;OAuthSuccess;200;9;9;bearer;accsynapsestorage;accsynapsestorage;blob;\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries/libraries.zip\\\";\\\"/accsynapsestorage/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries/libraries.zip\\\";634d7d5c-b01f-0058-22e9-777064000000;0;10.0.0.11;;1633;0;349;0;0;;;;Tuesday\":1,\"2.0;2021-07-13T13:25:08.0000448Z;GetPathAccessControl;OAuthSuccess;200;27;27;bearer;accsynapsestorage;accsynapsestorage;blob;\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot//?upn=false&amp;action=getAccessControl&amp;timeout=90\\\";\\\"/accsynapsestorage/synapseroot\\\";90d0a8b7-501f-0052-03ea-7769ed000000;0;10.4.0.4;2018-11-09;12074;0;270;0;0;;;;Thursday\":1,\"2.0;2021-07-13T13:25:08.0000521Z;GetFileProperties;OAuthSuccess;200;9;9;bearer;accsynapsestorage;accsynapsestorage;blob;\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries?upn=false&amp;timeout=90\\\";\\\"/accsynapsestorage/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries\\\";90d0a8b9-501f-0052-05ea-7769ed000000;0;10.4.0.4;2018-11-09;12110;0;443;0;0;;;;Tuesday\":1,\"2.0;2021-07-13T13:25:14.0000590Z;GetPathAccessControl;OAuthSuccess;200;24;24;bearer;accsynapsestorage;accsynapsestorage;blob;\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot//?upn=false&amp;action=getAccessControl&amp;timeout=90\\\";\\\"/accsynapsestorage/synapseroot\\\";65a1c8d2-c01f-003a-34ea-7737bc000000;0;10.4.0.6;2018-11-09;12074;0;270;0;0;;;;Thursday\":1,\"2.0;2021-07-13T13:25:14.0000620Z;GetFileProperties;OAuthSuccess;200;9;9;bearer;accsynapsestorage;accsynapsestorage;blob;\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries?upn=false&amp;timeout=90\\\";\\\"/accsynapsestorage/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries\\\";65a1c8d6-c01f-003a-38ea-7737bc000000;0;10.4.0.6;2018-11-09;12110;0;443;0;0;;;;Tuesday\":1,\"2.0;2021-07-13T13:25:14.0000661Z;ListFilesystemDir;OAuthSuccess;200;9;9;bearer;accsynapsestorage;accsynapsestorage;blob;\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot?upn=false&amp;resource=filesystem&amp;maxResults=500&amp;directory=synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries&amp;timeout=90&amp;recursive=false\\\";\\\"/accsynapsestorage/synapseroot\\\";65a1c8da-c01f-003a-3cea-7737bc000000;0;10.4.0.6;2018-11-09;12170;0;167;289;0;;;;Monday\":1,\"2.0;2021-07-13T13:25:14.0000846Z;GetFileProperties;OAuthSuccess;200;11;11;bearer;accsynapsestorage;accsynapsestorage;blob;\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries/libraries.zip?upn=false&amp;timeout=90\\\";\\\"/accsynapsestorage/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries/libraries.zip\\\";65a1c8ea-c01f-003a-4cea-7737bc000000;0;10.4.0.6;2018-11-09;12124;0;440;0;0;;;;Tuesday\":1,\"2.0;2021-07-13T13:25:14.0000885Z;ReadFile;OAuthSuccess;206;23;23;bearer;accsynapsestorage;accsynapsestorage;blob;\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries/libraries.zip?timeout=90\\\";\\\"/accsynapsestorage/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries/libraries.zip\\\";65a1c8ef-c01f-003a-50ea-7737bc000000;0;10.4.0.6;2018-11-09;12138;0;377;260;0;;;;Tuesday\":1}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"%%pyspark\n",
+					"df = spark.read.load('abfss://$logs@accsynapsestorage.dfs.core.windows.net/blob/2021/07/13/1300/000001.log', format='csv'\n",
+					"## If header exists uncomment line below\n",
+					", header=True\n",
+					")\n",
+					"display(df.limit(10))"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df.columns"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"source": [],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [],
+				"execution_count": null
+			}
+		]
+	}
+}
