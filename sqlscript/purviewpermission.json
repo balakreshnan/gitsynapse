@@ -1,0 +1,17 @@
+{
+	"name": "purviewpermission",
+	"properties": {
+		"content": {
+			"query": "CREATE USER [accpurview] FOR LOGIN [accpurview];\nALTER ROLE db_datareader ADD MEMBER [accpurview];",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "adventureworkslt"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
