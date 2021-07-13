@@ -79,21 +79,21 @@
 					")\n",
 					"display(df.limit(10))"
 				],
-				"execution_count": 1
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"df.columns"
 				],
-				"execution_count": 2
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"columns = ['column1','column2','column3','column4','column5','column6', 'column7']"
 				],
-				"execution_count": 3
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -131,12 +131,204 @@
 					"df_with_col_renamed = df.select([col(c).alias(col_rename.get(c,c)) for c in df.columns])\n",
 					"display(df_with_col_renamed)"
 				],
-				"execution_count": 5
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
-				"source": [],
-				"execution_count": null
+				"source": [
+					"df_with_col_renamed[['column1']].head()"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df_with_col_renamed[['column4']].head()"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df_with_col_renamed[['column5']].head()"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df_with_col_renamed[['column6']].head()"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df_with_col_renamed[['column7']].head()"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df_with_col_renamed[['column1']].head()"
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from pyspark.sql import functions as F"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df2 = df_with_col_renamed.select(F.split('column1', ';').alias('column1'))"
+				],
+				"execution_count": 28
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# If you don't know the number of columns:\n",
+					"df_sizes = df2.select(F.size('column1').alias('column1'))\n",
+					"df_max = df_sizes.agg(F.max('column1'))\n",
+					"nb_columns = df_max.collect()[0][0]\n",
+					"\n",
+					"#df_result = df2.select('column1', *[df2['column1'][i] for i in range(nb_columns)])\n",
+					"#df_result.show()"
+				],
+				"execution_count": 31
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df_result = df2.select('column1', *[df2['column1'][i] for i in range(nb_columns)])\n",
+					"df_result.show()"
+				],
+				"execution_count": 35
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "COUNT",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(df2)"
+				],
+				"execution_count": 29
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"column1[0]"
+							],
+							"values": [
+								"column1[0]"
+							],
+							"yLabel": "column1[0]",
+							"xLabel": "column1[0]",
+							"aggregation": "COUNT",
+							"aggByBackend": false
+						},
+						"aggData": "{\"column1[0]\":{\"2.0\":23}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(df_result)"
+				],
+				"execution_count": 33
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"column1[2]"
+							],
+							"values": [
+								"count"
+							],
+							"yLabel": "count",
+							"xLabel": "column1[2]",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"count\":{\"GetFileProperties\":13,\"GetPathAccessControl\":4,\"ListFilesystemDir\":3,\"ReadFile\":3}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(df_result.groupBy('column1[2]').count())"
+				],
+				"execution_count": 37
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"column1[11]"
+							],
+							"values": [
+								"count"
+							],
+							"yLabel": "count",
+							"xLabel": "column1[11]",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"count\":{\"\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot//?upn=false&amp\":4,\"\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries\\\"\":1,\"\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries/libraries.zip\\\"\":1,\"\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries/libraries.zip?timeout=90\\\"\":3,\"\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries/libraries.zip?upn=false&amp\":3,\"\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/libraries?upn=false&amp\":4,\"\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/sparkpoolinstances\\\"\":1,\"\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/sparkpools/mlspark3/sparkpoolinstances?upn=false&amp\":1,\"\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/warehouse\\\"\":1,\"\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot/synapse/workspaces/bbaccsynapse/warehouse?upn=false&amp\":1,\"\\\"https://accsynapsestorage.dfs.core.windows.net/synapseroot?upn=false&amp\":3}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"display(df_result.groupBy('column1[11]').count())"
+				],
+				"execution_count": 38
 			},
 			{
 				"cell_type": "code",
