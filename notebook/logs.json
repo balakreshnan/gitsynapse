@@ -192,7 +192,14 @@
 				"source": [
 					"df_with_col_renamed[['column1']].head()"
 				],
-				"execution_count": 17
+				"execution_count": 67
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df_with_col_renamed[['column2']].head()"
+				],
+				"execution_count": 66
 			},
 			{
 				"cell_type": "code",
@@ -274,7 +281,7 @@
 							"aggregation": "COUNT",
 							"aggByBackend": false
 						},
-						"aggData": "{\"column1[0]\":{\"2.0\":472}}",
+						"aggData": "{\"column1[0]\":{\"2.0\":1001}}",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -285,7 +292,7 @@
 				"source": [
 					"display(df_result)"
 				],
-				"execution_count": 48
+				"execution_count": 63
 			},
 			{
 				"cell_type": "code",
